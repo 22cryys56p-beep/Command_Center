@@ -16,8 +16,8 @@ updated: 2026-07-20
 
 ## Repository locations
 
-| Repository | Location / URL | Branch | Purpose |
-| --- | --- | --- | --- |
+| Repository      | Location / URL          | Branch       | Purpose             |
+| --------------- | ----------------------- | ------------ | ------------------- |
 | Teacher Toolbox | _Add local path or URL_ | _Add branch_ | Product source code |
 
 ## Development environment
