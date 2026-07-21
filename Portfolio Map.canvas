@@ -1,14 +1,14 @@
 {
 	"nodes":[
 		{"id":"center","type":"text","text":"# Command Center\n\nVisual operational headquarters\n\n[[Dashboard/Executive Dashboard|Open Executive Dashboard]]","x":0,"y":0,"width":360,"height":220,"color":"5"},
-		{"id":"teacher","type":"file","file":"Active Projects/Teacher Toolbox/Dashboard.md","x":500,"y":0,"width":330,"height":180,"color":"2"},
-		{"id":"future","type":"text","text":"# Future Projects\n\n[[Future Projects/README|View project pipeline]]","x":500,"y":280,"width":260,"height":130,"color":"4"},
+		{"id":"teacher","type":"file","file":"Active Projects/Teacher Toolbox/Dashboard.md","x":500,"y":0,"width":300,"height":190,"color":"2"},
+		{"id":"future","type":"text","text":"# Future Projects\n\n[[Future Projects/README|View project pipeline]]","x":500,"y":280,"width":260,"height":155,"color":"4"},
 		{"id":"completed","type":"text","text":"# Completed Projects\n\n[[Completed Projects/README|View completed work]]","x":500,"y":500,"width":260,"height":130,"color":"1"},
-		{"id":"knowledge","type":"text","text":"# Knowledge Base\n\n[[Knowledge Base/README|Cross-project knowledge]]","x":-360,"y":300,"width":260,"height":130,"color":"6"},
-		{"id":"templates","type":"file","file":"Templates/README.md","x":-360,"y":500,"width":260,"height":130,"color":"3"},
+		{"id":"knowledge","type":"text","text":"# Knowledge Base\n\n[[Knowledge Base/README|Cross-project knowledge]]","x":-360,"y":300,"width":260,"height":135,"color":"6"},
+		{"id":"templates","type":"file","file":"Templates/README.md","x":-360,"y":500,"width":260,"height":560,"color":"3"},
 		{"id":"milestone","type":"file","file":"Active Projects/Teacher Toolbox/Milestones/M1 - Foundation.md","x":950,"y":-100,"width":280,"height":140,"color":"2"},
 		{"id":"kanban","type":"file","file":"Active Projects/Teacher Toolbox/Kanban.md","x":950,"y":120,"width":280,"height":140,"color":"2"},
-		{"id":"context","type":"file","file":"Active Projects/Teacher Toolbox/AI Context/Current Project State.md","x":950,"y":340,"width":280,"height":140,"color":"2"}
+		{"id":"context","type":"file","file":"Active Projects/Teacher Toolbox/AI Context/Current Project State.md","x":950,"y":365,"width":280,"height":140,"color":"2"}
 	],
 	"edges":[
 		{"id":"e1","fromNode":"center","fromSide":"right","toNode":"teacher","toSide":"left","label":"active project"},
