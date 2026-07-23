@@ -29,7 +29,7 @@ read_this_first: true
 - **ACPs referenced:** ACP-008 (Metadata Cache timing vs. the "never cached" derivation rule) — raised and resolved within this WP.
 - **Dependencies:** none upstream (first Phase 4 package). Everything else in Phase 4 depends on this WP's environment decisions.
 - **Status:** Closed — approved and frozen.
-- **Git commit:** [pending]
+- **Git commit:** ecf36b1
 
 ### WP11 — Project Record Data Layer
 
@@ -42,7 +42,7 @@ read_this_first: true
 - **ACPs referenced:** none raised. No new decision was required — every validation rule traces directly to an existing Section B rule.
 - **Dependencies:** WP10 (environment/stack decisions). Depended on by: every future WP that reads or writes a Project Record (WP12 orientation element's data-driven paging, WP13–16 screens, and the AI observation surface).
 - **Status:** Closed. Verified — 26/26 tests passing, `tsc --noEmit --strict` clean, both confirmed by actual execution, not asserted.
-- **Git commit:** [pending]
+- **Git commit:** 48b6413
 - **Known gap, not yet resolved:** `docs/architecture/` exists as an empty directory in the repository. The Phase 1 Assessment, Phase 2 UI Architecture Specification (v1.0), and Phase 3 Architecture Record have not yet been placed inside the actual repo — they exist only as separate deliverables outside it. Until this is done, the repository does not yet satisfy WP10's own requirement that documentation live alongside implementation. Flagged here so it is not lost; not an ACP (no architectural conflict — it's a pending action, not a decision to make).
 
 ---
