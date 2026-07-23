@@ -189,4 +189,98 @@ Before changing anything:
 **Verify the repository.  
 Verify the files.  
 Verify the governing documents.  
-Then implement.**
+Then implement.** 
+
+---
+
+# Command Center Concept Overview
+
+Command Center (CC) is a standalone project.
+
+It is not a component of TeacherToolbox.
+
+TeacherToolbox (TT) is a separate project used as a validation project to demonstrate that Command Center can successfully represent, organize, and observe a real project.
+
+The purpose of connecting Command Center to TeacherToolbox is validation:
+
+- Can Command Center load a real project?
+- Can Command Center display meaningful project state?
+- Can Command Center demonstrate that the architecture works with an actual project?
+
+The relationship is:
+
+Command Center = the management and observation system
+
+TeacherToolbox = a project being managed and observed
+
+They must remain architecturally separate.
+
+The fact that Command Center references TeacherToolbox files for testing does not make TeacherToolbox part of the Command Center codebase or architecture.
+
+---
+
+# Command Center Visual Concept
+
+The intended user experience for Command Center is a visual project command board.
+
+The primary metaphor is a physical planning board:
+
+- a large workspace surface
+- visual flow structures
+- connected stages or areas
+- sticky-note-style project elements
+- movement through project states represented visually
+
+The user experience should feel like:
+
+- a project planning wall
+- a visual flowchart
+- a command center
+- an intuitive workspace
+
+It should not feel like:
+
+- a database viewer
+- a spreadsheet
+- a folder browser
+- a collection of disconnected documents
+
+Projects, tasks, milestones, decisions, and status changes should be represented as visual elements on the board.
+
+The visual system may include:
+
+- sticky notes
+- cards
+- connectors
+- flow paths
+- status areas
+- navigation elements
+
+The visual representation is not decoration. It is the primary interface for understanding project state.
+
+The underlying architecture, data model, repository structure, and AI observation layer exist to support this visual experience.
+
+---
+
+# Implementation Perspective
+
+Do not confuse the current implementation mechanism with the final user experience.
+
+Current implementation foundation:
+
+- Obsidian
+- Markdown files
+- TypeScript
+- Git
+- ProjectRecord data structures
+
+User-facing goal:
+
+- a visual project operating surface
+- flow visualization
+- intuitive project navigation
+- AI-assisted understanding of project state
+
+The technology is the foundation.
+
+The visual command board is the product experience.
