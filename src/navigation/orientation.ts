@@ -1,11 +1,12 @@
 /**
- * Orientation element — sibling-resolution and object-based paging logic.
+ * Orientation element — sibling-resolution, object-based paging, and
+ * Up/Top availability/destination logic.
  *
  * Implements: Phase 3 Architecture Record, Section C (object-based sibling
- * paging rule) — WP12 Steps 1 and 2. This module contains pure functions
- * with no Obsidian runtime dependency, per WP10's isolation requirement and
- * the WP12 implementation sequence (steps 3–6 build on this file but are
- * not implemented here).
+ * paging rule, Up/Top behavior) — WP12 Steps 1, 2, and 3. This module
+ * contains pure functions with no Obsidian runtime dependency, per WP10's
+ * isolation requirement and the WP12 implementation sequence (steps 4–6
+ * build on this file but are not implemented here).
  *
  * Per Section C: `<<`/`>>` always navigate among the siblings of the
  * *current object*, not the current screen. The current object is either
@@ -21,6 +22,13 @@
  * Per the approved Step 2 scope, `resolvePaging()` does not perform a
  * transition, does not mutate any state, and does not touch rendering —
  * it is a pure resolver, the same as everything in Step 1.
+ *
+ * Step 3 (below) resolves the two fixed vertical actions, `Up` and `Top`.
+ * Unlike Steps 1–2, these are depth-changing operations, which is why
+ * Step 3 introduces `Depth` and `NavigationDestination` — concepts
+ * `CurrentObject` cannot represent (see the WP12 Step 3 specification's
+ * "Architectural Boundary" section for why these types are intentionally
+ * kept separate).
  */
 
 import type { ProjectRecord, ProjectStatus } from "../data/project-record";
@@ -219,4 +227,95 @@ export function resolvePaging(
           }
         : null,
   };
+}
+
+// ---------------------------------------------------------------------------
+// Step 3 — Up / Top availability and destination logic
+// ---------------------------------------------------------------------------
+
+/**
+ * The five screen depths the orientation element can be present at, minus
+ * Entry. Per Phase 3 Section A, the orientation element is "present from
+ * Category Screen onward" — it does not exist at Entry, and no component
+ * (`<<`, `>>`, `Up`, `Top`) ever targets or represents it. Entry is
+ * therefore intentionally excluded here, not omitted by oversight.
+ */
+export type Depth = "category" | "list" | "dashboard" | "workspace";
+
+/**
+ * A navigation destination — where the user is going — as distinct from
+ * `CurrentObject`, which represents what entity is currently active.
+ *
+ * This separation is intentional and must not be merged into a single
+ * type for convenience (see WP12 Step 3 specification, "Architectural
+ * Boundary: CurrentObject vs. NavigationDestination"). `CurrentObject` is
+ * used for object-based operations (Steps 1–2, sibling paging), which are
+ * depth-invariant. `NavigationDestination` is used for depth-changing
+ * operations (`Up`, `Top`), which `CurrentObject` alone cannot represent —
+ * most concretely, Category Screen has no current object at all (Section
+ * D: "Inputs received: none"), a state only `NavigationDestination`'s
+ * `{ depth: "category" }` variant can express.
+ *
+ * `{ depth: "category" }` intentionally carries no object field. This is
+ * not missing data — Category Screen has no active object until a
+ * selection is made, and no object field should ever be added to this
+ * variant.
+ */
+export type NavigationDestination =
+  | { depth: "category" }
+  | { depth: "list"; object: Extract<CurrentObject, { kind: "category" }> }
+  | { depth: "dashboard"; object: Extract<CurrentObject, { kind: "project" }> }
+  | { depth: "workspace"; object: Extract<CurrentObject, { kind: "project" }> };
+
+/**
+ * Resolves the `Up` destination for the current object at the given
+ * depth, per Phase 3 Section C: "Parent depth within the current object."
+ *
+ * Per Section C's disabled-state table, `Up` is enabled only when the
+ * current object is a project at Workspace depth, in which case the
+ * destination is that same project's Dashboard — preserving object
+ * identity, per ACP-007. At every other depth/object combination, `Up`
+ * is disabled and this function returns `null`.
+ *
+ * This function does NOT perform a navigation transition, does NOT
+ * mutate `currentObject`, and does NOT touch rendering or disabled-state
+ * styling — a `null` return is the sole signal a future rendering step
+ * (not implemented here) would use to represent a disabled control.
+ */
+export function resolveUp(
+  currentObject: CurrentObject,
+  depth: Depth
+): NavigationDestination | null {
+  if (currentObject.kind === "project" && depth === "workspace") {
+    return {
+      depth: "dashboard",
+      object: currentObject,
+    };
+  }
+
+  // Every other case is disabled per Section C's table:
+  // - currentObject.kind === "category" at any depth (categories have no
+  //   parent depth defined anywhere in Section C)
+  // - currentObject.kind === "project" at "category", "list", or
+  //   "dashboard" depth (Dashboard is not treated as having a shallower
+  //   depth within the same object)
+  return null;
+}
+
+/**
+ * Resolves the `Top` destination, per Phase 3 Section C: "Category
+ * Screen — absolute reset." Always returns the same value; `Top` is
+ * never disabled once the orientation element exists at all, and its
+ * destination never depends on the current object or depth.
+ *
+ * Distinct from Entry (a once-per-session lifecycle event, never a `Top`
+ * destination, per Section C) and distinct from `Up` (Category is an
+ * absolute reset; `Up` is a same-object parent-depth step).
+ *
+ * This function takes no parameters, because the destination never
+ * varies, and performs no navigation transition — it only reports the
+ * destination a future caller (not implemented here) may act on.
+ */
+export function resolveTop(): NavigationDestination {
+  return { depth: "category" };
 }

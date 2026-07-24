@@ -5,7 +5,11 @@ import {
   getOrderedProjectIdsForCategory,
   getProjectSiblings,
   resolvePaging,
+  resolveUp,
+  resolveTop,
   type CurrentObject,
+  type Depth,
+  type NavigationDestination,
 } from "../../src/navigation/orientation";
 import type { ProjectRecord } from "../../src/data/project-record";
 
@@ -313,5 +317,162 @@ describe("resolvePaging — purity and non-mutation", () => {
     expect(typeof result.next).not.toBe("function");
     // Confirms the result is inert data a caller could act on later —
     // resolvePaging itself performs no transition, per the approved scope.
+  });
+});
+
+// --- resolveUp (Step 3) -------------------------------------------------------
+
+describe("resolveUp — disabled cases", () => {
+  it("is disabled at Category Screen depth (category current object)", () => {
+    const current: CurrentObject = { kind: "category", category: "current" };
+    expect(resolveUp(current, "category")).toBeNull();
+  });
+
+  it("is disabled at List depth (category current object)", () => {
+    const current: CurrentObject = { kind: "category", category: "current" };
+    expect(resolveUp(current, "list")).toBeNull();
+  });
+
+  it("is disabled at Dashboard depth (project current object)", () => {
+    const current: CurrentObject = {
+      kind: "project",
+      project_id: "proj-a",
+      category: "current",
+    };
+    expect(resolveUp(current, "dashboard")).toBeNull();
+  });
+
+  it("is disabled for a category current object even at workspace depth (Up is project-only)", () => {
+    // A category object should never legitimately appear at "workspace"
+    // depth, but resolveUp must still fail closed (disabled), not guess,
+    // if it did.
+    const current: CurrentObject = { kind: "category", category: "current" };
+    expect(resolveUp(current, "workspace")).toBeNull();
+  });
+});
+
+describe("resolveUp — enabled case", () => {
+  it("is enabled only at Workspace depth for a project current object", () => {
+    const current: CurrentObject = {
+      kind: "project",
+      project_id: "proj-a",
+      category: "current",
+    };
+    const result = resolveUp(current, "workspace");
+    expect(result).not.toBeNull();
+  });
+
+  it("returns the same project at Dashboard depth, preserving object identity", () => {
+    const current: CurrentObject = {
+      kind: "project",
+      project_id: "proj-a",
+      category: "current",
+    };
+    const result = resolveUp(current, "workspace");
+    expect(result).toEqual({
+      depth: "dashboard",
+      object: {
+        kind: "project",
+        project_id: "proj-a",
+        category: "current",
+      },
+    });
+  });
+
+  it("preserves the project's category unchanged in the Up destination", () => {
+    const current: CurrentObject = {
+      kind: "project",
+      project_id: "proj-c",
+      category: "planned",
+    };
+    const result = resolveUp(current, "workspace");
+    expect(result?.depth).toBe("dashboard");
+    if (result?.depth === "dashboard") {
+      expect(result.object.category).toBe("planned");
+      expect(result.object.project_id).toBe("proj-c");
+    }
+  });
+});
+
+describe("resolveUp — purity and non-mutation", () => {
+  it("does not mutate the currentObject passed in", () => {
+    const current: CurrentObject = {
+      kind: "project",
+      project_id: "proj-a",
+      category: "current",
+    };
+    const before = JSON.parse(JSON.stringify(current));
+    resolveUp(current, "workspace");
+    expect(current).toEqual(before);
+  });
+
+  it("is pure: repeated calls with identical input produce identical results", () => {
+    const current: CurrentObject = {
+      kind: "project",
+      project_id: "proj-a",
+      category: "current",
+    };
+    const first = resolveUp(current, "workspace");
+    const second = resolveUp(current, "workspace");
+    expect(first).toEqual(second);
+  });
+});
+
+// --- resolveTop (Step 3) -------------------------------------------------------
+
+describe("resolveTop", () => {
+  it("always returns the Category Screen destination", () => {
+    const result = resolveTop();
+    expect(result).toEqual({ depth: "category" });
+  });
+
+  it("`{ depth: \"category\" }` contains no object field", () => {
+    const result = resolveTop();
+    expect("object" in result).toBe(false);
+  });
+
+  it("never returns Entry as a destination (Entry is not a valid Depth value)", () => {
+    const result = resolveTop();
+    // "entry" is not a member of the Depth union at all — this asserts
+    // the actual returned depth is the one legitimate value, not merely
+    // that it isn't the string "entry".
+    expect(result.depth).toBe("category");
+    const validDepths: Depth[] = ["category", "list", "dashboard", "workspace"];
+    expect(validDepths).toContain(result.depth);
+  });
+
+  it("is pure: repeated calls produce identical results, regardless of any argument", () => {
+    const first = resolveTop();
+    const second = resolveTop();
+    expect(first).toEqual(second);
+  });
+
+  it("takes no parameters and its result never varies", () => {
+    // resolveTop is defined with zero parameters; this test documents
+    // and locks in that the destination cannot be influenced by caller
+    // context, consistent with Top's "absolute reset" behavior.
+    expect(resolveTop.length).toBe(0);
+  });
+});
+
+// --- NavigationDestination shape sanity checks ---------------------------------
+
+describe("NavigationDestination — type shape discipline", () => {
+  it("a category destination never carries an object field, even structurally", () => {
+    const destination: NavigationDestination = { depth: "category" };
+    expect(Object.keys(destination)).toEqual(["depth"]);
+  });
+
+  it("a dashboard destination (from resolveUp) always carries a project object", () => {
+    const current: CurrentObject = {
+      kind: "project",
+      project_id: "proj-e",
+      category: "current",
+    };
+    const result = resolveUp(current, "workspace");
+    expect(result?.depth).toBe("dashboard");
+    if (result?.depth === "dashboard") {
+      expect(result.object.kind).toBe("project");
+    }
   });
 });
