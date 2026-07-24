@@ -4,6 +4,8 @@ import {
   getCategorySiblings,
   getOrderedProjectIdsForCategory,
   getProjectSiblings,
+  resolvePaging,
+  type CurrentObject,
 } from "../../src/navigation/orientation";
 import type { ProjectRecord } from "../../src/data/project-record";
 
@@ -156,5 +158,160 @@ describe("getProjectSiblings", () => {
     const result = getProjectSiblings(mixedRecords, "current", "proj-d");
     expect(result.previous).toBeNull();
     expect(result.next).toBeNull();
+  });
+});
+
+// --- resolvePaging (Step 2) ---------------------------------------------------
+
+describe("resolvePaging — category current object", () => {
+  it("delegates to getCategorySiblings and wraps results as CurrentObject", () => {
+    const current: CurrentObject = { kind: "category", category: "planned" };
+    const result = resolvePaging(current, mixedRecords);
+
+    expect(result.previous).toEqual({ kind: "category", category: "possible" });
+    expect(result.next).toEqual({ kind: "category", category: "current" });
+  });
+
+  it("reports a disabled (null) previous at the first category", () => {
+    const current: CurrentObject = { kind: "category", category: "possible" };
+    const result = resolvePaging(current, mixedRecords);
+
+    expect(result.previous).toBeNull();
+    expect(result.next).toEqual({ kind: "category", category: "planned" });
+  });
+
+  it("reports a disabled (null) next at the last category", () => {
+    const current: CurrentObject = { kind: "category", category: "completed" };
+    const result = resolvePaging(current, mixedRecords);
+
+    expect(result.previous).toEqual({ kind: "category", category: "current" });
+    expect(result.next).toBeNull();
+  });
+
+  it("does not consult records for category-object paging (category order is architectural, not data-derived)", () => {
+    const current: CurrentObject = { kind: "category", category: "planned" };
+    const withRecords = resolvePaging(current, mixedRecords);
+    const withoutRecords = resolvePaging(current, []);
+    expect(withRecords).toEqual(withoutRecords);
+  });
+});
+
+describe("resolvePaging — project current object", () => {
+  it("delegates to getProjectSiblings, scoped to the current object's category", () => {
+    const current: CurrentObject = {
+      kind: "project",
+      project_id: "proj-b",
+      category: "current",
+    };
+    const result = resolvePaging(current, mixedRecords);
+
+    expect(result.previous).toEqual({
+      kind: "project",
+      project_id: "proj-a",
+      category: "current",
+    });
+    expect(result.next).toEqual({
+      kind: "project",
+      project_id: "proj-e",
+      category: "current",
+    });
+  });
+
+  it("carries the same category forward on both paging targets", () => {
+    const current: CurrentObject = {
+      kind: "project",
+      project_id: "proj-a",
+      category: "current",
+    };
+    const result = resolvePaging(current, mixedRecords);
+    expect(result.next?.kind).toBe("project");
+    if (result.next?.kind === "project") {
+      expect(result.next.category).toBe("current");
+    }
+  });
+
+  it("reports a disabled (null) previous at the first project in the category", () => {
+    const current: CurrentObject = {
+      kind: "project",
+      project_id: "proj-a",
+      category: "current",
+    };
+    const result = resolvePaging(current, mixedRecords);
+    expect(result.previous).toBeNull();
+  });
+
+  it("reports a disabled (null) next at the last project in the category", () => {
+    const current: CurrentObject = {
+      kind: "project",
+      project_id: "proj-e",
+      category: "current",
+    };
+    const result = resolvePaging(current, mixedRecords);
+    expect(result.next).toBeNull();
+  });
+
+  it("degrades to both-null for a single-project category (today's actual Current state)", () => {
+    const current: CurrentObject = {
+      kind: "project",
+      project_id: "proj-c",
+      category: "planned",
+    };
+    const result = resolvePaging(current, mixedRecords);
+    expect(result.previous).toBeNull();
+    expect(result.next).toBeNull();
+  });
+
+  it("never returns a paging target from a different category than the current object", () => {
+    const current: CurrentObject = {
+      kind: "project",
+      project_id: "proj-e",
+      category: "current",
+    };
+    const result = resolvePaging(current, mixedRecords);
+    // proj-c belongs to "planned" — must never surface as a "current" sibling.
+    expect(result.previous?.kind === "project" && result.previous.project_id).not.toBe(
+      "proj-c"
+    );
+    expect(result.next).toBeNull();
+  });
+});
+
+describe("resolvePaging — purity and non-mutation", () => {
+  it("does not mutate the records array passed in", () => {
+    const before = JSON.parse(JSON.stringify(mixedRecords));
+    const current: CurrentObject = {
+      kind: "project",
+      project_id: "proj-b",
+      category: "current",
+    };
+    resolvePaging(current, mixedRecords);
+    expect(mixedRecords).toEqual(before);
+  });
+
+  it("does not mutate the currentObject passed in", () => {
+    const current: CurrentObject = { kind: "category", category: "planned" };
+    const before = JSON.parse(JSON.stringify(current));
+    resolvePaging(current, mixedRecords);
+    expect(current).toEqual(before);
+  });
+
+  it("is pure: repeated calls with identical input produce identical output", () => {
+    const current: CurrentObject = {
+      kind: "project",
+      project_id: "proj-a",
+      category: "current",
+    };
+    const first = resolvePaging(current, mixedRecords);
+    const second = resolvePaging(current, mixedRecords);
+    expect(first).toEqual(second);
+  });
+
+  it("returns a plain data object with no transition-performing behavior (no functions on the result)", () => {
+    const current: CurrentObject = { kind: "category", category: "planned" };
+    const result = resolvePaging(current, mixedRecords);
+    expect(typeof result.previous).not.toBe("function");
+    expect(typeof result.next).not.toBe("function");
+    // Confirms the result is inert data a caller could act on later —
+    // resolvePaging itself performs no transition, per the approved scope.
   });
 });

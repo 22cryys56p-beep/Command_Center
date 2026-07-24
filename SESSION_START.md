@@ -160,6 +160,49 @@ Command Center does not contain TeacherToolbox.
 
 ---
 
+# Project Status Authority
+
+Project categories (`Possible`, `Planned`, `Current`, `Completed`) are management states, not filesystem locations.
+
+The human project owner is the sole authority for assigning, changing, or approving a project's category.
+
+AI collaborators may:
+
+- observe project activity
+- analyze project state
+- identify possible status changes
+- recommend a category transition
+
+AI collaborators must not:
+
+- independently change a project's category
+- assume a project should advance because of activity level
+- infer ownership decisions from file contents or repository activity
+
+A project status change represents a change in Command Center's understanding and presentation of the project.
+
+It does not represent a filesystem operation.
+
+Changing a project's category:
+
+- updates the project's recorded state
+- changes how Command Center presents and navigates that project
+- affects project organization within the Command Center management layer
+
+Changing a project's category does not:
+
+- move project files
+- rename folders
+- reorganize repositories
+- duplicate content
+- alter the physical storage location of the project
+
+The physical repository location of a project is independent from its Command Center status.
+
+Command Center provides a management and observation layer above projects. It does not control or restructure the internal organization of the projects it observes.
+
+---
+
 # 7. Current Development Phase
 
 Current project phase:

@@ -1,18 +1,26 @@
 /**
- * Orientation element — sibling-resolution logic.
+ * Orientation element — sibling-resolution and object-based paging logic.
  *
  * Implements: Phase 3 Architecture Record, Section C (object-based sibling
- * paging rule) — WP12 Step 1 only. This module contains pure functions with
- * no Obsidian runtime dependency, per WP10's isolation requirement and the
- * WP12 implementation sequence (steps 2–6 build on this file but are not
- * implemented here).
+ * paging rule) — WP12 Steps 1 and 2. This module contains pure functions
+ * with no Obsidian runtime dependency, per WP10's isolation requirement and
+ * the WP12 implementation sequence (steps 3–6 build on this file but are
+ * not implemented here).
  *
  * Per Section C: `<<`/`>>` always navigate among the siblings of the
  * *current object*, not the current screen. The current object is either
  * a category (at Category/List depth) or a project within an active
- * category (at Dashboard/Workspace depth). This module resolves the
- * sibling set for both cases; it does not decide *when* to page (that is
- * Step 2) or render anything (Step 5).
+ * category (at Dashboard/Workspace depth).
+ *
+ * Step 1 (below) resolves the raw sibling set for both cases: "what are
+ * the siblings of this object?"
+ *
+ * Step 2 (below) answers a related but distinct question: "what are the
+ * available navigation targets from this object?" — wrapping Step 1's
+ * results as typed `CurrentObject` targets a future caller could act on.
+ * Per the approved Step 2 scope, `resolvePaging()` does not perform a
+ * transition, does not mutate any state, and does not touch rendering —
+ * it is a pure resolver, the same as everything in Step 1.
  */
 
 import type { ProjectRecord, ProjectStatus } from "../data/project-record";
@@ -42,10 +50,10 @@ export interface SiblingResolution<T> {
  * Resolves category siblings for `<<`/`>>` when the current object is a
  * category (Category Screen or Project List Screen, per Section C/D).
  * Wraps at neither end — reaching the first or last category yields `null`
- * for that direction, which the (not-yet-implemented) paging/disabled-state
- * logic in Step 3 will use to render a disabled control, per Section C's
- * disabled-state rule. This module does not itself decide disabled
- * rendering — it only reports "no sibling exists."
+ * for that direction. Step 2's `resolvePaging()` uses this result to
+ * report a disabled state, per Section C's disabled-state rule; this
+ * function itself only reports "no sibling exists," it does not decide
+ * disabled rendering.
  */
 export function getCategorySiblings(
   current: ProjectStatus
@@ -113,5 +121,102 @@ export function getProjectSiblings(
   return {
     previous: index > 0 ? orderedIds[index - 1] : null,
     next: index < orderedIds.length - 1 ? orderedIds[index + 1] : null,
+  };
+}
+
+// ---------------------------------------------------------------------------
+// Step 2 — Object-based paging resolution
+// ---------------------------------------------------------------------------
+
+/**
+ * The current object the orientation element is positioned at. Mirrors
+ * Section C's two cases exactly: a category (Category/List depth) or a
+ * project within an active category (Dashboard/Workspace depth). This
+ * type carries no screen or depth information — per ACP-004/Section C,
+ * paging behavior depends only on the object, never on which screen is
+ * asking.
+ */
+export type CurrentObject =
+  | { kind: "category"; category: ProjectStatus }
+  | { kind: "project"; project_id: string; category: ProjectStatus };
+
+/**
+ * A navigation target `resolvePaging` reports as available in a given
+ * direction. Intentionally the same shape as `CurrentObject` — a paging
+ * target is simply "the object you would be at if you paged this way."
+ * This module does not perform that transition; a target is a value a
+ * future caller (not implemented in this step) may choose to act on.
+ */
+export type PagingTarget = CurrentObject;
+
+export interface PagingResolution {
+  previous: PagingTarget | null;
+  next: PagingTarget | null;
+}
+
+/**
+ * Resolves the available `<<`/`>>` navigation targets for the current
+ * object, per Phase 3 Section C's object-based paging rule.
+ *
+ * This function:
+ * - does NOT perform a navigation transition — it only reports what the
+ *   targets would be;
+ * - does NOT mutate `currentObject`, `records`, or any other state —
+ *   it is a pure function, same input always yields the same output;
+ * - does NOT touch rendering, disabled-state styling, labels, or any
+ *   Obsidian API — a `null` target is the sole signal a future rendering
+ *   step (not implemented here) would use to represent a disabled
+ *   control, per Section C's disabled-state rule.
+ *
+ * Dispatch is purely on `currentObject.kind`:
+ * - `"category"` delegates to `getCategorySiblings` (Step 1) and wraps
+ *   each result back into a `CurrentObject` of kind `"category"`.
+ * - `"project"` delegates to `getProjectSiblings` (Step 1), scoped to
+ *   `currentObject.category` — per Section C, project paging never
+ *   crosses category boundaries — and wraps each result into a
+ *   `CurrentObject` of kind `"project"`, carrying the same category
+ *   forward (a project's siblings are always in its own category).
+ */
+export function resolvePaging(
+  currentObject: CurrentObject,
+  records: readonly ProjectRecord[]
+): PagingResolution {
+  if (currentObject.kind === "category") {
+    const siblings = getCategorySiblings(currentObject.category);
+    return {
+      previous:
+        siblings.previous !== null
+          ? { kind: "category", category: siblings.previous }
+          : null,
+      next:
+        siblings.next !== null
+          ? { kind: "category", category: siblings.next }
+          : null,
+    };
+  }
+
+  // currentObject.kind === "project"
+  const siblings = getProjectSiblings(
+    records,
+    currentObject.category,
+    currentObject.project_id
+  );
+  return {
+    previous:
+      siblings.previous !== null
+        ? {
+            kind: "project",
+            project_id: siblings.previous,
+            category: currentObject.category,
+          }
+        : null,
+    next:
+      siblings.next !== null
+        ? {
+            kind: "project",
+            project_id: siblings.next,
+            category: currentObject.category,
+          }
+        : null,
   };
 }
