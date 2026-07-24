@@ -7,6 +7,7 @@ import {
   resolvePaging,
   resolveUp,
   resolveTop,
+  resolveLabel,
   type CurrentObject,
   type Depth,
   type NavigationDestination,
@@ -474,5 +475,125 @@ describe("NavigationDestination — type shape discipline", () => {
     if (result?.depth === "dashboard") {
       expect(result.object.kind).toBe("project");
     }
+  });
+});
+
+// --- resolveLabel (Step 4) -----------------------------------------------------
+
+describe("resolveLabel — category and list destinations", () => {
+  it("returns the fixed category label for a category destination", () => {
+    const destination: NavigationDestination = { depth: "category" };
+    expect(resolveLabel(destination)).toBe("Command Center: Projects");
+  });
+
+  it("returns the category label including the active category for a list destination", () => {
+    const destination: NavigationDestination = {
+      depth: "list",
+      object: { kind: "category", category: "current" },
+    };
+    expect(resolveLabel(destination)).toBe("Command Center: current");
+  });
+
+  it("ignores projectName if supplied for a category destination", () => {
+    const destination: NavigationDestination = { depth: "category" };
+    expect(resolveLabel(destination, "Should Be Ignored")).toBe(
+      "Command Center: Projects"
+    );
+  });
+
+  it("ignores projectName if supplied for a list destination", () => {
+    const destination: NavigationDestination = {
+      depth: "list",
+      object: { kind: "category", category: "planned" },
+    };
+    expect(resolveLabel(destination, "Should Be Ignored")).toBe(
+      "Command Center: planned"
+    );
+  });
+
+  it("does not throw when projectName is omitted for category/list destinations", () => {
+    const categoryDest: NavigationDestination = { depth: "category" };
+    const listDest: NavigationDestination = {
+      depth: "list",
+      object: { kind: "category", category: "possible" },
+    };
+    expect(() => resolveLabel(categoryDest)).not.toThrow();
+    expect(() => resolveLabel(listDest)).not.toThrow();
+  });
+});
+
+describe("resolveLabel — dashboard and workspace destinations", () => {
+  it("returns the fully-qualified label for a dashboard destination", () => {
+    const destination: NavigationDestination = {
+      depth: "dashboard",
+      object: { kind: "project", project_id: "proj-a", category: "current" },
+    };
+    expect(resolveLabel(destination, "Teacher Toolbox")).toBe(
+      "Command Center: current: Teacher Toolbox"
+    );
+  });
+
+  it("returns the fully-qualified label for a workspace destination", () => {
+    const destination: NavigationDestination = {
+      depth: "workspace",
+      object: { kind: "project", project_id: "proj-a", category: "current" },
+    };
+    expect(resolveLabel(destination, "Teacher Toolbox")).toBe(
+      "Command Center: current: Teacher Toolbox"
+    );
+  });
+
+  it("throws when projectName is omitted for a dashboard destination", () => {
+    const destination: NavigationDestination = {
+      depth: "dashboard",
+      object: { kind: "project", project_id: "proj-a", category: "current" },
+    };
+    expect(() => resolveLabel(destination)).toThrow();
+  });
+
+  it("throws when projectName is omitted for a workspace destination", () => {
+    const destination: NavigationDestination = {
+      depth: "workspace",
+      object: { kind: "project", project_id: "proj-a", category: "current" },
+    };
+    expect(() => resolveLabel(destination)).toThrow();
+  });
+
+  it("does not silently produce a fallback label when projectName is omitted", () => {
+    const destination: NavigationDestination = {
+      depth: "dashboard",
+      object: { kind: "project", project_id: "proj-a", category: "current" },
+    };
+    // Confirms failure is loud (throws), not a degraded string such as
+    // "Command Center: current" with the project segment silently dropped.
+    let thrown = false;
+    try {
+      resolveLabel(destination);
+    } catch {
+      thrown = true;
+    }
+    expect(thrown).toBe(true);
+  });
+});
+
+describe("resolveLabel — purity and stability", () => {
+  it("produces identical output for identical input across repeated calls", () => {
+    const destination: NavigationDestination = {
+      depth: "workspace",
+      object: { kind: "project", project_id: "proj-e", category: "planned" },
+    };
+    const first = resolveLabel(destination, "Grading Assistant");
+    const second = resolveLabel(destination, "Grading Assistant");
+    expect(first).toBe(second);
+  });
+
+  it("does not mutate the destination passed in", () => {
+    const destination: NavigationDestination = {
+      depth: "dashboard",
+      object: { kind: "project", project_id: "proj-a", category: "current" },
+    };
+    const before = JSON.parse(JSON.stringify(destination));
+    resolveLabel(destination, "Teacher Toolbox");
+    expect(destination).toEqual(before);
   });
 });

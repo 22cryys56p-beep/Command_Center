@@ -29,6 +29,13 @@
  * `CurrentObject` cannot represent (see the WP12 Step 3 specification's
  * "Architectural Boundary" section for why these types are intentionally
  * kept separate).
+ *
+ * Step 4 (below) resolves the persistent orientation element's center
+ * label string. It performs no `ProjectRecord` lookups — the caller is
+ * responsible for retrieving a project's name before calling
+ * `resolveLabel`, which formats labels only from values it is given. For
+ * dashboard/workspace destinations, an omitted `projectName` is treated
+ * as programmer error and throws; no fallback label is produced.
  */
 
 import type { ProjectRecord, ProjectStatus } from "../data/project-record";
@@ -318,4 +325,56 @@ export function resolveUp(
  */
 export function resolveTop(): NavigationDestination {
   return { depth: "category" };
+}
+
+// ---------------------------------------------------------------------------
+// Step 4 — Center label content resolution
+// ---------------------------------------------------------------------------
+
+/**
+ * Resolves the persistent orientation element's center label string for
+ * a given navigation destination, per Phase 3 Section C: the label
+ * "updates on every depth change" and is display-only.
+ *
+ * This function performs no `ProjectRecord` lookups. The caller is
+ * responsible for retrieving the current project's name before calling
+ * this resolver — `resolveLabel` formats a label only from the values
+ * it is given, consistent with keeping this module free of any
+ * dependency on the data layer beyond the types it already uses.
+ *
+ * Caller contract:
+ * - For `{ depth: "category" }` and `{ depth: "list", ... }`
+ *   destinations, `projectName` is not required and is ignored if
+ *   supplied.
+ * - For `{ depth: "dashboard", ... }` and `{ depth: "workspace", ... }`
+ *   destinations, `projectName` MUST be supplied. If omitted, this is
+ *   treated as programmer error, not a runtime condition to degrade
+ *   gracefully from — this function throws rather than returning a
+ *   fallback label, matching the same "honest failure over silent
+ *   degradation" precedent established at Step 1
+ *   (`getCategorySiblings` throwing on an unrecognized category).
+ *
+ * This function performs no mutation and no navigation transition; it
+ * is a pure formatter, the same as every other resolver in this module.
+ */
+export function resolveLabel(
+  destination: NavigationDestination,
+  projectName?: string
+): string {
+  switch (destination.depth) {
+    case "category":
+      return "Command Center: Projects";
+
+    case "list":
+      return `Command Center: ${destination.object.category}`;
+
+    case "dashboard":
+    case "workspace":
+      if (projectName === undefined) {
+        throw new Error(
+          `resolveLabel: projectName is required for "${destination.depth}" destinations but was omitted.`
+        );
+      }
+      return `Command Center: ${destination.object.category}: ${projectName}`;
+  }
 }
