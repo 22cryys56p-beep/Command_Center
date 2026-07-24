@@ -221,6 +221,15 @@ The fact that Command Center references TeacherToolbox files for testing does no
 
 # Command Center Visual Concept
 
+> **Relationship to the Phase 3 Architecture Record — read this first.**
+> The visual concept below describes the intended **presentation layer** and user experience metaphor. It does not override, replace, or modify anything in the frozen Phase 3 Architecture Record.
+>
+> Phase 3 defines the underlying application architecture: the object model, navigation relationships, the persistent orientation element, and the Category → List → Dashboard → Workspace depth hierarchy. That remains frozen and governs all implementation.
+>
+> This section defines how those same objects, states, and relationships may eventually be *rendered* — sticky notes, connectors, flow paths, a visual workspace — as a rendering and interaction model, not a competing data or navigation model. A future visual board still represents the same underlying objects Phase 3 defines; it does not introduce a second architecture alongside it.
+>
+> This distinction exists in the document explicitly so that this section is never read as silently superseding Phase 3 in a future session. If a future implementation step appears to require an actual architectural change (not just a new rendering) to accommodate this vision, that still requires an ACP — this note does not pre-authorize one.
+
 The intended user experience for Command Center is a visual project command board.
 
 The primary metaphor is a physical planning board:
