@@ -1,0 +1,9 @@
+{
+  "id": "command-center",
+  "name": "Command Center",
+  "version": "0.1.0",
+  "minAppVersion": "1.4.0",
+  "description": "A portfolio cockpit for managing current, planned, and possible projects — implements the Command Center Phase 3 Architecture Record.",
+  "author": "",
+  "isDesktopOnly": false
+}
