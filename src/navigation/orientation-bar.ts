@@ -3,14 +3,17 @@
  * persistent orientation element's five components.
  *
  * WP12 Step 5, Slice 4 established pure rendering (no click handlers).
- * Slice 5 (this revision) adds click interaction wiring only — no new
- * rendering behavior, no ScreenHost, no CommandCenterView assembly.
+ * Slice 5 added click interaction wiring, with interim self-owned
+ * re-rendering. Slice 7 (this revision) moves render ownership to
+ * CommandCenterView — this component no longer calls this.render()
+ * from its own click handlers; it calls an injected onStateChange
+ * callback instead.
  *
- * Architectural boundary (frozen, per Slice 4/5 approval): this
+ * Architectural boundary (frozen, per Slice 4/5/7 approval): this
  * component must NEVER call resolvePaging or resolveUp directly, and
  * does not. NavigationController remains the sole owner of all
  * resolver calls, including via the action methods (pagePrevious,
- * pageNext, goUp, goTop) this slice now invokes from click handlers.
+ * pageNext, goUp, goTop) this component invokes from click handlers.
  * This component only ever reads NavigationController.getState() (for
  * object/depth) and NavigationController.getAvailability() (for
  * disabled-state rendering of `<<`, `>>`, and `Up`). `Top` is rendered
@@ -21,31 +24,36 @@
  * no state dependency, not a "navigation resolver" in the sole-caller
  * sense that applies to resolvePaging/resolveUp/resolveTop.
  *
- * Click-handler contract (Slice 5, approved decisions):
- * - `<<`/`>>` call controller.pagePrevious()/pageNext() directly, then
- *   re-render. Both are safe no-ops in the controller when there is no
- *   current object or no sibling — no guard is added here.
- * - `Up` calls controller.goUp() directly, with NO defensive try/catch.
- *   getAvailability().canGoUp already determines whether the button is
- *   enabled; a disabled native button does not fire click events. If
- *   goUp() ever throws through normal interaction, that indicates a
- *   genuine contract violation that must be visible, not silently
- *   swallowed — this is a deliberate application of "honest failure
- *   over silent degradation," not an oversight.
- * - `Top` calls controller.goTop() directly. goTop() never throws.
- * - No callbacks, event buses, or subscription mechanisms are
- *   introduced. Each handler calls the controller method, then calls
- *   this.render() again directly — the minimal mechanism sufficient
- *   for this slice.
+ * Click-handler contract (Slice 5, amended Slice 7):
+ * - `<<`/`>>` call controller.pagePrevious()/pageNext(), then
+ *   onStateChange(). Both are safe no-ops in the controller when there
+ *   is no current object or no sibling — no guard is added here.
+ * - `Up` calls controller.goUp(), then onStateChange(), with NO
+ *   defensive try/catch. getAvailability().canGoUp already determines
+ *   whether the button is enabled; a disabled native button does not
+ *   fire click events. If goUp() ever throws through normal
+ *   interaction, that indicates a genuine contract violation that must
+ *   be visible, not silently swallowed — this is a deliberate
+ *   application of "honest failure over silent degradation," not an
+ *   oversight. (If goUp() throws, onStateChange() is never reached —
+ *   the exception propagates up through the click handler, which is
+ *   the intended, visible failure.)
+ * - `Top` calls controller.goTop(), then onStateChange(). goTop()
+ *   never throws.
+ * - No event buses, observer patterns, subscriptions, or global state
+ *   are introduced. A single injected callback is the sole
+ *   coordination mechanism, approved specifically because there is one
+ *   coordinator (CommandCenterView) and two rendering consumers
+ *   (this component and NavigationInspector) — the minimal mechanism
+ *   sufficient for that shape, not general-purpose infrastructure.
  *
- * Re-render ownership (Slice 5, INTERIM design — see note below):
- * OrientationBarComponent currently re-renders itself after each of
- * its own click-driven actions. This is temporary, not a permanent
- * architectural decision: it exists only because CommandCenterView
- * (Slice 7) does not exist yet to own re-render coordination centrally.
- * Once Slice 7 introduces CommandCenterView, this self-owned
- * re-rendering should be explicitly revisited — not assumed to remain
- * the permanent design merely because it was never revisited.
+ * Re-render ownership (RESOLVED at Slice 7 — no longer interim):
+ * OrientationBarComponent does NOT re-render itself after actions.
+ * CommandCenterView owns re-render coordination centrally: it supplies
+ * onStateChange, and its implementation calls this component's
+ * render() (and NavigationInspector's render()) after every state
+ * change. This was explicitly flagged as deferred at Slice 5 and is
+ * now settled, not left open.
  *
  * This component uses Obsidian's DOM convenience methods (`createEl`,
  * `empty`, `addClass`), which only exist at runtime because Obsidian
@@ -54,17 +62,19 @@
  * ambient type declarations make them appear available project-wide).
  * This means this component is NOT actually renderable or testable
  * outside Obsidian's runtime, unlike navigation-controller.ts and
- * orientation.ts, which remain genuinely host-agnostic. This was first
- * flagged at Slice 4 and remains true, now also covering this slice's
- * click-handler code, which inherits the same untestability.
+ * orientation.ts, which remain genuinely host-agnostic. First flagged
+ * at Slice 4, still true.
  */
 
 import type { NavigationController } from "./navigation-controller";
 import { resolveLabel } from "./orientation";
 
 /**
- * Renders the orientation bar's current state into the given container.
- * Pure rendering — no event listeners are attached in this slice.
+ * Renders the orientation bar's current state into the given container,
+ * and wires click interaction. Rendering and interaction are combined
+ * in this single class (unchanged since Slice 5) — only re-render
+ * ownership has moved (Slice 7); the render/interaction split itself
+ * was never revisited or reconsidered.
  *
  * Per the approved Step 4 caller contract (resolveLabel), projectName
  * is supplied only when the current object is a project; resolveLabel
@@ -75,10 +85,16 @@ import { resolveLabel } from "./orientation";
 export class OrientationBarComponent {
   private readonly container: HTMLElement;
   private readonly controller: NavigationController;
+  private readonly onStateChange: () => void;
 
-  constructor(container: HTMLElement, controller: NavigationController) {
+  constructor(
+    container: HTMLElement,
+    controller: NavigationController,
+    onStateChange: () => void
+  ) {
     this.container = container;
     this.controller = controller;
+    this.onStateChange = onStateChange;
   }
 
   /**
@@ -88,11 +104,10 @@ export class OrientationBarComponent {
    * in a previous render are discarded along with their elements —
    * there is no stale-listener accumulation across repeated calls.
    *
-   * Callers (Slice 7's CommandCenterView) are ultimately responsible
-   * for the overall re-render lifecycle once it exists; in this slice,
-   * this component temporarily re-renders itself after each of its own
-   * click-driven actions (see the class-level comment on interim
-   * re-render ownership).
+   * CommandCenterView (Slice 7) is the sole caller of render() — both
+   * for the initial mount and after every state change via
+   * onStateChange. This component does not call its own render()
+   * from anywhere, including its click handlers.
    */
   render(): void {
     const state = this.controller.getState();
@@ -108,7 +123,7 @@ export class OrientationBarComponent {
     previousButton.disabled = !availability.canPagePrevious;
     previousButton.addEventListener("click", () => {
       this.controller.pagePrevious();
-      this.render();
+      this.onStateChange();
     });
 
     const label = this.container.createEl("span", {
@@ -123,7 +138,7 @@ export class OrientationBarComponent {
     nextButton.disabled = !availability.canPageNext;
     nextButton.addEventListener("click", () => {
       this.controller.pageNext();
-      this.render();
+      this.onStateChange();
     });
 
     const upButton = this.container.createEl("button", {
@@ -132,14 +147,15 @@ export class OrientationBarComponent {
     });
     upButton.disabled = !availability.canGoUp;
     upButton.addEventListener("click", () => {
-      // No defensive try/catch, per the approved Slice 5 decision:
-      // getAvailability().canGoUp already determines whether this
-      // button is enabled, and a disabled native button does not fire
-      // click events. If goUp() throws here, that is a genuine
-      // contract violation that must surface, not be silently
-      // swallowed — "honest failure over silent degradation."
+      // No defensive try/catch, per the approved Slice 5 decision,
+      // reaffirmed at Slice 7: getAvailability().canGoUp already
+      // determines whether this button is enabled, and a disabled
+      // native button does not fire click events. If goUp() throws
+      // here, onStateChange() is never reached — the exception
+      // propagates as a genuine, visible contract violation, not a
+      // silently swallowed one.
       this.controller.goUp();
-      this.render();
+      this.onStateChange();
     });
 
     // Top is always enabled once the orientation element is present at
@@ -150,7 +166,7 @@ export class OrientationBarComponent {
     });
     topButton.addEventListener("click", () => {
       this.controller.goTop();
-      this.render();
+      this.onStateChange();
     });
   }
 
