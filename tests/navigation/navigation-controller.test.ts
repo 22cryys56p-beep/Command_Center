@@ -233,3 +233,79 @@ describe("NavigationController — non-mutation of injected records", () => {
     expect(records).toEqual(before);
   });
 });
+
+// --- getAvailability (Slice 4) ---------------------------------------------------
+
+describe("NavigationController — getAvailability", () => {
+  it("reports all false when state.object is null (initial state)", () => {
+    const controller = makeController();
+    expect(controller.getAvailability()).toEqual({
+      canPagePrevious: false,
+      canPageNext: false,
+      canGoUp: false,
+    });
+  });
+
+  it("never throws when state.object is null, unlike goUp()", () => {
+    const controller = makeController();
+    expect(() => controller.getAvailability()).not.toThrow();
+  });
+
+  it("reports canPageNext/canPagePrevious correctly for a middle category", () => {
+    const controller = makeController();
+    controller.selectCategory("planned"); // possible < planned < current < completed
+    const availability = controller.getAvailability();
+    expect(availability.canPagePrevious).toBe(true);
+    expect(availability.canPageNext).toBe(true);
+  });
+
+  it("reports canPageNext false at the last category", () => {
+    const controller = makeController();
+    controller.selectCategory("completed");
+    expect(controller.getAvailability().canPageNext).toBe(false);
+  });
+
+  it("reports canPagePrevious false at the first category", () => {
+    const controller = makeController();
+    controller.selectCategory("possible");
+    expect(controller.getAvailability().canPagePrevious).toBe(false);
+  });
+
+  it("reports canGoUp false for a category object (Up is project-only)", () => {
+    const controller = makeController();
+    controller.selectCategory("current");
+    expect(controller.getAvailability().canGoUp).toBe(false);
+  });
+
+  it("reports canGoUp false for a project object at dashboard depth", () => {
+    const controller = makeController();
+    controller.selectCategory("current");
+    controller.selectProject("proj-a");
+    expect(controller.getAvailability().canGoUp).toBe(false);
+  });
+
+  it("does not mutate state when called", () => {
+    const controller = makeController();
+    controller.selectCategory("current");
+    const before = controller.getState();
+    controller.getAvailability();
+    expect(controller.getState()).toEqual(before);
+  });
+
+  it("is pure: repeated calls with unchanged state produce identical results", () => {
+    const controller = makeController();
+    controller.selectCategory("current");
+    const first = controller.getAvailability();
+    const second = controller.getAvailability();
+    expect(first).toEqual(second);
+  });
+
+  it("reports canPagePrevious/canPageNext correctly for a middle project sibling", () => {
+    const controller = makeController();
+    controller.selectCategory("current"); // proj-a, proj-b, proj-e in current
+    controller.selectProject("proj-b");
+    const availability = controller.getAvailability();
+    expect(availability.canPagePrevious).toBe(true);
+    expect(availability.canPageNext).toBe(true);
+  });
+});

@@ -1,13 +1,20 @@
 /**
  * NavigationController — owns the orientation element's runtime state.
  *
- * WP12 Step 5, Slice 3: action methods and their resolver wiring.
- * Slice 2 established the state container and read-only accessor;
- * this slice adds pageNext, pagePrevious, goUp, goTop, selectCategory,
- * and selectProject, each calling the appropriate Step 1–3 resolver
- * and updating internal state accordingly. resolveLabel (Step 4) is
- * NOT wired here — label resolution belongs to OrientationBarComponent
- * (Slice 4), which reads state from this controller directly.
+ * WP12 Step 5, Slice 4: adds getAvailability(), a read-only capability
+ * snapshot method for UI rendering. NavigationController remains the
+ * sole owner of all resolver calls, including this read-only one —
+ * OrientationBarComponent (this slice) must never call resolvePaging
+ * or resolveUp directly; it reads getAvailability() instead.
+ *
+ * Slice 2 established the state container and read-only accessor.
+ * Slice 3 added the action methods and their resolver wiring.
+ * resolveLabel (Step 4) is NOT wired here — label resolution belongs
+ * to OrientationBarComponent, which reads state from this controller
+ * directly and calls resolveLabel itself (resolveLabel is a pure
+ * formatter with no state dependency, not a "navigation resolver" in
+ * the sole-caller sense that applies to resolvePaging/resolveUp/
+ * resolveTop).
  *
  * No Obsidian API is touched. No UI component exists yet. No
  * connection to a real Metadata Cache — ProjectRecordProvider remains
@@ -30,7 +37,7 @@
  * `{ depth: "category" }` shape from Step 3/4 — no object field, by
  * design, not missing data.
  *
- * Approved state-transition contracts (this slice):
+ * Approved state-transition contracts (Slice 3):
  * - selectCategory/selectProject are NOT produced by any Step 1–3
  *   resolver — no resolver models "an object was just chosen from a
  *   shallower screen." The controller constructs these transitions
@@ -49,6 +56,22 @@
  *   a null object at that depth would indicate an inconsistent state,
  *   not a normal disabled case, so it is NOT treated the same as the
  *   pageNext/pagePrevious no-op case.
+ *
+ * Approved availability contract (Slice 4):
+ * - getAvailability() is a pure, read-only capability snapshot:
+ *   { canPagePrevious, canPageNext, canGoUp }. It computes these by
+ *   calling resolvePaging/resolveUp internally (the same resolvers
+ *   the action methods already use) and checking for a null result,
+ *   without mutating state. No canGoTop is included — per Section C,
+ *   Top is always enabled once the orientation element is present at
+ *   all, so there is nothing for an availability check to report.
+ * - When state.object is null, all three flags are false — mirroring
+ *   pageNext/pagePrevious's no-op behavior and goUp's throw behavior:
+ *   nothing is available to page or move up from when there is no
+ *   current object. (getAvailability() itself never throws, even
+ *   though goUp() would in this state — an availability check
+ *   reporting "not available" is not the same operation as attempting
+ *   the action itself.)
  */
 
 import type { CurrentObject, Depth } from "./orientation";
@@ -74,6 +97,20 @@ export interface NavigationState {
  * same pattern established throughout Steps 1–4.
  */
 export type ProjectRecordProvider = () => readonly ProjectRecord[];
+
+/**
+ * A read-only capability snapshot for UI rendering — reports whether
+ * each conditionally-disabled orientation component is currently
+ * available, without exposing (or requiring the caller to know) the
+ * underlying resolver mechanics. No canGoTop field: per Section C,
+ * Top is always enabled once the element is present, so there is
+ * nothing to report for it.
+ */
+export interface NavigationAvailability {
+  canPagePrevious: boolean;
+  canPageNext: boolean;
+  canGoUp: boolean;
+}
 
 export class NavigationController {
   private state: NavigationState;
@@ -221,6 +258,35 @@ export class NavigationController {
   goTop(): void {
     const destination = resolveTop();
     this.state = { object: null, depth: destination.depth };
+  }
+
+  /**
+   * Returns a read-only capability snapshot for UI rendering. Computes
+   * each flag by calling resolvePaging/resolveUp internally — the same
+   * resolvers the action methods above use — and checking for a null
+   * result, without mutating state. This is the only sanctioned way for
+   * a caller (OrientationBarComponent, Slice 5) to determine disabled
+   * states; it must never call resolvePaging or resolveUp directly.
+   *
+   * When state.object is null, all three flags are false. This mirrors
+   * pageNext/pagePrevious's no-op behavior (nothing to page from), but
+   * does NOT mirror goUp()'s throw behavior — reporting "not available"
+   * is a different operation from attempting the action, and this
+   * method never throws.
+   */
+  getAvailability(): NavigationAvailability {
+    if (this.state.object === null) {
+      return { canPagePrevious: false, canPageNext: false, canGoUp: false };
+    }
+
+    const paging = resolvePaging(this.state.object, this.getRecords());
+    const upDestination = resolveUp(this.state.object, this.state.depth);
+
+    return {
+      canPagePrevious: paging.previous !== null,
+      canPageNext: paging.next !== null,
+      canGoUp: upDestination !== null,
+    };
   }
 }
 
