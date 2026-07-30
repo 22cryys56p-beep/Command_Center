@@ -29,7 +29,7 @@ read_this_first: true
 - **ACPs referenced:** ACP-008 (Metadata Cache timing vs. the "never cached" derivation rule) — raised and resolved within this WP.
 - **Dependencies:** none upstream (first Phase 4 package). Everything else in Phase 4 depends on this WP's environment decisions.
 - **Status:** Closed — approved and frozen.
-- **Git commit:** ecf36b1
+- **Integrated commit (human repository integration):** ecf36b1
 
 ### WP11 — Project Record Data Layer
 
@@ -42,8 +42,26 @@ read_this_first: true
 - **ACPs referenced:** none raised. No new decision was required — every validation rule traces directly to an existing Section B rule.
 - **Dependencies:** WP10 (environment/stack decisions). Depended on by: every future WP that reads or writes a Project Record (WP12 orientation element's data-driven paging, WP13–16 screens, and the AI observation surface).
 - **Status:** Closed. Verified — 26/26 tests passing, `tsc --noEmit --strict` clean, both confirmed by actual execution, not asserted.
-- **Git commit:** 48b6413
+- **Integrated commit (human repository integration):** 48b6413
 - **Known gap, not yet resolved:** `docs/architecture/` exists as an empty directory in the repository. The Phase 1 Assessment, Phase 2 UI Architecture Specification (v1.0), and Phase 3 Architecture Record have not yet been placed inside the actual repo — they exist only as separate deliverables outside it. Until this is done, the repository does not yet satisfy WP10's own requirement that documentation live alongside implementation. Flagged here so it is not lost; not an ACP (no architectural conflict — it's a pending action, not a decision to make).
+
+### WP12 — Persistent Orientation Element
+
+- **Purpose:** implement the persistent orientation element defined by Phase 3 Section C — sibling-resolution and object-based paging logic, `Up`/`Top` availability and destination logic, center label content resolution, and the Obsidian-runtime rendering, interaction, and coordination layer (Step 5, delivered as Slices 1–8B).
+- **Governing Phase 3 sections:** Section C (Final Navigation Model) in full; also implements ACP-004 (object-based paging, not screen-based) and ACP-007 (the `Up` component and Workspace→Dashboard behavior).
+- **Files created:**
+  - `src/navigation/orientation.ts` — `CATEGORY_ORDER`, `getCategorySiblings`, `getOrderedProjectIdsForCategory`, `getProjectSiblings`, `resolvePaging`, `resolveUp`, `resolveTop`, `resolveLabel`, and the `CurrentObject`/`NavigationDestination`/`Depth` types (Steps 1–4)
+  - `src/navigation/navigation-controller.ts` — `NavigationController`, `NavigationState`, `NavigationAvailability`, `ProjectRecordProvider` (Slices 2–4)
+  - `src/navigation/orientation-bar.ts` — `OrientationBarComponent` (Slices 4–5, coordination updated at Slice 7)
+  - `src/navigation/navigation-inspector.ts` — `NavigationInspector`, a passive diagnostic view (Slice 6)
+  - `src/navigation/command-center-view.ts` — `CommandCenterView`, `COMMAND_CENTER_VIEW_TYPE` (Slice 7)
+  - `src/main.ts` — plugin scaffold, view registration, command/activation (Slices 1, 8A, 8B)
+  - Corresponding test files: `tests/navigation/orientation.test.ts`, `tests/navigation/navigation-controller.test.ts`
+  - Full per-step/per-slice breakdown, including individual commit hashes: `docs/implementation/CC_Phase 4_WP12 Implementation Notes.md`
+- **ACPs referenced:** ACP-004 (withdrawn — corrected by the object-based paging rule), ACP-007 (accepted — added the `Up` component).
+- **Dependencies:** WP10 (environment), WP11 (`ProjectRecord`/`ProjectStatus` types, read-only). Depended on by: every future screen work package (Category, List, Dashboard, Workspace), none of which are implemented yet.
+- **Status:** Code-complete through Slice 8B. **Not yet closed** — Slice 9A (user verification) and Slice 9B (framework verification) have not been executed, and the Baseline Freeze declaration has not been made. Slice 9B carries one known, unresolved verification gap (`goUp()`'s enabled success path cannot be exercised by any means currently available — no controller action sets `depth` to `"workspace"`) requiring a disposition decision before the freeze can be honestly approved.
+- **Integrated commits (human repository integration):** see `docs/implementation/CC_Phase 4_WP12 Implementation Notes.md` for the complete per-step/per-slice commit history (13 commits total, Step 1 through Slice 8B).
 
 ---
 
@@ -52,12 +70,12 @@ read_this_first: true
 ```
 WP10 (environment)
   └── WP11 (data layer)
-        └── [not yet started] orientation element
+        └── WP12 (orientation element — code-complete, Slice 9A/9B and Baseline Freeze pending)
               └── [not yet started] Category / List / Dashboard / Workspace screens
                     └── [not yet started] AI observation surface
 ```
 
-Per WP10's development sequence, the next package in order is the persistent orientation element (governing Phase 3 Section C), followed by the four screens in their existing dependency order (Category → List → Dashboard → Workspace), with the AI observation surface last.
+WP12 is code-complete through Slice 8B but not yet closed — see its entry above. Per WP10's development sequence, the next package after WP12 formally closes is the four screens in their existing dependency order (Category → List → Dashboard → Workspace), with the AI observation surface last.
 
 ---
 

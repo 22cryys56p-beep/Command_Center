@@ -2,7 +2,7 @@
 type: implementation-specification
 phase: 4
 work_package: WP12
-status: draft — pending review and approval
+status: approved contract — implementation complete; verification pending
 governs: implementation of Phase 3 Section C only
 date: 2026-07-23
 ---
@@ -127,7 +127,9 @@ This split mirrors WP11's own precedent: pure logic gets automated tests; anythi
 1. Sibling-resolution logic (category siblings; project siblings within an active category) — pure functions, no Obsidian dependency, fully unit-testable first.
 2. Object-based paging resolution (`<<`/`>>` against current object) — built directly on (1).
 3. `Up` / `Top` availability and destination logic — independent of (1)/(2), can be built in parallel.
-4. Center label content resolution — depends on (1) for project-name lookups (via WP11), otherwise independent.
+4. Center label content resolution.
+   - **Original planning assumption:** depends on (1) for project-name lookups (via WP11), otherwise independent.
+   - **Final approved implementation** (correction recorded post-implementation): `resolveLabel()` performs no `ProjectRecord` lookups. The caller supplies `projectName` directly; `resolveLabel()` formats only from values it is given. This was a deliberate architectural adjustment made during Step 4's implementation, not an error in the original planning assumption above — both are preserved here so the historical record remains intact. See `docs/implementation/CC_Phase 4_WP12 Implementation Notes.md`, Step 4, for the full record of this decision.
 5. Obsidian-runtime rendering of the five components as an actual persistent view element — the first point at which this WP touches the Obsidian API surface directly; everything before this step is pure, environment-independent logic.
 6. Manual verification pass against Section C's disabled-state and Continuity requirements.
 
@@ -141,4 +143,4 @@ None identified. Section C, together with ACP-004 and ACP-007, already fully spe
 
 ---
 
-Specification complete. Holding here — no source files created. Awaiting review and approval before implementation begins.
+Specification complete and approved. Implementation occurred against this contract across Steps 1–4 and Slices 1–8B — see `docs/implementation/CC_Phase 4_WP12 Implementation Notes.md` for the full record. This document remains the governing contract; it is not itself updated to narrate implementation history, except where a historical correction is explicitly preserved (see Implementation Sequence, Step 4).
