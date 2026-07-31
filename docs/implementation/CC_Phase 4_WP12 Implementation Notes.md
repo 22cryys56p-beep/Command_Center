@@ -219,6 +219,31 @@ The Master Implementation Index's WP12 entry was added as part of this same docu
 
 ---
 
+## Slice 9A — User Verification Protocol: Execution Record
+
+**Status: Complete — PASS.** Executed in the human operator's actual Obsidian runtime, not the sandbox (this sandbox has no Obsidian instance). Recorded here as the actual runtime evidence reported during execution, distinct from the protocol document itself (`docs/verification/WP12 Step 5 - Slice 9A User Verification Protocol.md`), which remains the unmodified test procedure.
+
+**Deployment issue discovered and resolved during execution, worth preserving as part of this record:** initial testing found the deployed `main.js` in `.obsidian/plugins/command-center/` was a stale Slice 1 build (console read *"Command Center: plugin loaded (Slice 1 — scaffold only, no view registered yet)"*), despite the repository source being at Slice 8B. This was not a repository or implementation defect — confirmed by direct comparison against the actual current `src/main.ts`, whose `onload()` log text reads *"Command Center: plugin loaded (Slice 8B — view registered and activatable via the \"Open Command Center\" command)"*, a completely different string. Root cause: the deploy step (`npm run build`, then manually copying `main.js` into the vault) had not been re-run since an earlier build. Resolved by rebuilding from current `main` and redeploying (`main.js`, 17,286 bytes, confirmed current). All results below were captured after this correction, against the confirmed-current Slice 8B build.
+
+**Directly observed, matching the protocol's stated pass conditions:**
+- Section 1 (Plugin Installation and Activation, 1.1–1.3): plugin enabled with no error toast; no `command-center`-related console errors; `Open Command Center` present in the Command Palette (after the deployment correction above).
+- Section 2 (Opening Command Center, 2.1–2.4): command opens a new Main-Area tab; Orientation Bar renders in the exact required order (`<<`, label, `>>`, `Up`, `Top`); Inspector visible beneath it; label reads exactly `Command Center: Projects`.
+- Section 3 (Single-Instance Enforcement, 3.1–3.3): invoking the command while already open refocused the existing tab with no duplicate created, confirmed across four total invocations in a row (one plus three repeats, per the protocol's exact requirement) with tab state and content unchanged throughout.
+- Section 4 (Orientation Bar Rendering, 4.1–4.6): `<<`, `>>`, `Up` confirmed disabled; `Top` confirmed enabled; `<<`/`>>`/`Up` did not respond to interaction attempts; `Top` produced no visible change, label unchanged.
+- Section 6.2 (no Category/List/Dashboard/Workspace-style content anywhere): confirmed absent.
+- Section 7 (Lifecycle, 7.2–7.4): plugin disable/re-enable completed without error; no auto-open on load; reopening via Command Palette succeeded; single-instance behavior re-confirmed after reload across four total invocations (one plus three repeats), no duplicate tab at any point.
+
+**Reasonably covered by the above observations, but not independently itemized as discrete actions during execution — noted explicitly rather than silently folded into "confirmed":**
+- **5.2** (explicitly attempting a click inside the Inspector's region and confirming no response) — supported by the Inspector being described as passive/read-only, but not exercised as its own isolated click-test.
+- **5.3** (clicking `Top` and separately re-checking that the Inspector's content, not just the Bar's, remained unchanged) — the Bar's no-change result was directly confirmed; a distinct re-check of the Inspector at that same moment was not separately reported.
+- **7.1** (manually closing the Command Center tab as its own action, independent of the plugin disable/re-enable cycle, and confirming a clean close) — covered in substance by the reload cycle completing without error, but not exercised as a standalone tab-close action.
+
+These three do not affect the overall PASS determination — none relate to a load-bearing architectural behavior the way Section 3's leaf-reuse check did — but are recorded here precisely rather than presented as equivalent in rigor to the directly-itemized checks above.
+
+**Conclusion:** Slice 9A User Verification Protocol is complete and PASS, based on the runtime evidence above. Slice 9B execution and the Baseline Freeze declaration remain the two outstanding items before WP12 Step 5 can be closed.
+
+---
+
 ## Artifact Output Summary
 
 **Documentation:**
