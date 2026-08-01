@@ -2,7 +2,7 @@
 type: implementation-notes
 phase: 4
 work_package: WP12
-status: Steps 1–4 and Slices 1–8B recorded and committed — WP12 Step 5 code-complete; Slice 9A/9B execution and Baseline Freeze not yet performed
+status: Steps 1–4 and Slices 1–8B recorded and committed — WP12 Step 5 code-complete; Slice 9A complete and PASS; Slice 9B execution and Baseline Freeze not yet performed
 date: 2026-07-23
 ---
 
