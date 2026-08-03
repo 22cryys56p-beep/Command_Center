@@ -62,6 +62,7 @@ import { ItemView, type WorkspaceLeaf } from "obsidian";
 import { NavigationController } from "./navigation-controller";
 import { OrientationBarComponent } from "./orientation-bar";
 import { NavigationInspector } from "./navigation-inspector";
+import { EntryView } from "../views/entry-view";
 import type { ProjectRecord } from "../data/project-record";
 
 export const COMMAND_CENTER_VIEW_TYPE = "command-center-view";
@@ -70,6 +71,7 @@ export class CommandCenterView extends ItemView {
   private controller: NavigationController | null = null;
   private orientationBar: OrientationBarComponent | null = null;
   private navigationInspector: NavigationInspector | null = null;
+  private entryView: EntryView | null = null;
 
   constructor(leaf: WorkspaceLeaf) {
     super(leaf);
@@ -84,9 +86,25 @@ export class CommandCenterView extends ItemView {
   }
 
   async onOpen(): Promise<void> {
+    this.showEntry();
+  }
+
+  private showEntry(): void {
     const root = this.containerEl.children[1] as HTMLElement;
     root.empty();
     root.addClass("command-center-view-root");
+
+    this.entryView = new EntryView(root, () => {
+      this.proceedToCategoryDepth();
+    });
+    this.entryView.render();
+  }
+
+  private proceedToCategoryDepth(): void {
+    const root = this.containerEl.children[1] as HTMLElement;
+    root.empty();
+
+    this.entryView = null;
 
     // Stub provider per the approved Slice 7 scope — deliberately not
     // a real Metadata Cache-backed implementation. See class-level
@@ -121,8 +139,8 @@ export class CommandCenterView extends ItemView {
       this.controller
     );
 
-    // Initial render for both, so state is visible immediately on
-    // open without waiting for a click.
+    // Initial render for both, so state is visible immediately upon
+    // reaching Category depth, without waiting for a click.
     this.orientationBar.render();
     this.navigationInspector.render();
   }
@@ -133,6 +151,7 @@ export class CommandCenterView extends ItemView {
     // teardown. Releasing references and allowing Obsidian's DOM
     // cleanup to handle the rest is sufficient today. If future
     // slices introduce persistent resources, this must be revisited.
+    this.entryView = null;
     this.controller = null;
     this.orientationBar = null;
     this.navigationInspector = null;
