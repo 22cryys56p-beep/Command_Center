@@ -63,6 +63,7 @@ import { NavigationController } from "./navigation-controller";
 import { OrientationBarComponent } from "./orientation-bar";
 import { NavigationInspector } from "./navigation-inspector";
 import { EntryView } from "../views/entry-view";
+import { CategoryView } from "../views/category-view";
 import type { ProjectRecord } from "../data/project-record";
 
 export const COMMAND_CENTER_VIEW_TYPE = "command-center-view";
@@ -71,6 +72,7 @@ export class CommandCenterView extends ItemView {
   private controller: NavigationController | null = null;
   private orientationBar: OrientationBarComponent | null = null;
   private navigationInspector: NavigationInspector | null = null;
+  private categoryView: CategoryView | null = null;
   private entryView: EntryView | null = null;
 
   constructor(leaf: WorkspaceLeaf) {
@@ -119,14 +121,18 @@ export class CommandCenterView extends ItemView {
     const inspectorContainer = root.createDiv({
       cls: "command-center-inspector-container",
     });
+    const categoryViewContainer = root.createDiv({
+      cls: "command-center-category-view-container",
+    });
 
     // The sole coordination mechanism (Slice 7, resolved): a single
-    // callback, closing over both component references, calling both
-    // render() methods in order. Not an event bus, not an observer
-    // pattern — one coordinator, two rendering consumers.
+    // callback, closing over all mounted component references, calling
+    // each render() method in order. Not an event bus, not an observer
+    // pattern — one coordinator, several rendering consumers.
     const onStateChange = (): void => {
       this.orientationBar?.render();
       this.navigationInspector?.render();
+      this.categoryView?.render();
     };
 
     this.orientationBar = new OrientationBarComponent(
@@ -138,11 +144,14 @@ export class CommandCenterView extends ItemView {
       inspectorContainer,
       this.controller
     );
+    this.categoryView = new CategoryView(categoryViewContainer, this.controller);
+    this.categoryView.setOnStateChange(onStateChange);
 
-    // Initial render for both, so state is visible immediately upon
+    // Initial render for all, so state is visible immediately upon
     // reaching Category depth, without waiting for a click.
     this.orientationBar.render();
     this.navigationInspector.render();
+    this.categoryView.render();
   }
 
   async onClose(): Promise<void> {
@@ -155,5 +164,6 @@ export class CommandCenterView extends ItemView {
     this.controller = null;
     this.orientationBar = null;
     this.navigationInspector = null;
+    this.categoryView = null;
   }
 }
