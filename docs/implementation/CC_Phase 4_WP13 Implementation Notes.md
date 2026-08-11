@@ -85,3 +85,32 @@ Future production screens were intentionally not created as placeholders:
 - `workspace-view.ts`
 
 Those screens will be created only when their own work packages begin and their real design/content is approved.
+
+---
+
+## WP13 Phase 3 Independent Verification and Acceptance (2026-08-11)
+
+The WP13 Phase 3 implementation has been independently verified and accepted as the baseline for WP13 Phase 4.
+
+### Independent Verification
+
+- `npm run build` — PASS — 22.4kb
+- `npx tsc --noEmit --strict` — PASS
+- `npx vitest run` — PASS — 5 test files, 122/122 tests
+
+### Claude's Independent Verdict
+
+**APPROVED WITH NOTES**
+
+Claude found no blocking defects, no Dashboard-tier field access violations, no direct `NavigationState` construction, correct use of the existing `selectProject()` contract, correct use of live controller state, correct intentional empty-category handling, and no violations of the frozen architecture.
+
+### Phase 3 Acceptance Notes
+
+Two items are carried forward explicitly for WP13 Phase 4 discussion and are not Phase 3 defects:
+
+1. `ProjectRecord` data-access path: passing the `ProjectRecordProvider` reference directly to `ProjectListView` was a reasonable interpretation of a Phase 3 ambiguity, not an implementation defect.
+2. Constructor injection vs. setter injection: the existing setter-injection pattern was continued from Phase 2 and should be explicitly resolved before Phase 4.
+
+### Acceptance
+
+The Phase 3 implementation is accepted as-is. No Phase 3 code changes, rewrites, refactors, or extensions are authorized in response to this report. WP13 Phase 4 will begin from this accepted Phase 3 baseline.

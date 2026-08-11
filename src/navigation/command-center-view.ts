@@ -64,6 +64,7 @@ import { OrientationBarComponent } from "./orientation-bar";
 import { NavigationInspector } from "./navigation-inspector";
 import { EntryView } from "../views/entry-view";
 import { CategoryView } from "../views/category-view";
+import { ProjectListView } from "../views/project-list-view";
 import type { ProjectRecord } from "../data/project-record";
 
 export const COMMAND_CENTER_VIEW_TYPE = "command-center-view";
@@ -73,6 +74,7 @@ export class CommandCenterView extends ItemView {
   private orientationBar: OrientationBarComponent | null = null;
   private navigationInspector: NavigationInspector | null = null;
   private categoryView: CategoryView | null = null;
+  private projectListView: ProjectListView | null = null;
   private entryView: EntryView | null = null;
 
   constructor(leaf: WorkspaceLeaf) {
@@ -124,6 +126,9 @@ export class CommandCenterView extends ItemView {
     const categoryViewContainer = root.createDiv({
       cls: "command-center-category-view-container",
     });
+    const projectListViewContainer = root.createDiv({
+      cls: "command-center-project-list-view-container",
+    });
 
     // The sole coordination mechanism (Slice 7, resolved): a single
     // callback, closing over all mounted component references, calling
@@ -133,6 +138,7 @@ export class CommandCenterView extends ItemView {
       this.orientationBar?.render();
       this.navigationInspector?.render();
       this.categoryView?.render();
+      this.projectListView?.render();
     };
 
     this.orientationBar = new OrientationBarComponent(
@@ -145,13 +151,21 @@ export class CommandCenterView extends ItemView {
       this.controller
     );
     this.categoryView = new CategoryView(categoryViewContainer, this.controller);
+    this.projectListView = new ProjectListView(
+      projectListViewContainer,
+      this.controller,
+      stubProvider
+    );
+
     this.categoryView.setOnStateChange(onStateChange);
+    this.projectListView.setOnStateChange(onStateChange);
 
     // Initial render for all, so state is visible immediately upon
     // reaching Category depth, without waiting for a click.
     this.orientationBar.render();
     this.navigationInspector.render();
     this.categoryView.render();
+    this.projectListView.render();
   }
 
   async onClose(): Promise<void> {
@@ -165,5 +179,6 @@ export class CommandCenterView extends ItemView {
     this.orientationBar = null;
     this.navigationInspector = null;
     this.categoryView = null;
+    this.projectListView = null;
   }
 }
