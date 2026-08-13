@@ -138,4 +138,4 @@ None. Section C, Section D, and ACP-007 together fully specify this behavior; th
 
 ---
 
-Specification revised and approved. No source code modified. No Master Implementation Index changes made. Holding for approval before implementation.
+Specification revised and approved. No source code modified. No Master Implementation Index changes made. Ready for implementation.
