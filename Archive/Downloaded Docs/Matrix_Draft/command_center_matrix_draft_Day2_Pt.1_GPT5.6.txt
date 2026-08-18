@@ -1,0 +1,5991 @@
+
+* * * Phase 4 Matrix recap starting from Step 4D thru Step 4Z - Day 2 Pt.1 * * *
+
+- - - - - 
+
+From me: 
+Question regarding "read only" access to files/documents within CC . . . 
+Would I be able to "see/highlight/copy" code within the files?
+
+- - - - - 
+
+Yes. **"Read-only" should absolutely include normal inspection actions.**
+
+For files/documents displayed inside Command Center, I would define the Phase 4 behavior as:
+
+* **See/read** the contents
+* **Scroll** through them
+* **Select/highlight** text
+* **Copy** selected text to the clipboard
+* **Search** within the displayed content
+* Potentially **open the source file/repository externally**
+
+What it should **not** do, at least for Phase 4:
+
+* Edit the file
+* Save changes to the file
+* Delete/rename/move the file
+* Commit or push changes
+* Modify repository contents
+
+So "read-only" means **read-only with normal user interaction**, not "locked-down viewer."
+
+And for code specifically, being able to **highlight and copy a function or section into another AI/chat** is very much consistent with the Command Center's role as an operational/inspection hub.
+
+I'd add this to the Phase 4 requirements as a concrete clarification.
+
+- - - - - 
+
+From me: 
+Example: Earlier I needed to send you the coding in four ".ts" files . . . 
+Currently, trying to see the coding in ".ts" files I need to access them through VS Code, because Apple only recognizes ".ts" files as video files
+
+- - - - -
+
+Exactly. **That is a very good example of what "read-only" should solve.**
+
+Right now, if you want to show me four `.ts` files, you're forced into:
+
+**Finder → VS Code → open file → select/copy → ChatGPT**
+
+because macOS is incorrectly treating `.ts` as a video/MPEG transport-stream file.
+
+Command Center could instead provide a **code/document reader**:
+
+> Click the file → code appears in Command Center → select the relevant section → Copy → paste into ChatGPT/Claude/etc.
+
+No editing required.
+
+### I would add this to the Phase 4 requirements
+
+**Read-only file inspection**
+
+Command Center should be able to display supported project files, including source-code files such as `.ts`, in a read-only viewer.
+
+The viewer should support:
+
+* viewing the complete file;
+* scrolling;
+* text selection/highlighting;
+* copying selected text;
+* copying the entire file;
+* searching within the file;
+* preserving code formatting/indentation sufficiently for inspection and copying.
+
+**It does not modify the underlying file.**
+
+That is actually quite aligned with the Command Center's purpose: **it becomes the place where you can see what is happening across your projects without having to jump into the engineering tools merely to inspect something.**
+
+And there's a particularly nice future consequence: when we're reviewing something like those four `.ts` files, you could potentially say:
+
+> "Open `navigation-controller.ts`."
+
+…and we're looking at the same source through the Command Center rather than fighting Finder's `.ts` file association.
+
+I would mark this as a **Phase 4 requirement**, not an architectural commitment to a particular implementation. The exact mechanism for reading `.ts`, `.md`, etc. can be decided later.
+
+- - - - - 
+
+From me:
+Add it . . . 
+I like the "search" option as well . . . 
+Being able to search for key words within the documents
+
+- - - - - 
+
+Added to the Phase 4 requirements.
+
+I'd make **search within displayed files/documents** an explicit requirement rather than treating it as a convenience feature:
+
+### Phase 4 — Read-Only File Inspection
+
+Command Center should provide a read-only viewer for supported project files, including source files such as `.ts` and documentation such as `.md`.
+
+The viewer should allow:
+
+* **Read/view** the complete file
+* **Scroll**
+* **Search within the file**
+* **Highlight/select** matching or arbitrary text
+* **Copy selected text**
+* **Copy the entire file**
+* Preserve code indentation/formatting sufficiently for inspection and copying
+* **Never modify the underlying file**
+
+### Search behavior
+
+For example, while viewing `navigation-controller.ts`, you could search:
+
+`resolvePaging`
+
+and Command Center would locate/highlight the occurrences in that file.
+
+Eventually, I'd also like us to distinguish:
+
+**File search** — find something within the currently open document.
+
+**Project search** — find a keyword across the project's relevant files.
+
+The second one could be extremely useful for exactly the kind of architectural investigation we're doing now. But I'd mark **project-wide search as a separate Phase 4 requirement/open decision**, rather than quietly expanding the scope of the single-file viewer.
+
+So the matrix now captures **read-only inspection + in-document search** as established Phase 4 direction.
+
+- - - - - 
+
+From me: 
+"Search" can be a single button, with "file" and "project" in a drop down menu option
+
+- - - - -
+
+Yes — that's cleaner.
+
+### Search control
+
+**[ 🔍 Search ▼ ]**
+
+Clicking the single **Search** button opens a small menu:
+
+* **File** — search within the currently displayed file.
+* **Project** — search across the project's files.
+
+Then the search interface can remain consistent regardless of which scope you choose.
+
+That gives us **one visible control** instead of cluttering the viewer with separate File Search / Project Search buttons.
+
+I'll treat this as the preferred Phase 4 UI direction, while keeping the underlying implementation open.
+
+- - - - - 
+
+Next is **Step 4E — define the Project Selection View**.
+
+We've now established what happens **after** you select a project. We need to define what you see **before** selecting one.
+
+For example, clicking **Current** might produce:
+
+```text
+CURRENT PROJECTS
+
+┌─────────────────────┐
+│ Teacher Toolbox     │
+│ Current •  WP13     │
+│ Phase 4 planning    │
+└─────────────────────┘
+
+┌─────────────────────┐
+│ Kurt's English      │
+│ Current • Website   │
+│ Refurbishing        │
+└─────────────────────┘
+
+┌─────────────────────┐
+│ Command Center      │
+│ Current • Phase 4   │
+│ Specification       │
+└─────────────────────┘
+```
+
+The question we need to settle is **what information belongs on those selection cards**.
+
+My starting proposal would be deliberately minimal:
+
+* **Project name**
+* **Status**
+* **Current focus**
+* **Milestone**
+* **Progress**
+* Maybe a small **last updated** indicator
+
+Not the full project details—that's what appears **after you select the project**.
+
+So the next planning task is to decide the **minimum useful information on a project-selection card**, without designing the visual styling yet.
+
+- - - - - 
+
+From me: 
+Yes, name and minimal details of the projects . . . 
+Represented as buttons, boxes, or folders (yet to be determined) . . . 
+Horizontally across the screen, as opposed to vertically
+
+ - - - - - 
+
+Yes. That gives us a clear direction for the **Project Selection View**, while leaving the visual treatment open.
+
+### Step 4E — Project Selection View
+
+**Established direction:**
+
+* Projects are presented **horizontally across the screen**.
+* Each project gets a compact selectable representation.
+* The representation may eventually be a:
+
+  * button,
+  * box/card,
+  * folder-like object,
+  * or another visual treatment.
+* **Visual form is not yet decided.**
+* Each representation contains the **project name plus minimal identifying details**.
+* Selecting one opens that project's detailed workspace.
+* Multiple `current` projects can appear simultaneously.
+* The selection view does **not** attempt to display the full project record.
+
+Conceptually:
+
+```text
+                 CURRENT PROJECTS
+
+   ┌───────────────┐   ┌───────────────┐   ┌───────────────┐
+   │ Teacher       │   │ Kurt's        │   │ Command       │
+   │ Toolbox       │   │ English       │   │ Center        │
+   │               │   │               │   │               │
+   │ WP13 / Phase 4│   │ Website work  │   │ Phase 4       │
+   └───────────────┘   └───────────────┘   └───────────────┘
+
+              ← horizontally across the workspace →
+```
+
+The important thing is **"See first. Read second."** The user should be able to recognize the projects immediately without reading a vertical list.
+
+### One thing I'd add to the matrix
+
+**P4-R — Project Selection View:**
+
+> The selection view presents projects as horizontally arranged, compact selectable project representations containing the project name and minimal identifying information. The visual representation (button, box, folder, etc.) remains an open UI-design decision.
+
+That's enough for this step.
+
+**Next: Step 4F — define what appears in the detailed Project Workspace after you click one of those project representations.**
+
+ - - - - - 
+
+From me:
+Show me what you think
+
+- - - - - 
+
+Yes. I'd make the detailed workspace feel more like a **project cockpit** than a document.
+
+Something roughly like this:
+
+```text
+┌──────────────────────────────────────────────────────────────────────────────┐
+│  ← CURRENT PROJECTS                         TEACHER TOOLBOX                  │
+│                                                                              │
+│  CURRENT                                                                     │
+│  ┌────────────────────────────────────────────────────────────────────────┐  │
+│  │ FOCUS                                                                  │  │
+│  │ WP13 — Phase 4 Specification                                           │  │
+│  │                                                                        │  │
+│  │ MILESTONE                         PROGRESS                              │  │
+│  │ Requirements / Matrix              ███████░░░  70%                      │  │
+│  │                                                                        │  │
+│  │ NEXT ACTION                                                            │  │
+│  │ Finish Phase 4 requirements matrix                                     │  │
+│  │                                                                        │  │
+│  │ BLOCKERS                                                               │  │
+│  │ None                                                                   │  │
+│  │                                                                        │  │
+│  │ LAST UPDATED                                                           │  │
+│  │ Aug 17, 2026                                                           │  │
+│  └────────────────────────────────────────────────────────────────────────┘  │
+│                                                                              │
+│  ─────────────────────────────────────────────────────────────────────────  │
+│                                                                              │
+│  PROJECT CONTEXT                                                            │
+│                                                                              │
+│  AI TEAM                                                                    │
+│  ┌─────────────┐ ┌─────────────┐ ┌─────────────┐                           │
+│  │ Claude      │ │ Codex       │ │ GPT-5.6     │                           │
+│  │ Verification│ │ Implementer │ │ Architect   │                           │
+│  └─────────────┘ └─────────────┘ └─────────────┘                           │
+│                                                                              │
+│  NOTES                                                                       │
+│  Recent project notes / handoffs / important context                        │
+│                                                                              │
+│  FILES & DOCUMENTS                                                          │
+│  ┌──────────────────────┐  ┌──────────────────────┐                         │
+│  │ Phase 4 ACP.md       │  │ WP13 Phase 3.md      │                         │
+│  │                      │  │                      │                         │
+│  │   [View]             │  │   [View]             │                         │
+│  └──────────────────────┘  └──────────────────────┘                         │
+│                                                                              │
+│  [ 🔍 Search ▼ ]                                      [ Close Project ]      │
+└──────────────────────────────────────────────────────────────────────────────┘
+```
+
+But I'd actually make **one important change** to that mockup.
+
+### I wouldn't make everything equally prominent
+
+The top of the screen should answer the operational questions immediately:
+
+**What is this?**
+**What am I doing?**
+**Where am I?**
+**What's next?**
+**What's in the way?**
+
+Then the lower portion becomes the **context/reference area**.
+
+So something more like:
+
+```text
+┌──────────────────────────────────────────────────────────────┐
+│ ← Current Projects          TEACHER TOOLBOX                  │
+├──────────────────────────────────────────────────────────────┤
+│                                                              │
+│  WP13 — PHASE 4 SPECIFICATION                                │
+│                                                              │
+│  FOCUS                                                       │
+│  Complete the Phase 4 requirements and specification.        │
+│                                                              │
+│  MILESTONE                         PROGRESS                   │
+│  Requirements Matrix               ███████░░░                 │
+│                                                              │
+│  NEXT ACTION                                                  │
+│  Define the Project Workspace requirements.                  │
+│                                                              │
+│  BLOCKERS                                                     │
+│  None                                                         │
+│                                                              │
+├──────────────────────────────────────────────────────────────┤
+│  PROJECT CONTEXT                                             │
+│                                                              │
+│  AI TEAM        NOTES        DECISIONS        FILES           │
+│                                                              │
+│  Claude        ...          ...              ...              │
+│  GPT-5.6       ...          ...              ...              │
+│  Codex         ...          ...              ...              │
+│                                                              │
+├──────────────────────────────────────────────────────────────┤
+│  🔍 Search ▼                                [Close Project]   │
+└──────────────────────────────────────────────────────────────┘
+```
+
+### And this is where your "read-only" idea becomes powerful
+
+Click **Files** → see the files.
+
+Click a `.ts` file → **the actual code appears in the workspace**.
+
+You can:
+
+* read it;
+* scroll;
+* search;
+* highlight;
+* copy;
+* switch to another file.
+
+But you haven't entered an editor.
+
+And **Search ▼** gives:
+
+```text
+Search
+├── File
+└── Project
+```
+
+That feels very much like the Command Center we've been describing: **a visual operational HQ for understanding and navigating your projects**, rather than another IDE.
+
+I would use this as the **working concept for Step 4F**, not as a frozen UI specification. The exact arrangement, tabs, buttons, folders/cards, etc. can come later.
+
+- - - - - 
+
+From me: 
+It needs a reference to current tools used as well . . . 
+VS Code, GHD, Obsidian, etc.
+
+- - - - - 
+
+Absolutely. That should be part of the **Project Workspace**, and it's actually more important than I initially showed.
+
+The workspace should answer not only **"what is this project?"**, but also:
+
+> **"What environment do I use to work on this project?"**
+
+### Project Workspace — revised structure
+
+I'd add a prominent **Tools & Environment** section:
+
+```text
+┌──────────────────────────────────────────────────────────────┐
+│ ← Current Projects          TEACHER TOOLBOX                  │
+├──────────────────────────────────────────────────────────────┤
+│                                                              │
+│  WP13 — PHASE 4 SPECIFICATION                                │
+│                                                              │
+│  FOCUS                                                       │
+│  Complete the Phase 4 requirements and specification.        │
+│                                                              │
+│  MILESTONE                         PROGRESS                   │
+│  Requirements Matrix               ███████░░░                 │
+│                                                              │
+│  NEXT ACTION                                                  │
+│  Define Project Workspace requirements                       │
+│                                                              │
+│  BLOCKERS                                                     │
+│  None                                                         │
+│                                                              │
+├──────────────────────────────────────────────────────────────┤
+│                                                              │
+│  TOOLS & ENVIRONMENT                                         │
+│                                                              │
+│  VS Code          GitHub Desktop          Obsidian            │
+│  [Open]           [Open]                  [Open]              │
+│                                                              │
+│  AI TOOLS                                                     │
+│                                                              │
+│  GPT-5.6          Claude                  Codex               │
+│  Architect        Verification            Implementation      │
+│                                                              │
+├──────────────────────────────────────────────────────────────┤
+│                                                              │
+│  PROJECT CONTEXT                                             │
+│                                                              │
+│  Notes     Decisions     AI Context     Files & Documents     │
+│                                                              │
+├──────────────────────────────────────────────────────────────┤
+│  🔍 Search ▼                                [Close Project]   │
+└──────────────────────────────────────────────────────────────┘
+```
+
+And **Tools & Environment should be project-specific**.
+
+For example, Kurt's English might use:
+
+* VS Code
+* GitHub Desktop
+* Obsidian
+* Claude
+* GPT-5.6
+
+while another project might use a completely different combination.
+
+### One important distinction
+
+I'd separate **Tools** from **AI Roles**.
+
+**Tools & Environment**
+
+> What applications/services are used to work on this project?
+
+**AI Team**
+
+> Which AI is doing what *on this project*?
+
+That becomes especially useful with the workflow we've developed:
+
+> GPT-5.6 — architectural planning
+> Codex — implementation
+> Claude — independent verification
+
+And those roles can change from project to project.
+
+This also directly satisfies the **Project Re-entry Requirement** we established earlier: after six months away, you shouldn't have to remember *"What did I use to work on this?"*
+
+You open the project and the Command Center tells you.
+
+- - - - - 
+
+From me: 
+Current coding being utilized as well . . . 
+Example: kurt-engine-code is using python
+
+- - - - - 
+
+Yes — **that's another important piece of the Project Workspace**, and I'd separate it from the general tools.
+
+We really have **three different environment categories**:
+
+### Tools
+
+Applications used to work on the project:
+
+* VS Code
+* GitHub Desktop
+* Obsidian
+* etc.
+
+### AI Team
+
+Which AI is doing what:
+
+* GPT-5.6 — architecture
+* Claude — verification
+* Codex — implementation
+* etc.
+
+### Technical Stack
+
+What the project is actually **built with**:
+
+* **Language:** Python
+* **Framework:** whatever applies
+* **Runtime:** whatever applies
+* **Database:** if applicable
+* **Build system:** if applicable
+* **Other major technologies:** as applicable
+
+So for `kurt-engine-core`, for example, the workspace might show:
+
+```text
+TECHNICAL STACK
+
+Language
+Python
+
+Framework
+[if applicable]
+
+Runtime
+[if applicable]
+
+Repository
+github.com/22cryys56p-beep/kurt-engine-core
+```
+
+That's valuable for **project re-entry**. Six months from now, you shouldn't have to remember:
+
+> "Wait... was Kurt Engine Python or TypeScript?"
+
+### One refinement
+
+I wouldn't call this **"Current Coding"** in the actual specification.
+
+I'd call it **Technical Stack** or **Technology**.
+
+"Current coding" could be confused with the code currently being worked on, whereas **Technical Stack** clearly means *what the project is built with*.
+
+So our Project Workspace now has four useful context areas:
+
+**Operational**
+
+* Focus
+* Milestone
+* Progress
+* Next action
+* Blockers
+
+**Tools & Environment**
+
+* VS Code
+* GitHub Desktop
+* Obsidian
+* etc.
+
+**AI Team**
+
+* AI assignments/roles
+
+**Technical Stack**
+
+* Python
+* TypeScript
+* Svelte
+* etc.
+
+That is a much better re-entry picture.
+
+- - - - - 
+
+From me: 
+"Current Coding" was the only word I could come up with off top of my head  . . . 
+I had no idea what the actual technical term was
+
+- - - - - 
+
+Exactly — and that's why **"Current Coding" was perfectly understandable**. You were describing the concept, not trying to use the industry terminology.
+
+The term I'd use here is **Technical Stack** (or simply **Tech Stack**).
+
+It means the collection of technologies a project is built with and/or depends on — for example:
+
+* Python
+* TypeScript
+* Svelte
+* Node.js
+* SQLite
+* etc.
+
+There can also be a more specific **Technology / Language** field when we only care about the primary programming language.
+
+So your instinct was right; you just didn't have the label yet. That's exactly the sort of terminology **I'm supposed to supply while we're designing this**, rather than expecting you to already know it.
+
+- - - - - 
+
+From me: 
+Might also have final target in there as well . . . 
+web app, stand alone app, mobile app, etc.
+
+- - - - - 
+
+Yes. **Definitely.** And I think that belongs alongside the Tech Stack because it answers a different re-entry question:
+
+> **"What are we actually building this to become?"**
+
+For example:
+
+### Project Technical / Product Profile
+
+**Target**
+
+* Web app
+* Standalone Mac app
+* Mobile app
+* CLI/tool
+* Library/package
+* Website
+* etc.
+
+**Technical Stack**
+
+* Primary language: Python
+* Framework: ...
+* Runtime: ...
+* Database: ...
+
+**Tools & Environment**
+
+* VS Code
+* GitHub Desktop
+* Obsidian
+* ...
+
+**AI Team**
+
+* GPT-5.6 — Architecture
+* Codex — Implementation
+* Claude — Verification
+
+That gives us a very useful distinction:
+
+> **Target = what we're building**
+> **Tech Stack = what it's built with**
+> **Tools = what we use to build it**
+> **AI Team = who/what is helping us build it**
+
+I would make **Target** an explicit Project Workspace field.
+
+And I'd probably call it **Product Target** rather than simply "Target," because "target" could otherwise mean a milestone or goal.
+
+This is turning into a particularly good re-entry panel: someone opens a project after six months and can understand the project's **purpose, destination, technology, tools, and AI roles** before touching any code.
+
+- - - - - 
+
+From me: 
+Again, I'm just tossing out terms off the top of my head
+
+- - - - - 
+
+Right — and that's exactly how I want you to approach this.
+
+**You describe what you want the Command Center to know or show. I translate that into the proper terminology and architectural requirement.**
+
+You don't need to know whether something is called a *tech stack*, *product target*, *runtime*, *environment*, *metadata*, or something else. That's my job at this stage.
+
+So when you say:
+
+> "Might also have final target in there — web app, standalone app, mobile app..."
+
+I'm hearing the underlying requirement:
+
+> **The project record should identify the intended end product/platform.**
+
+Then I give that concept an appropriate name and put it into the matrix.
+
+Same with "Current Coding" → **Technical Stack**.
+
+**Keep tossing out the ideas exactly the way they occur to you.** That's actually a better way to discover the requirements than trying to speak in technical terminology from the beginning.
+
+- - - - - 
+
+From me: 
+For example - Regarding "kurt-engine-core" . . . 
+Designed to easily edit my homepage . . . 
+Initially building it as a web app - Because that's easier to start . . . 
+Eventually to become an actual app
+
+- - - - - 
+
+Exactly. And that example exposes an important distinction we should capture.
+
+For `kurt-engine-core`, we really have **intent + current implementation target + eventual target**:
+
+```text
+PROJECT PURPOSE
+Designed to make editing Kurt's homepage easy.
+
+CURRENT TARGET
+Web app
+
+EVENTUAL TARGET
+Standalone application
+
+REASON FOR CURRENT TARGET
+A web app is easier to build and validate initially.
+```
+
+That's more useful than simply having a field called "Target."
+
+It tells Future Kurt **why the project looks the way it does today** and prevents a later re-entry from producing the obvious question:
+
+> "Why the hell did I build this as a web app if I ultimately wanted an app?" 😄
+
+### I'd therefore capture this as a project concept
+
+**Product Direction**
+
+* **Purpose** — what the project is intended to accomplish.
+* **Current form** — what we're building/testing now.
+* **Eventual form** — where we ultimately want it to go.
+* **Transition rationale** — why the current form was chosen.
+
+And importantly, these should **not necessarily be permanent/frozen fields**. A possible project can evolve considerably before becoming a planned or current project.
+
+That's exactly the sort of context the Command Center is supposed to preserve.
+
+- - - - - 
+
+From me: 
+Same goes for CC . . . 
+Built on Obsidian, but ready to be seamlessly ported to another platform
+
+- - - - - 
+
+Yes — and that gives us another important distinction for **Command Center itself**.
+
+CC has a **current host platform** and a **portability requirement**:
+
+* **Current platform:** Obsidian
+* **Underlying format:** Markdown/files, Git, etc.
+* **Portability goal:** should be transferable to another platform without redesigning the entire system
+* **Reason:** Obsidian is the current operational host, **not the architectural dependency**
+
+That reinforces a principle we've already established:
+
+> **The platform hosts the Command Center; it does not define the Command Center.**
+
+And that same idea can apply to projects generally.
+
+For `kurt-engine-core`:
+
+> **Current form:** Web app
+> **Eventual form:** Standalone app
+
+For Command Center:
+
+> **Current host:** Obsidian
+> **Future hosts:** Open
+> **Portability:** Required
+
+So I'd add **Platform / Portability** to the project-context requirements, rather than treating "Target" as one simple field.
+
+This is another case where your off-the-cuff description is actually uncovering a requirement we might otherwise have missed.
+
+- - - - - 
+
+From me:
+Also, going off on one of the reasons CC is being created in the first place . . . 
+iCanSpell > TeacherToolbox Project later led to questions such as setting up accounts, how people pay for premium access, marketing, etc., etc. . . . 
+
+CC is there to keep track of all of those tentacles related to a single project
+
+ - - - - - 
+
+Yes. **That's a major part of what Command Center is actually for.**
+
+The `iCanSpell → TeacherToolbox` example makes it very clear that a project isn't just a codebase.
+
+A project can grow **tentacles**:
+
+```text
+                         Teacher Toolbox
+                               │
+          ┌────────────┬───────┼────────┬─────────────┐
+          │            │       │        │             │
+        Code        Accounts  Money   Marketing     Content
+          │            │       │        │             │
+       GitHub       hosting   pricing   website      worksheets
+       VS Code      logins    payments  promotion    curriculum
+          │                    │
+       testing              premium access
+```
+
+And those tentacles can involve completely different tools, people, AIs, documents, decisions, and timelines.
+
+### That's actually the deeper purpose of CC
+
+The Command Center isn't merely:
+
+> **"Where are my projects?"**
+
+It's:
+
+> **"Where is the whole project?"**
+
+Including everything that has grown around it.
+
+For a project like Teacher Toolbox, CC should eventually let you see:
+
+* **What the project is**
+* **What we're building**
+* **Why we're building it**
+* **Where the code lives**
+* **What technology it uses**
+* **What tools we're using**
+* **Which AIs are involved and their roles**
+* **Accounts/services that are required**
+* **Business/payment considerations**
+* **Marketing**
+* **Web presence**
+* **Content/curriculum**
+* **Important documents**
+* **Decisions**
+* **Open questions**
+* **Problems/flags**
+* **Dependencies**
+* **What needs to happen next**
+
+And importantly, **CC doesn't need to become the tool that performs all those activities.**
+
+It can simply keep the **map and operational context** of the whole ecosystem.
+
+That's why your earlier idea of CC being primarily read-only makes even more sense. CC is the **control room**, while the actual work may happen in VS Code, GitHub, Stripe, a hosting service, Obsidian, an AI, etc.
+
+### I'd give this concept a name
+
+For the planning matrix, I'd call it:
+
+**Project Ecosystem / Project Context**
+
+Rather than trying to cram all of this into `ProjectRecord`.
+
+And I'd capture the architectural requirement roughly as:
+
+> **A project workspace must be capable of representing the broader ecosystem of a project, including technical, operational, business, administrative, content, marketing, service, and other related workstreams. The Command Center provides visibility and navigation across these concerns without becoming the execution environment for each one.**
+
+That's a **much bigger and more accurate definition of Command Center** than simply "project management."
+
+And I think this is something we should capture **before we continue Step 4F**, because it changes what we mean by a "Project Workspace."
+
+- - - - - 
+
+From me: 
+It's also another reason why "Current" isn't a single project . . . 
+And "Completed" might be better suited as "On Going"
+
+ - - - - -
+
+Yes. That follows directly from the ecosystem model.
+
+A **project's status in CC describes its operational relationship to you**, not whether there is literally one project occupying that status.
+
+So:
+
+* **Current** can contain multiple active projects.
+* Each project can have multiple workstreams/tentacles.
+* One project can be active while another is also active.
+* A project can become inactive without being "finished."
+* Some projects may remain relevant indefinitely.
+
+And I agree that **"Completed" is probably the wrong category for CC**.
+
+### "Ongoing" is better
+
+"Completed" implies:
+
+> Nothing more needs to happen.
+
+But that's often not true. Teacher Toolbox might eventually reach a working release, yet still have:
+
+* marketing,
+* premium accounts,
+* payment systems,
+* maintenance,
+* new tools,
+* new curriculum,
+* website work,
+* etc.
+
+Calling that project **Completed** would hide the fact that its ecosystem remains alive.
+
+**Ongoing** better communicates:
+
+> This project continues to exist and may have active or future work, even if it isn't one of my immediate priorities.
+
+That also gives us room for projects that are temporarily dormant.
+
+So I'm now thinking the high-level CC project categories should probably evolve toward something like:
+
+**Possible** → ideas and exploratory projects
+**Planned** → projects we've decided to pursue but haven't actively started
+**Current** → projects we're actively working on now
+**Ongoing** → established projects that remain alive but aren't necessarily current priorities
+**Archived** → projects intentionally retired or preserved for historical reference
+
+Notice that this also gives **Completed** a natural place to disappear. A project can have completed milestones without the *project itself* being completed.
+
+I would **not freeze those five categories yet**. This is exactly the kind of architectural requirement discovery we're supposed to do during the matrix phase.
+
+The next thing I'd capture is the distinction between **project status** and **project activity/workstream status**, because your "tentacles" observation makes that distinction important.
+
+- - - - - 
+
+From me: 
+Note: I like "Ongoing" and "Archived" much better than "Completed" 
+
+- - - - - 
+
+Noted. I agree with the distinction.
+
+For the **Phase 4 working model**, I'll treat:
+
+* **Possible**
+* **Planned**
+* **Current**
+* **Ongoing**
+* **Archived**
+
+as the preferred status vocabulary, with **Completed removed as a project-status concept**.
+
+And importantly, this is **not yet a frozen architectural decision**. We're still consolidating the requirements matrix, so if the later project/workstream model reveals a better distinction, we can revise it before the Phase 4 ACP is frozen.
+
+The key semantic distinction is now:
+
+> **Completed describes a piece of work. Ongoing describes the life of a project. Archived describes a project that has intentionally been retired from active use.**
+
+That feels much more compatible with the Command Center you're actually describing.
+
+- - - - - 
+
+Now we should **capture and consolidate the new requirements we've uncovered before moving into more UI detail**.
+
+We've crossed an important threshold: we're no longer just defining four project statuses. We're defining **what a "project" actually means inside Command Center**.
+
+### Step 4G — Consolidate the Project Workspace model
+
+I think the next planning task is to define the **information architecture of a project workspace**, without deciding the final visual design.
+
+Based on everything you've described, the workspace needs to be able to represent several dimensions:
+
+| Area                    | What it answers                                                 |
+| ----------------------- | --------------------------------------------------------------- |
+| **Identity**            | What project is this?                                           |
+| **Purpose**             | Why does it exist?                                              |
+| **Product Direction**   | What are we building now, and where is it ultimately headed?    |
+| **Status**              | Possible / Planned / Current / Ongoing / Archived               |
+| **Operational State**   | Milestone, progress, next action, blockers                      |
+| **Technical Stack**     | Python, TypeScript, Svelte, etc.                                |
+| **Tools & Environment** | VS Code, GitHub Desktop, Obsidian, etc.                         |
+| **AI Team**             | Which AI is doing what?                                         |
+| **Project Ecosystem**   | Accounts, services, payments, marketing, content, hosting, etc. |
+| **Files & Documents**   | Project documentation and reference material                    |
+| **Search**              | File or project-wide keyword search                             |
+| **Repository**          | Where the engineering work actually lives                       |
+| **History / Decisions** | Why important things were done                                  |
+| **Portability**         | Current platform vs intended platform independence              |
+
+And I'd make one architectural observation here:
+
+**Not all of those belong in `ProjectRecord`.**
+
+`ProjectRecord` should remain the **small, canonical index** we already defined in Phase 3.
+
+The Project Workspace can be much richer and evolve over time.
+
+That gives us a clean hierarchy:
+
+```text
+ProjectRecord
+     │
+     ▼
+Project Workspace
+     │
+     ├── Operational context
+     ├── Technical context
+     ├── AI context
+     ├── Ecosystem
+     ├── Documents
+     ├── Decisions/history
+     └── Links to external tools
+```
+
+That's the next thing I'd build into the matrix.
+
+**Step 4G's goal:** establish which categories of information Command Center must be capable of representing, while deliberately leaving the exact files, folders, UI controls, and implementation for later.
+
+That keeps us firmly in **planning/matrix mode**, where you wanted us to stay until the specification is finished.
+
+- - - - - 
+
+## Step 4G — Project Workspace information architecture
+
+Let's turn that into the matrix.
+
+The key rule is:
+
+> **The Project Workspace is the rich operational representation of a project; the ProjectRecord remains the canonical index.**
+
+### 4G requirements
+
+| ID     | Requirement                                                                                                                                                       | Status                            |
+| ------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------- |
+| P4-R51 | Every project must have a discoverable Project Workspace.                                                                                                         | Established direction             |
+| P4-R52 | The workspace must support project identity and purpose.                                                                                                          | Established                       |
+| P4-R53 | The workspace must represent the project's current and eventual product direction where applicable.                                                               | Established direction             |
+| P4-R54 | The workspace must represent project status: Possible, Planned, Current, Ongoing, or Archived.                                                                    | **Working decision**              |
+| P4-R55 | The workspace must represent operational state: milestone, progress, next action, and current blockers where applicable.                                          | Established from Phase 3          |
+| P4-R56 | The workspace must identify the project's technical stack.                                                                                                        | Established direction             |
+| P4-R57 | The workspace must identify the tools and working environment used by the project.                                                                                | Established direction             |
+| P4-R58 | The workspace must identify participating AI systems and their project-specific roles.                                                                            | Established direction             |
+| P4-R59 | The workspace must be capable of representing related project workstreams/ecosystem areas such as accounts, services, payments, marketing, hosting, content, etc. | **Newly established requirement** |
+| P4-R60 | The workspace must provide access to relevant project files and documents through a read-only viewer.                                                             | Established direction             |
+| P4-R61 | The file viewer must support text selection and copying.                                                                                                          | Established direction             |
+| P4-R62 | The file viewer must support keyword search within the displayed file.                                                                                            | Established direction             |
+| P4-R63 | Search must be presented through one Search control with File and Project scope options.                                                                          | Working UI direction              |
+| P4-R64 | Project-wide search should search relevant files within the project workspace/ecosystem.                                                                          | Established direction             |
+| P4-R65 | The workspace must provide access to the project's repository/reference.                                                                                          | Established                       |
+| P4-R66 | The workspace must preserve important project history, decisions, notes, and AI context.                                                                          | Established direction             |
+| P4-R67 | The workspace must support platform/portability information where relevant.                                                                                       | Established direction             |
+| P4-R68 | Rich workspace information must not require expansion of the canonical ProjectRecord for every new category.                                                      | **Architectural constraint**      |
+| P4-R69 | Command Center should provide visibility/navigation into external tools rather than becoming the execution environment for those tools.                           | **Established**                   |
+
+### One particularly important consequence
+
+The **Project Ecosystem** requirement is broader than ordinary project-management software.
+
+For Teacher Toolbox, for example, the workspace might eventually contain:
+
+```text id="5w5f7p"
+Teacher Toolbox
+│
+├── Product
+│   ├── iCanSpell
+│   ├── iCanMath
+│   └── iCanCreate
+│
+├── Engineering
+│   ├── Repository
+│   ├── Tech Stack
+│   └── Development Tools
+│
+├── Business
+│   ├── Accounts
+│   ├── Premium Access
+│   ├── Payments
+│   └── Pricing
+│
+├── Marketing
+│   ├── Website
+│   └── Promotion
+│
+├── Content
+│   └── Curriculum
+│
+└── AI Team
+    ├── Architecture
+    ├── Implementation
+    └── Verification
+```
+
+**That is not something I think we should hard-code into Phase 4.**
+
+The requirement is that CC can **represent and navigate this kind of ecosystem**. The exact structure should remain flexible.
+
+### What remains open
+
+We now have a few things deliberately **not frozen**:
+
+* exact visual layout;
+* whether ecosystem areas become folders, cards, tabs, etc.;
+* exact Project Workspace file structure;
+* exact ProjectRecord ↔ Workspace relationship;
+* whether all project types use the same workspace structure;
+* exact semantics of **Possible / Planned / Current / Ongoing / Archived**;
+* how Project-wide Search determines which files belong to a project.
+
+That's healthy. We're extracting requirements without prematurely designing the implementation.
+
+**Next step: Step 4H — define the relationship between the Project Workspace and the existing Command Center folder structure.**
+
+- - - - - 
+
+## Step 4H — Project Workspace ↔ Command Center structure
+
+Now we need to answer a structural question:
+
+> **Where does all of this project information actually live inside Command Center?**
+
+We already have the broad vault structure:
+
+```text
+Command_Center/
+├── 00_Dashboard/
+├── 01_Active_Projects/
+├── 02_Future_Projects/
+├── 03_Completed_Projects/
+├── 04_Knowledge_Base/
+├── 05_Shared_Resources/
+├── 06_Decisions/
+├── 07_Templates/
+├── 08_AI_Context/
+└── 99_Archive/
+```
+
+But our thinking has evolved since that structure was created.
+
+### The important change
+
+A project is no longer just a folder containing a few notes.
+
+It's a **workspace** containing the project's operational context and links to its ecosystem.
+
+So I think the matrix should establish:
+
+> **Each project has a distinct Command Center workspace that serves as the project's operational/contextual hub.**
+
+The workspace does **not** have to contain everything belonging to the project physically.
+
+For example:
+
+```text
+Teacher_Toolbox/
+│
+├── Project.md
+├── Notes/
+├── Decisions/
+├── AI_Context/
+├── Documents/
+└── Links/
+```
+
+while the actual engineering repository remains somewhere else:
+
+```text
+Projects/
+└── toolbox/
+    └── [Git repository]
+```
+
+Command Center connects the two.
+
+### This gives us a useful separation
+
+**Command Center owns:**
+
+* project context;
+* operational information;
+* notes;
+* AI assignments/context;
+* decisions;
+* links;
+* project-specific documentation;
+* navigation/indexing information.
+
+**External systems own:**
+
+* source code → Git repository;
+* actual code editing → VS Code/Codex/etc.;
+* Git operations → GitHub Desktop/Git;
+* external service accounts → those services;
+* other specialized artifacts → their appropriate systems.
+
+Command Center **references and exposes** these things without trying to absorb them.
+
+---
+
+### Matrix additions
+
+| ID     | Requirement                                                                                                             | Status                              |
+| ------ | ----------------------------------------------------------------------------------------------------------------------- | ----------------------------------- |
+| P4-R70 | Each project has a distinct Command Center workspace.                                                                   | Established direction               |
+| P4-R71 | The workspace serves as the project's operational/contextual hub.                                                       | Established direction               |
+| P4-R72 | Project workspace information may be distributed across multiple supporting documents rather than forced into one file. | Proposed                            |
+| P4-R73 | Command Center may link/reference externally owned project resources rather than duplicating them.                      | Established                         |
+| P4-R74 | Source repositories remain authoritative for source code.                                                               | Established architectural principle |
+| P4-R75 | Command Center does not become the project's code editor or Git-management system.                                      | Established                         |
+| P4-R76 | The workspace must provide enough context for project re-entry after an extended absence.                               | **Frozen project principle**        |
+| P4-R77 | Workspace organization should be flexible enough to accommodate different project ecosystems.                           | Established direction               |
+
+### One thing I would change from our old folder model
+
+I **wouldn't rename `03_Completed_Projects` yet**.
+
+We've just decided that **Ongoing** and **Archived** are better concepts than Completed, but the vault structure itself shouldn't be changed until we finish the matrix.
+
+We may discover that the best structure is actually:
+
+```text
+01_Projects/
+   ├── Current/
+   ├── Ongoing/
+   ├── Possible/
+   ├── Planned/
+   └── Archived/
+```
+
+—or something completely different.
+
+**Don't reorganize the actual vault yet.**
+
+We're still defining the architecture.
+
+---
+
+### The next question
+
+Step 4H establishes **where the project workspace concept belongs**.
+
+The next useful step is **Step 4I — Project Re-entry**.
+
+We've talked about it repeatedly, but now that we know what a Project Workspace contains, we can turn the original idea—
+
+> *"Where was I, how was I doing this, and what do I do next?"*
+
+—into concrete Phase 4 requirements.
+
+That will help us decide **which information deserves prominence when you first open a project**, rather than merely being available somewhere in its workspace.
+
+- - - - - 
+
+## Step 4I — Project Re-entry
+
+This is where the pieces we've been defining come together.
+
+The **Project Re-entry Requirement** was one of the original reasons for creating Command Center:
+
+> **After an extended absence, the workspace must tell Kurt where he was, how he was working, and what to do next.**
+
+I think we can now make that much more concrete.
+
+### When opening a project, CC should answer five questions
+
+**1. What is this project?**
+
+* Project name
+* Purpose
+* Product direction
+* Current / eventual form
+
+**2. Where is it now?**
+
+* Status
+* Current milestone
+* Progress
+* Current workstreams
+
+**3. What was I doing?**
+
+* Recent activity
+* Recent notes
+* Recent decisions
+* Last significant change
+
+**4. How was I doing it?**
+
+* Technical stack
+* Tools & environment
+* AI team and current roles
+* Repository/reference
+* Important external services
+
+**5. What do I do next?**
+
+* Next action
+* Active blockers
+* Outstanding questions
+* Important pending decisions
+
+### This suggests a hierarchy
+
+Not everything in the workspace deserves equal visual weight.
+
+When you open a project, the **top/primary area** should probably be:
+
+```text id="c4pphv"
+PROJECT NAME
+Purpose / direction
+
+WHERE WE ARE
+Milestone · Progress · Status
+
+WHAT I WAS DOING
+Recent activity / context
+
+WHAT'S NEXT
+Next action · Blockers · Open questions
+```
+
+Then below that:
+
+```text id="2h0g0g"
+HOW WE WORK
+Tools · AI Team · Technical Stack · Platform
+
+PROJECT ECOSYSTEM
+Business · Accounts · Marketing · Content · Services
+
+REFERENCE
+Files · Documents · Decisions · History
+```
+
+That preserves the **"See first. Read second."** philosophy.
+
+### Matrix additions
+
+| ID     | Requirement                                                                                                       | Status                             |
+| ------ | ----------------------------------------------------------------------------------------------------------------- | ---------------------------------- |
+| P4-R78 | Opening a project workspace must provide sufficient context for re-entry after an extended absence.               | **Established / frozen principle** |
+| P4-R79 | The workspace must make project purpose and product direction readily identifiable.                               | Established direction              |
+| P4-R80 | Current operational state must be readily identifiable.                                                           | Established                        |
+| P4-R81 | Recent activity/context must be accessible without reconstructing the project history manually.                   | Established direction              |
+| P4-R82 | Current working environment and AI roles must be readily discoverable.                                            | Established direction              |
+| P4-R83 | The next action and current blockers/open questions must be readily discoverable.                                 | Established                        |
+| P4-R84 | High-value re-entry information should receive greater visual prominence than reference material.                 | **Working UI principle**           |
+| P4-R85 | Detailed historical/contextual information must remain accessible without overwhelming the primary re-entry view. | Established direction              |
+
+### One subtle but important point
+
+**"Recent activity" does not necessarily mean an automatically generated activity log.**
+
+We shouldn't create another system just because we can.
+
+It could initially be something as simple as:
+
+> **Last significant activity:**
+> Phase 3 flags resolved; Phase 4 requirements matrix underway.
+
+That is much more useful than showing:
+
+> 14:32 — file modified
+> 14:37 — Git commit
+> 14:41 — Obsidian opened
+
+The goal is **human re-entry**, not surveillance of the computer.
+
+---
+
+I think Step 4I gives us a strong foundation.
+
+**Next is Step 4J — determine what information is canonical versus contextual.**
+
+That matters because we're accumulating a lot of information now, and we need to prevent Command Center from eventually having **five different places claiming to be the source of truth for the same fact.**
+
+- - - - - 
+
+## Step 4J — Canonical vs. Contextual Information
+
+This is an important architectural boundary, because Command Center is going to accumulate a **lot** of information about each project.
+
+We don't want:
+
+> `Project.md` says one thing
+> `AI_Context.md` says another
+> Dashboard says something else
+> GitHub says something else
+
+So the rule should be:
+
+> **Every important fact has one authoritative home. Command Center may display or reference it elsewhere, but should not create competing copies of the fact.**
+
+### Three categories
+
+#### 1. Canonical project data
+
+This is the small set of structured facts that define the project's current identity/state.
+
+Examples:
+
+* `project_id`
+* name
+* status
+* focus
+* milestone
+* progress
+* next action
+* blockers
+* last updated
+* repository reference
+
+This belongs to the **ProjectRecord**.
+
+---
+
+#### 2. Command Center contextual information
+
+This is information that helps you understand and operate the project but doesn't belong in the minimal ProjectRecord.
+
+Examples:
+
+* project purpose/background;
+* product direction;
+* technical stack;
+* tools/environment;
+* AI team and roles;
+* ecosystem/workstreams;
+* important notes;
+* handoffs;
+* historical context;
+* decisions.
+
+This belongs in the **Project Workspace**.
+
+---
+
+#### 3. Externally authoritative information
+
+Some facts belong to other systems.
+
+Examples:
+
+| Information                    | Authority                 |
+| ------------------------------ | ------------------------- |
+| Source code                    | Git repository            |
+| Git history                    | Git                       |
+| Actual Obsidian vault contents | Obsidian/files            |
+| Payment/account state          | Relevant external service |
+| Website's deployed state       | Hosting/deployment system |
+| AI conversation history        | AI platform/conversation  |
+
+Command Center can **link to, summarize, or expose** those things, but shouldn't pretend its copy is the authoritative source.
+
+### Why this matters for our read-only model
+
+Suppose CC displays:
+
+> **Repository:** `kurt-engine-core`
+
+That doesn't mean CC owns the repository.
+
+It means:
+
+> "Here's where the authoritative engineering resource lives."
+
+Likewise, if CC displays:
+
+> **Python**
+
+that's a project-context fact maintained by CC.
+
+If the repository later changes from Python to TypeScript, **that becomes something we deliberately update in the project context** rather than expecting CC to magically become the source of truth for the repository's technology.
+
+---
+
+### Matrix additions
+
+| ID     | Requirement                                                                                                          | Status                        |
+| ------ | -------------------------------------------------------------------------------------------------------------------- | ----------------------------- |
+| P4-R86 | Each important project fact should have a single authoritative source.                                               | **Architectural principle**   |
+| P4-R87 | The ProjectRecord is authoritative for canonical structured project state.                                           | Established                   |
+| P4-R88 | The Project Workspace is authoritative for Command Center-owned project context.                                     | Established direction         |
+| P4-R89 | External systems remain authoritative for resources they own, such as repositories and service/account state.        | Established                   |
+| P4-R90 | Dashboard and other views must display/reference authoritative information rather than maintaining competing copies. | **Architectural constraint**  |
+| P4-R91 | Command Center must distinguish between information it owns and information it merely references.                    | **Architectural requirement** |
+
+### One terminology distinction
+
+We're now using **"authoritative"** rather than just "source of truth."
+
+That's intentional.
+
+A **source of truth** can sound like a general concept.
+
+An **authoritative source** answers the operational question:
+
+> *If two places disagree, which one wins?*
+
+That's exactly what we need to define.
+
+---
+
+I think we're getting close to the point where we can **consolidate the entire Phase 4 matrix and see what's actually left unresolved** rather than continuing to add requirements indefinitely.
+
+**Next step: Step 4K — matrix consolidation and gap analysis.**
+
+ - - - - - 
+
+## Step 4K — Matrix Consolidation & Gap Analysis
+
+This is the point where we **stop adding concepts for a moment and inspect what we've built**.
+
+The goal isn't to freeze anything yet. It's to determine:
+
+1. What is now **established**?
+2. What is **working direction**?
+3. What remains an **open architectural decision**?
+4. Are there any **requirements we haven't accounted for**?
+5. Which requirements belong to **Phase 4**, and which should explicitly be deferred?
+
+### The major model we've established
+
+```text
+                         COMMAND CENTER
+                               │
+              ┌────────────────┴────────────────┐
+              │                                 │
+       PROJECT INDEX                    PROJECT WORKSPACE
+       (ProjectRecord)                  (rich context)
+              │                                 │
+      identity / status                 purpose / direction
+      focus / milestone                 technical stack
+      progress / next action            tools / environment
+      blockers / repository             AI team
+              │                          ecosystem / workstreams
+              │                          notes / decisions
+              │                          history / documents
+              │                                 │
+              └──────────────┬──────────────────┘
+                             │
+                    EXTERNAL RESOURCES
+                             │
+              GitHub / VS Code / Obsidian /
+              hosting / payment services /
+              other project systems
+```
+
+And the **Current** model is now:
+
+```text
+Current
+   │
+   ├── Teacher Toolbox
+   ├── Kurt's English
+   └── Command Center
+          │
+          ▼
+     Select one
+          │
+          ▼
+   Project Workspace
+          │
+          ▼
+       Close
+          │
+          ▼
+     Current selection
+```
+
+That is a substantially different—and much more useful—model than treating Current as a single project.
+
+### Status vocabulary
+
+Our working vocabulary is now:
+
+**Possible → Planned → Current → Ongoing → Archived**
+
+with the important understanding that:
+
+* `Current` can contain multiple projects.
+* `Ongoing` means the project remains alive but isn't necessarily a current priority.
+* `Archived` means intentionally retired/preserved.
+* **Completed is not a project status.** Individual work can be completed without the project itself being completed.
+
+### Read-only operating model
+
+For now, CC is primarily an **inspection/navigation hub**.
+
+It can:
+
+* display project information;
+* display project documents and source code;
+* search within a file;
+* search across a project;
+* select/highlight text;
+* copy text;
+* provide links/references to external tools.
+
+It does **not** edit code or manipulate project files.
+
+And the Search control is:
+
+```text
+🔍 Search ▼
+   ├── File
+   └── Project
+```
+
+### What I see as the remaining gaps
+
+There are several areas we **should not start designing yet**, because they need architectural decisions first:
+
+**A. Project status semantics**
+We have a strong working model, but the exact transition rules between Possible → Planned → Current → Ongoing → Archived still need to be formalized.
+
+**B. Project Workspace structure**
+We know what information it needs to represent, but not yet the final document/folder structure.
+
+**C. Project ecosystem model**
+We know CC needs to track the "tentacles" of a project, but we haven't determined whether those should be arbitrary linked workstreams, typed categories, nested projects, etc.
+
+**D. ProjectRecord ↔ Workspace relationship**
+We know the ProjectRecord must remain small, but we still need to define exactly how it locates and connects to the richer workspace.
+
+**E. Re-entry data maintenance**
+We know what information should be available when you return after six months. We haven't yet decided which pieces are manually maintained, generated, or derived.
+
+**F. External resource references**
+We know external systems remain authoritative, but the exact reference model—repository, tools, services, URLs, accounts, etc.—still needs definition.
+
+**G. UI**
+We have some strong directional decisions—especially horizontal project selection—but **we should not design the final UI yet**.
+
+### And one important scope boundary
+
+I think we should explicitly mark **implementation mechanics as deferred**.
+
+That includes:
+
+* how the viewer reads `.ts` files;
+* how project-wide search is implemented;
+* how external applications are launched;
+* how links are stored;
+* how workspace documents are indexed;
+* how the eventual portable/non-Obsidian implementation works.
+
+Those are **Phase 4 implementation/specification questions**, not things we need to solve while discovering the architecture.
+
+---
+
+### My assessment
+
+We're at a good point.
+
+The matrix is no longer just a list of features. It now expresses a coherent architecture:
+
+> **Command Center is a project-oriented operational/contextual hub that indexes projects, provides re-entry context, exposes their broader ecosystems, and references externally authoritative resources without becoming the execution environment for those resources.**
+
+That's the architectural idea I would want to preserve when we eventually hand the specification to Codex.
+
+**Next step should be a deliberate gap pass—not another free-form feature brainstorm.** We go through the matrix category by category and ask: **"Is this established, open, or deliberately deferred?"**
+
+That will tell us whether we're actually ready to draft the Phase 4 specification.
+
+- - - - - 
+
+## Step 4L — Gap Pass, Category 1: Project Status
+
+We'll do this **one category at a time** rather than trying to review the entire matrix in one shot.
+
+### Category 1 — Project Status
+
+Our current model:
+
+| Status       | Meaning                                                      | Multiple allowed? |
+| ------------ | ------------------------------------------------------------ | ----------------: |
+| **Possible** | Idea/exploration; may accumulate notes and research          |               Yes |
+| **Planned**  | Intentionally selected for future work                       |               Yes |
+| **Current**  | Actively being worked on now                                 |           **Yes** |
+| **Ongoing**  | Still an active/living project, but not currently a priority |               Yes |
+| **Archived** | Intentionally retired/preserved for reference                |               Yes |
+
+### What is established
+
+**1. Current is a collection, not a singleton.**
+This is now clear from the way you actually work.
+
+**2. Selecting a Current project does not change its status.**
+It changes only the **selected/viewing project**.
+
+**3. Completed is not a project status.**
+A project can have completed work while remaining Current or Ongoing.
+
+**4. Ongoing is preferred over Completed.**
+
+**5. Archived is preferred for projects that are intentionally retired but whose information remains valuable.**
+
+### What is still open
+
+The only significant unresolved issue in this category is **transition semantics**.
+
+For example:
+
+```text
+Possible
+   ↓
+Planned
+   ↓
+Current
+   ↓
+Ongoing
+   ↓
+Archived
+```
+
+But we haven't decided whether those transitions are strictly sequential.
+
+A project might reasonably go:
+
+```text
+Possible → Planned → Current
+```
+
+or:
+
+```text
+Possible → Planned → Archived
+```
+
+or:
+
+```text
+Current → Ongoing → Current
+```
+
+That last one is particularly important. A project could become Ongoing because you temporarily shift attention elsewhere, then become Current again later.
+
+I **think that should be allowed**, but I would not freeze it without your approval.
+
+### Category 1 verdict
+
+**Status vocabulary:** established working decision
+**Multiple projects per status:** established
+**Current selection model:** established
+**Completed removal:** established direction
+**Transition rules:** **OPEN**
+
+That's the only gap I see here.
+
+**Next category will be Project Identity & Purpose.**
+
+- - - - - 
+
+From me: 
+A point brought up much earlier in the process - How projects are "categorized" . . . 
+I would be the sole arbiter as to what the "status" is at all times . . . 
+
+- - - - - 
+
+Yes. That resolves an important part of Category 1, and it also brings back an earlier requirement we shouldn't lose.
+
+### Category 1 — Project Status: revised
+
+**Status is human-governed.**
+
+> **Kurt is the sole authority for assigning, changing, or interpreting a project's status.**
+
+Command Center may **display** the status and perhaps provide mechanisms for you to change it later, but it does not automatically decide:
+
+* "This project is now Current."
+* "This project hasn't been touched, so it's Ongoing."
+* "This project looks finished, so it's Completed."
+* "This project should move to Archived."
+
+Those are **your architectural/operational decisions**.
+
+That fits the governing principle:
+
+> **AI assists the human architect.**
+
+### This also clarifies categorization
+
+We need to distinguish **category** from **status**.
+
+For example:
+
+```text id="4ef5yq"
+Project: Teacher Toolbox
+
+Category:
+Education / Software
+
+Status:
+Current
+```
+
+while:
+
+```text id="w8r6q2"
+Project: Kurt's English
+
+Category:
+Website / Business
+
+Status:
+Current
+```
+
+And:
+
+```text id="s7kq1m"
+Project: Sun Tzu and You
+
+Category:
+Content / YouTube
+
+Status:
+Ongoing
+```
+
+The **category describes what kind of project it is**.
+
+The **status describes where it currently stands operationally**.
+
+And you are the sole arbiter of both if we want maximum consistency with the project's human-governance philosophy.
+
+### One refinement
+
+I wouldn't necessarily make **category** a single rigid classification.
+
+A project could plausibly touch several domains:
+
+> Teacher Toolbox → Education + Software + Business
+
+So the matrix should leave open whether categorization eventually means:
+
+* one primary category;
+* multiple categories/tags;
+* a hierarchy;
+* or something more flexible.
+
+### Category 1 is now substantially resolved
+
+| Question                                        | Decision                 |
+| ----------------------------------------------- | ------------------------ |
+| Can there be multiple Current projects?         | **Yes**                  |
+| Is Current a singleton focus?                   | **No**                   |
+| Can projects move back to Current?              | **Open, but likely yes** |
+| Is Completed a status?                          | **No**                   |
+| Is Ongoing preferred?                           | **Yes**                  |
+| Is Archived a status?                           | **Yes**                  |
+| Who determines status?                          | **Kurt, exclusively**    |
+| Does CC/AI automatically determine status?      | **No**                   |
+| Is project categorization separate from status? | **Yes**                  |
+| Exact category model?                           | **Open**                 |
+
+I'd add the human-arbiter rule as a **high-level governance requirement**, because it should apply throughout CC—not just to the status field.
+
+- - - - - 
+
+From me: 
+Something brought up much earlier as well . . . 
+Switching "statuses" should not require moving physical files from one folder to another . . . 
+The actual files/folders stay where they are - Only the status changes 
+
+- - - - - 
+
+Yes. **That should be an explicit architectural requirement.** It also resolves a potential problem in the older folder model.
+
+### Category 1 — Status: final clarification
+
+**Status is metadata, not physical location.**
+
+Changing:
+
+> `Teacher Toolbox — Current`
+
+to:
+
+> `Teacher Toolbox — Ongoing`
+
+must **not** require moving the project's files or workspace from one physical folder to another.
+
+The project remains where it is. Only its status changes.
+
+So we should **not** implement the project structure as:
+
+```text
+Current/
+   Teacher_Toolbox/
+
+Ongoing/
+   Teacher_Toolbox/
+```
+
+because changing status would require physically relocating the project.
+
+Instead, conceptually:
+
+```text
+Projects/
+├── Teacher_Toolbox/
+│   ├── Project.md
+│   ├── Notes/
+│   ├── Decisions/
+│   └── ...
+│
+├── Kurts_English/
+│   └── ...
+│
+└── Command_Center/
+    └── ...
+```
+
+and the project record says:
+
+```text
+Teacher_Toolbox
+status: current
+```
+
+CC's **Current** view simply queries for projects whose status is `current`.
+
+If you change it to:
+
+```text
+status: ongoing
+```
+
+the physical project remains exactly where it was; it simply disappears from **Current** and appears in **Ongoing**.
+
+### This is an important architectural principle
+
+> **Project status must be represented independently of physical file/folder location. Status changes must not require moving, renaming, or restructuring the project's files or workspace.**
+
+That gives us several benefits:
+
+* no broken links;
+* no Git disruption;
+* no accidental file moves;
+* no duplicated project folders;
+* simpler project-wide search;
+* stable project identity;
+* easy status changes;
+* much better portability.
+
+And it reinforces something we've already established:
+
+**The Command Center's views are projections of project state, not physical representations of project state.**
+
+That's a pretty important piece of the architecture.
+
+### Category 1 is now looking very solid
+
+The remaining open question is really just the **exact transition rules**. Everything else you've raised has converged nicely.
+
+**Next: Category 2 — Project Categorization.**
+
+- - - - - 
+
+## Step 4L — Category 2: Project Categorization
+
+Now we're dealing with **what a project is about**, which is separate from its status.
+
+### First principle
+
+> **Category and status are independent properties.**
+
+For example:
+
+```text
+Teacher Toolbox
+Category: Education / Software / Business
+Status: Current
+```
+
+Changing the status to `Ongoing` does **not** change its category.
+
+### What we know so far
+
+You are the **sole arbiter** of how a project is categorized.
+
+CC should not decide:
+
+> "This looks like a software project, so I'll categorize it as Software."
+
+AI can assist with suggestions if you want, but the recorded category is ultimately **your decision**.
+
+### The categorization problem
+
+I don't think we should impose a single category on every project.
+
+Your projects already demonstrate why:
+
+* **Teacher Toolbox** — education + software + eventual business
+* **Kurt's English** — website + education + business
+* **Sun Tzu and You** — content + YouTube
+* **Command Center** — software + project operations + AI-assisted development
+
+A project can legitimately belong to multiple conceptual areas.
+
+So I'd propose that the requirement be:
+
+> **A project may have one or more human-defined categories.**
+
+But **the category vocabulary itself remains open**.
+
+It could eventually be something like:
+
+```text
+Education
+Software
+Website
+Content
+Business
+AI
+Personal
+Research
+```
+
+—or something entirely different.
+
+We don't need to decide that now.
+
+### More importantly: category should not control physical organization
+
+This follows the same principle we just established for status.
+
+We should **not** do this:
+
+```text
+Education/
+    Teacher_Toolbox/
+
+Software/
+    Teacher_Toolbox/
+```
+
+A project shouldn't need to physically move because its category changes.
+
+Instead:
+
+```text
+Teacher_Toolbox/
+    Project.md
+    ...
+    
+    categories:
+      - Education
+      - Software
+      - Business
+```
+
+The **views** can then present the project according to whatever category you're interested in.
+
+### Matrix additions
+
+| ID     | Requirement                                                                                               | Status                          |
+| ------ | --------------------------------------------------------------------------------------------------------- | ------------------------------- |
+| P4-R92 | Project categorization must be independent of project status.                                             | **Established**                 |
+| P4-R93 | A project may have multiple categories where appropriate.                                                 | **Working decision**            |
+| P4-R94 | Kurt is the sole authority for assigning and changing project categories.                                 | **Established governance rule** |
+| P4-R95 | CC/AI must not automatically impose or change project categories.                                         | **Established**                 |
+| P4-R96 | Category changes must not require physical movement, renaming, or restructuring of the project workspace. | **Architectural requirement**   |
+| P4-R97 | The category vocabulary remains open pending later specification.                                         | **Open**                        |
+| P4-R98 | Category-based views may present projects according to their assigned categories.                         | **Established direction**       |
+
+### One distinction worth preserving
+
+I'd keep **category** separate from **tags**.
+
+We may eventually discover that we need both:
+
+* **Category** = meaningful classification chosen by you.
+* **Tag** = lightweight descriptive marker useful for search/filtering.
+
+But **we don't need to introduce tags yet** unless the requirements later justify them.
+
+### Category 2 verdict
+
+**Resolved:**
+
+* independent from status;
+* human-controlled;
+* potentially multiple categories;
+* no physical folder movement;
+* CC can use categories for views.
+
+**Still open:**
+
+* exact category vocabulary;
+* whether we eventually need a separate tag system.
+
+That's enough for this category.
+
+**Next: Category 3 — Project Identity & Purpose.**
+
+- - - - - 
+
+## Step 4M — Category 3: Project Identity & Purpose
+
+This one is relatively straightforward, but I think the **kurt-engine-core** example helps us define it correctly.
+
+A project needs more than a name.
+
+When you return six months later, you should be able to answer:
+
+> **What is this? Why did I create it? What is it supposed to become?**
+
+### 1. Project Identity
+
+The project needs a **stable identity** independent of its physical location.
+
+At minimum:
+
+* **Project ID** — stable machine identity.
+* **Project Name** — human-facing name.
+* **Repository/reference** — where the authoritative technical resource lives, when applicable.
+
+The Project ID already exists as a Phase 3 architectural decision, so this part is established.
+
+---
+
+### 2. Purpose
+
+A project should have a concise statement answering:
+
+> **Why does this project exist?**
+
+For `kurt-engine-core`:
+
+> Designed to make editing my homepage easy.
+
+That's much more useful than:
+
+> Python web application.
+
+The latter describes implementation. The former describes **purpose**.
+
+---
+
+### 3. Product Direction
+
+We've already uncovered another layer:
+
+**Current form**
+
+> Web app
+
+**Eventual form**
+
+> Actual standalone application
+
+**Reason for current form**
+
+> A web app is easier to build and validate initially.
+
+This is valuable because it preserves the **architectural trajectory**, not merely the current state.
+
+Command Center itself has a similar structure:
+
+**Current host**
+
+> Obsidian
+
+**Architectural goal**
+
+> Portable / platform-independent
+
+So I'd call this **Product Direction / Platform Direction**, depending on the project.
+
+---
+
+### 4. Purpose should not be confused with Focus
+
+This distinction is important.
+
+**Purpose:**
+
+> Why does this project exist?
+
+**Focus:**
+
+> What am I concentrating on right now?
+
+For example:
+
+```text id="5o6a3h"
+PURPOSE
+Make homepage editing easy.
+
+CURRENT FOCUS
+Implement the project-file navigation layer.
+
+PRODUCT DIRECTION
+Current: Web app
+Eventual: Standalone application
+```
+
+Six months from now, the **focus may be completely different** while the purpose remains unchanged.
+
+---
+
+### Matrix additions
+
+| ID      | Requirement                                                                                                      | Status                        |
+| ------- | ---------------------------------------------------------------------------------------------------------------- | ----------------------------- |
+| P4-R99  | Each project must have a stable identity independent of physical file/folder location.                           | **Established**               |
+| P4-R100 | Project identity must include the canonical Project ID established in Phase 3.                                   | **Established / frozen**      |
+| P4-R101 | A project must have a human-facing project name.                                                                 | **Established**               |
+| P4-R102 | A project should have a concise purpose statement describing why it exists.                                      | **Established direction**     |
+| P4-R103 | Purpose must be distinguishable from current operational focus.                                                  | **Architectural requirement** |
+| P4-R104 | Where applicable, the workspace should record the project's intended current product/platform form.              | **Established direction**     |
+| P4-R105 | Where applicable, the workspace should record the project's eventual product/platform direction.                 | **Established direction**     |
+| P4-R106 | Where useful, the workspace should preserve the rationale for choosing the current form as an intermediate step. | **Established direction**     |
+| P4-R107 | Changes to product direction must not require changing the project's stable identity.                            | **Established**               |
+
+### Category 3 verdict
+
+**Established:**
+
+* stable identity;
+* human name;
+* purpose;
+* purpose ≠ focus;
+* current/eventual direction where relevant.
+
+**Still open:**
+
+* exact fields/document structure for Product Direction;
+* whether every project needs an eventual target, since some projects may not have one.
+
+That last point is important: **we shouldn't force every project into a "future product" narrative.**
+
+A project like a one-off research effort might simply have a purpose and no eventual product form.
+
+**Next: Category 4 — Operational State: milestone, progress, next action, and blockers.**
+
+- - - - - 
+
+From me: 
+You can have Purpose, Description, Focus 
+
+- - - - - 
+
+Yes. That's a useful distinction, and I think it improves the model.
+
+I'd define them as three separate layers:
+
+* **Purpose** — *Why does this project exist?*
+* **Description** — *What is this project? What does it encompass?*
+* **Focus** — *What am I working on right now?*
+
+For `kurt-engine-core`, for example:
+
+```text
+PURPOSE
+Make editing Kurt's homepage easier.
+
+DESCRIPTION
+A project to develop a tool that simplifies homepage editing,
+eventually evolving from a web-based implementation into a
+standalone application.
+
+FOCUS
+Building and testing the current web-app implementation.
+```
+
+That gives us a very clean temporal distinction:
+
+**Purpose** is relatively stable.
+**Description** can evolve as the project develops.
+**Focus** changes frequently.
+
+### I'll add that to the matrix
+
+| ID      | Requirement                                                                       | Status                        |
+| ------- | --------------------------------------------------------------------------------- | ----------------------------- |
+| P4-R102 | A project must have a **Purpose** describing why it exists.                       | Established direction         |
+| P4-R103 | A project must have a **Description** describing what it is/encompasses.          | **Newly established**         |
+| P4-R104 | A project must have a **Focus** describing what is currently receiving attention. | Established                   |
+| P4-R105 | Purpose, Description, and Focus must remain distinguishable concepts.             | **Architectural requirement** |
+
+This is actually cleaner than trying to make `focus` carry the entire explanation of the project.
+
+And it reinforces our broader model:
+
+> **Purpose = why**
+> **Description = what**
+> **Focus = now**
+
+That's a good foundation for the Project Workspace.
+
+- - - - - 
+
+## Step 4N — Category 4: Operational State
+
+Now we define the information that answers:
+
+> **"Where is this project right now, and what happens next?"**
+
+We've already established most of this through Phase 3.
+
+### The operational core
+
+I see five pieces:
+
+**Status**
+Where the project sits in the overall project lifecycle.
+
+**Milestone**
+The significant piece of work currently being pursued.
+
+**Progress**
+How far along that milestone/workstream is.
+
+**Next Action**
+The concrete thing that should happen next.
+
+**Blockers**
+Things currently preventing or impeding progress.
+
+For example:
+
+```text id="6d6m0n"
+STATUS
+Current
+
+MILESTONE
+Phase 4 Requirements Matrix
+
+PROGRESS
+70%
+
+NEXT ACTION
+Complete the remaining requirements gap pass.
+
+BLOCKERS
+None
+```
+
+### But there's an important distinction
+
+**Status is project-level.**
+
+> Teacher Toolbox = Current
+
+**Focus/Milestone/Progress/Next Action/Blockers are operational state.**
+
+That state can change frequently without changing the project's overall status.
+
+For example:
+
+```text id="1z9rj5"
+Teacher Toolbox
+Status: Current
+
+Focus: Payment system research
+Milestone: Premium access architecture
+Progress: 30%
+Next Action: Compare payment providers
+Blockers: Account requirements unresolved
+```
+
+Then tomorrow:
+
+```text id="y6o8tq"
+Teacher Toolbox
+Status: Current
+
+Focus: Payment system implementation
+Milestone: Premium access architecture
+Progress: 60%
+Next Action: Build account-flow prototype
+Blockers: None
+```
+
+Same project. Same identity. Same status. Completely different operational state.
+
+### Blockers vs Flags
+
+Your earlier question about **Flags** is worth incorporating.
+
+I would treat:
+
+**Blocker** = an actual impediment to progress.
+
+**Flag** = something that deserves attention or review, but may not prevent progress.
+
+So:
+
+> **Flag 1:** Phase 3 architectural ambiguity
+> **Flag 2:** Need independent review
+
+could become blockers **if they actually prevent proceeding**, but they don't automatically have to be.
+
+We should preserve that distinction rather than making every warning a blocker.
+
+### Matrix
+
+| ID      | Requirement                                                                                                    | Status                     |
+| ------- | -------------------------------------------------------------------------------------------------------------- | -------------------------- |
+| P4-R106 | Project operational state must include milestone where applicable.                                             | Established                |
+| P4-R107 | Project operational state must include progress where applicable.                                              | Established                |
+| P4-R108 | Project operational state must include next action where applicable.                                           | Established                |
+| P4-R109 | Project operational state must represent blockers where applicable.                                            | Established                |
+| P4-R110 | Operational state may change without changing project identity or status.                                      | **Established**            |
+| P4-R111 | Blockers must represent actual impediments rather than every warning or concern.                               | **Working direction**      |
+| P4-R112 | CC should provide a way to distinguish blockers from less-severe flags/concerns if both concepts are retained. | **Open**                   |
+| P4-R113 | Kurt remains the authority for project operational state.                                                      | **Established governance** |
+
+### Category 4 verdict
+
+The **core operational model is essentially resolved**.
+
+The one thing we should leave open is whether CC needs a formal **Flags / Concerns** concept separate from Blockers.
+
+We don't need to solve that right now.
+
+**Next: Category 5 — Tools, Technical Stack, Platform, and AI Team.**
+
+- - - - - 
+
+From me: 
+I think flags should be separate from actual blockers . . . 
+But prominent enough that they be addressed, as opposed to just being put on the back burner until they become actual blockers
+
+- - - - - 
+
+Yes. I think that's the right distinction.
+
+A **Flag** is essentially:
+
+> **"This needs attention, but it isn't stopping us yet."**
+
+A **Blocker** is:
+
+> **"This is currently preventing progress."**
+
+The important part of your point is that a Flag **must not disappear into the notes** just because it isn't a blocker.
+
+### Operational State should therefore be
+
+```text id="a9k4n2"
+STATUS
+Current
+
+MILESTONE
+Phase 4 Requirements Matrix
+
+PROGRESS
+70%
+
+NEXT ACTION
+Complete requirements gap pass.
+
+FLAGS
+⚑ Phase 3 architectural question needs resolution
+⚑ Confirm portability requirements before implementation
+
+BLOCKERS
+None
+```
+
+The visual distinction matters.
+
+**Flags should be prominent.**
+
+Not necessarily as visually dominant as a blocker, but prominent enough that when you return to the project you immediately see:
+
+> "Ah — these things need attention."
+
+That supports the re-entry requirement very well.
+
+### And Flags have a useful lifecycle
+
+```text id="r4h2sq"
+Flag
+  │
+  ├── Resolved → disappears from active flags
+  │
+  ├── Remains relevant → stays visible
+  │
+  └── Becomes an actual impediment → Blocker
+```
+
+So a Flag isn't merely a weaker Blocker.
+
+It's a **different operational state**.
+
+### I'd now make this a firm requirement
+
+| ID      | Requirement                                                                                                                            | Status                     |
+| ------- | -------------------------------------------------------------------------------------------------------------------------------------- | -------------------------- |
+| P4-R111 | **Flags and Blockers are separate concepts.**                                                                                          | **Established**            |
+| P4-R112 | A Flag represents an issue, concern, question, or condition requiring attention but not currently preventing progress.                 | **Established**            |
+| P4-R113 | A Blocker represents an issue currently preventing or materially impeding progress.                                                    | **Established**            |
+| P4-R114 | Active Flags must be sufficiently prominent in the Project Workspace that they are unlikely to be overlooked or indefinitely deferred. | **Established**            |
+| P4-R115 | A Flag may be resolved without ever becoming a Blocker.                                                                                | **Established**            |
+| P4-R116 | A Flag may become a Blocker if circumstances change.                                                                                   | **Established**            |
+| P4-R117 | Kurt is the authority for determining whether something is a Flag or Blocker.                                                          | **Established governance** |
+
+This is a **much better operational model** than simply having a generic "issues" section.
+
+And it fits your overall philosophy nicely: **honest visibility without creating artificial emergencies.**
+
+**Next: Category 5 — Tools, Technical Stack, Platform, and AI Team.**
+
+- - - - - 
+
+From me: 
+I don't know about P4-R117 . . . 
+Off the top of my head, if it was just me looking at potential problems, I don't know enough about coding to just arbitrarily decide what should just be a "flag", as opposed to a clear "blocker"
+
+ - - - - - 
+
+Yes — I think your hesitation is correct. **P4-R117 was too broad.**
+
+There are really two different questions:
+
+1. **Who owns the project's status and operational state?**
+2. **Who determines the technical severity of a problem?**
+
+Those don't have to be the same person.
+
+For example, you can say:
+
+> "Something about this looks wrong. Flag it."
+
+You don't need to know whether it's technically a blocker.
+
+An AI or technical reviewer might then determine:
+
+> "Yes, this is actually blocking implementation."
+
+### I'd change the model
+
+**Kurt owns the decision-making authority over the project.**
+
+But **Flags/Blockers can be assessed collaboratively**.
+
+For example:
+
+```text id="v4w2rq"
+KURT
+"I think this needs attention."
+
+        ↓
+
+FLAG
+"NavigationController ownership may conflict
+with the Phase 4 architecture."
+
+        ↓
+
+TECHNICAL REVIEW
+GPT / Claude / Codex / human review
+
+        ↓
+
+ASSESSMENT
+Flag → Blocker
+Flag → Remains Flag
+Flag → Resolved
+```
+
+And importantly, **CC doesn't need to automatically determine the severity**.
+
+It can simply preserve the current classification and make it visible.
+
+### Revised requirements
+
+I'd replace P4-R117 with:
+
+| ID      | Requirement                                                                                                              | Status                            |
+| ------- | ------------------------------------------------------------------------------------------------------------------------ | --------------------------------- |
+| P4-R117 | Kurt retains final authority over project-level status and operational decisions.                                        | **Established governance**        |
+| P4-R118 | A Flag or Blocker may be identified or assessed by Kurt, an AI, a technical reviewer, or another project participant.    | **Working direction**             |
+| P4-R119 | Technical assessment may recommend reclassification of a Flag as a Blocker, or vice versa.                               | **Working direction**             |
+| P4-R120 | Reclassification recommendations do not automatically change project state without appropriate project-level acceptance. | **Open / needs later definition** |
+
+That last one is where I'd be cautious.
+
+We don't want to accidentally create a system where Claude says:
+
+> "BLOCKER!"
+
+…and CC immediately changes the project's state.
+
+But we also don't want the opposite extreme where **you have to personally understand every technical detail before CC can acknowledge a real blocker**.
+
+That's a distinction we'll need to design carefully later.
+
+For now, the important insight is:
+
+> **Kurt is the project's final authority, but technical judgment can come from the people/AIs with the relevant expertise.**
+
+That's much more consistent with how we're actually using the AI team.
+
+- - - - - 
+
+From me: 
+Back to the "flag" issue - It was Claude that pointed out the potential problem with those two issues
+
+- - - - - 
+
+Exactly — and that's a perfect real-world example of why the distinction matters.
+
+You didn't have to determine that those two issues were technically serious. **Claude identified them during review.** You then decide how they should be treated within the project.
+
+So the workflow is more like:
+
+```text
+Claude
+  │
+  │ identifies potential problem
+  ▼
+FLAG
+  │
+  │ Kurt reviews / asks for assessment
+  ▼
+┌─────────────────────────────┐
+│ What is its actual status?  │
+├─────────────────────────────┤
+│ Resolved                    │
+│ Remains a Flag              │
+│ Becomes a Blocker           │
+└─────────────────────────────┘
+```
+
+And that gives us a useful definition:
+
+### Flags are an intake mechanism, not a severity judgment
+
+Anyone participating in the project—including an AI—can raise a Flag.
+
+The Flag essentially says:
+
+> **"This deserves attention."**
+
+It does **not** say:
+
+> **"Kurt has determined this is a problem."**
+
+That distinction is valuable because it lets Claude, Qwen, GPT-5.6, Codex, etc. surface things that you might not recognize as problems yourself.
+
+Then the project can investigate them before they quietly become serious.
+
+### So I'd refine the requirements again
+
+**P4-R117**
+
+> Kurt retains final authority over project-level status and operational decisions.
+
+**P4-R118**
+
+> Any authorized project participant or AI may raise a Flag when an issue, concern, inconsistency, risk, or question warrants attention.
+
+**P4-R119**
+
+> Raising a Flag does not itself determine whether the issue is a Blocker.
+
+**P4-R120**
+
+> A Flag must remain visible until it is resolved, explicitly dismissed, reclassified, or otherwise intentionally dispositioned.
+
+**P4-R121**
+
+> A Flag may be reclassified as a Blocker when investigation determines that it materially prevents or impedes progress.
+
+That's a much stronger model.
+
+And it fits what **actually happened with WP13** rather than being an abstract theoretical design. Claude saw something worth questioning; it got surfaced; we investigated it; and **you** ultimately decide what happens to it.
+
+- - - - - 
+
+From me: 
+I like that better than the original wording
+
+- - - - - 
+
+Agreed. We'll treat the **revised Flag model** as the working requirement and discard the earlier P4-R117 wording.
+
+The important distinction is now:
+
+> **Anyone can raise a Flag; Kurt retains final authority over what happens to it.**
+
+That gives the AI team room to identify things you're not technically equipped to spot, without giving the AI automatic authority over the project's state.
+
+And the **WP13 example is the precedent** we're designing around.
+
+We'll carry that forward into the consolidated Phase 4 matrix.
+ 
+- - - - - 
+
+Next is **Category 5 — Tools, Technical Stack, Platform, and AI Team**.
+
+We already uncovered several requirements here, so let's consolidate them rather than invent new ones.
+
+### Category 5 — Project Technical & Working Environment
+
+For each project, CC should be able to show four distinct things:
+
+**1. Product Direction**
+
+* What we're building now
+* What it is eventually intended to become
+* Why the current form was chosen, when relevant
+
+**2. Technical Stack**
+
+* Primary programming language(s)
+* Frameworks/libraries
+* Runtime/platform dependencies
+* Other significant technologies
+
+Example:
+
+```text
+Kurt Engine
+
+Product target
+Current: Web app
+Eventual: Standalone app
+
+Technical stack
+Python
+[Framework]
+[Runtime]
+```
+
+**3. Tools & Environment**
+
+What Kurt actually uses to work on it:
+
+```text
+VS Code
+GitHub Desktop
+Obsidian
+```
+
+These are **not the same thing as the technical stack**.
+
+**4. AI Team**
+
+Which AI systems are involved and what their role is **on this particular project**:
+
+```text
+GPT-5.6    Architecture / planning
+Claude     Independent review
+Codex      Implementation
+```
+
+Roles are project-specific and can change.
+
+### One more distinction
+
+The **repository** deserves its own reference rather than being buried inside Tools or Technical Stack.
+
+```text
+Repository
+github.com/22cryys56p-beep/kurt-engine-core
+```
+
+That tells CC:
+
+> "This is where the authoritative engineering artifact lives."
+
+It doesn't mean CC manages the repository.
+
+### Matrix consolidation
+
+| ID      | Requirement                                                                                      | Status                              |
+| ------- | ------------------------------------------------------------------------------------------------ | ----------------------------------- |
+| P4-R122 | Project workspace must identify the intended product/platform direction where applicable.        | Established                         |
+| P4-R123 | Project workspace may distinguish current implementation form from eventual target form.         | Established                         |
+| P4-R124 | Project workspace may preserve rationale for an intermediate implementation choice.              | Established                         |
+| P4-R125 | Project workspace must identify the project's significant technical stack.                       | Established                         |
+| P4-R126 | Technical Stack must remain distinct from Tools & Environment.                                   | Established                         |
+| P4-R127 | Project workspace must identify the tools/environment used to work on the project.               | Established                         |
+| P4-R128 | Project workspace must identify participating AI systems and their project-specific roles.       | Established                         |
+| P4-R129 | AI roles may differ between projects and may change over time.                                   | Established direction               |
+| P4-R130 | Project workspace must provide a reference to the authoritative repository where applicable.     | Established                         |
+| P4-R131 | Command Center must not become the authoritative source for source code merely by displaying it. | Established architectural principle |
+
+### Category 5 verdict
+
+I think this category is **largely resolved**.
+
+The remaining open questions are implementation-level:
+
+* exact Technical Stack fields;
+* exact representation of Tools;
+* exact representation of AI roles;
+* how historical changes to the stack/AI roles are preserved.
+
+We don't need those decisions yet.
+
+**Next: Category 6 — Project Ecosystem / "Tentacles."**
+
+- - - - - 
+
+## Step 4O — Category 6: Project Ecosystem / "Tentacles"
+
+This is one of the more important categories because it gets to **why you're building Command Center in the first place**.
+
+A project isn't necessarily just its code.
+
+For example, **iCanSpell → TeacherToolbox** can lead into:
+
+* account creation
+* authentication
+* premium access
+* payment processing
+* marketing
+* hosting
+* domains
+* documentation
+* customer support
+* legal/tax questions
+* other tools or services
+* additional products
+
+Those are all potentially connected to the same project.
+
+### Core requirement
+
+> **Command Center must be able to represent the broader ecosystem of work, dependencies, services, decisions, and related activities surrounding a project.**
+
+I would **not** call these "subprojects" automatically.
+
+Some are projects. Some are services. Some are decisions. Some are research questions. Some are external dependencies.
+
+The important thing is that CC can **connect them to the project**.
+
+### Example
+
+```text id="e3d0ae"
+                 TEACHER TOOLBOX
+                       │
+        ┌──────────────┼──────────────┐
+        │              │              │
+     Products       Business       Technical
+        │              │              │
+   iCanSpell       Accounts       GitHub
+   iCanMath        Payments       Hosting
+   iCanCreate      Marketing      Domains
+        │              │              │
+        └──────────────┼──────────────┘
+                       │
+                  AI / Research
+                       │
+                 Claude / GPT /
+                   Codex / Qwen
+```
+
+The actual structure doesn't need to look like that in the UI. That's simply the conceptual model.
+
+### "Tentacles" should be first-class information
+
+I think we should explicitly capture **related workstreams** rather than expecting them to be buried in project notes.
+
+A project workspace could eventually expose something like:
+
+```text id="4a3p7r"
+PROJECT ECOSYSTEM
+
+Products
+  • iCanSpell
+  • iCanMath
+  • iCanCreate
+
+Business
+  • Accounts
+  • Premium access
+  • Payments
+  • Marketing
+
+Technical
+  • GitHub
+  • Hosting
+  • Domain
+  • Authentication
+
+Research / Decisions
+  • Pricing model
+  • Platform strategy
+  • Legal questions
+```
+
+### But there's an important boundary
+
+CC should **track relationships**, not necessarily absorb all of these systems.
+
+For example:
+
+> Stripe remains the payment system.
+
+CC records:
+
+> "Teacher Toolbox uses Stripe for premium payments."
+
+Likewise:
+
+> GitHub remains authoritative for code.
+
+CC records:
+
+> "Teacher Toolbox's source repository is here."
+
+This is consistent with the **read-only/reference-hub philosophy** we've established.
+
+### Matrix additions
+
+| ID      | Requirement                                                                                                                     | Status                    |
+| ------- | ------------------------------------------------------------------------------------------------------------------------------- | ------------------------- |
+| P4-R132 | A project workspace must be able to represent work and resources extending beyond the project's primary artifact.               | **Established**           |
+| P4-R133 | Related work may include technical, business, operational, research, AI, administrative, or other domains.                      | **Established direction** |
+| P4-R134 | Related work must be linkable to the project without necessarily being classified as a subproject.                              | **Established direction** |
+| P4-R135 | CC should expose significant project relationships prominently enough to support project re-entry.                              | **Established direction** |
+| P4-R136 | External systems remain authoritative for their own data; CC records references/context rather than becoming their replacement. | **Established**           |
+| P4-R137 | A project may have multiple related workstreams/tentacles.                                                                      | **Established**           |
+| P4-R138 | The exact data model for representing related workstreams remains open.                                                         | **Open**                  |
+
+### Category 6 verdict
+
+The **concept is established**.
+
+The exact implementation is deliberately **not**.
+
+And I think that's the correct place to leave it for now. We don't want to prematurely invent a giant "ecosystem database" before we know which relationships actually matter.
+
+**Next: Category 7 — Documents, Files, Source Code & Search.**
+
+- - - - - 
+
+From me: 
+Question: Does the way we're designing this so far allow for Command Center to be used with ANY project, not just code/computer related? 
+Example: A business plan, a construction/building plan, a conference, etc.
+
+- - - - - 
+
+Yes. **And I think that's an important validation of the architecture we've been building.**
+
+The answer is **yes, provided we keep the project model domain-agnostic**.
+
+Nothing we've established so far fundamentally requires a project to be software or even computer-related.
+
+For example:
+
+| Project          | Purpose                        | Description                  | Focus                |
+| ---------------- | ------------------------------ | ---------------------------- | -------------------- |
+| Teacher Toolbox  | Build useful teaching tools    | Education/software project   | iCanSpell            |
+| Business Plan    | Establish a viable business    | Business development project | Pricing model        |
+| House Renovation | Renovate the house             | Construction project         | Kitchen              |
+| Conference       | Organize the annual conference | Event project                | Speaker coordination |
+| Sun Tzu and You  | Produce the series             | YouTube/content project      | Chapter 3            |
+
+The same basic Command Center machinery works for all of them:
+
+**Status**
+→ Current / Ongoing / Possible / Planned / Archived
+
+**Purpose**
+→ Why does it exist?
+
+**Description**
+→ What is it?
+
+**Focus**
+→ What matters now?
+
+**Milestone**
+→ What significant objective is being pursued?
+
+**Progress**
+→ How far along?
+
+**Next Action**
+→ What happens next?
+
+**Flags**
+→ Things requiring attention.
+
+**Blockers**
+→ Things preventing progress.
+
+**Tools / Resources**
+→ Whatever is relevant to that project.
+
+**Related work / tentacles**
+→ Other activities, dependencies, decisions, organizations, etc.
+
+None of those are inherently technical.
+
+### The technical information becomes optional
+
+This is the key architectural distinction.
+
+A software project might have:
+
+```text
+Technical Stack
+Python
+TypeScript
+Svelte
+
+Repository
+GitHub: ...
+
+Tools
+VS Code
+GitHub Desktop
+Claude
+Codex
+```
+
+A construction project might instead have:
+
+```text
+Resources
+Architect
+Contractor
+Building plans
+Material suppliers
+
+Documents
+Floor plans
+Permits
+Quotes
+Contracts
+```
+
+A conference might have:
+
+```text
+Resources
+Venue
+Speakers
+Sponsors
+Vendors
+
+Documents
+Schedule
+Budget
+Contracts
+Marketing materials
+```
+
+The **project model stays the same**; the domain-specific information hangs off it.
+
+### And this actually reinforces one of our earlier decisions
+
+We should **not make fields like "Programming Language," "Repository," or "AI Team" mandatory project fields.**
+
+They are **capabilities/sections that appear when relevant**.
+
+So the architecture becomes something like:
+
+```text
+                    PROJECT
+                       │
+       ┌───────────────┼────────────────┐
+       │               │                │
+    Identity        Operations       Ecosystem
+       │               │                │
+ Purpose           Status            Related work
+ Description       Focus             Dependencies
+ Categories        Milestone         Resources
+                   Progress
+                   Next Action
+                   Flags
+                   Blockers
+                       │
+                Domain-specific
+                   information
+                       │
+          ┌────────────┼────────────┐
+          │            │            │
+       Software     Business    Construction
+       fields       fields       fields
+```
+
+That is much more powerful than designing **"a software project manager"** and then trying to bolt other things onto it later.
+
+### I would therefore add one architectural principle
+
+> **Command Center's core Project Model must be domain-agnostic. Domain-specific information is optional and extensible rather than embedded in the core project definition.**
+
+That should probably become a **high-level/frozen architectural requirement**, because it affects almost everything we design from this point forward.
+
+And yes — **this means you could eventually use the same Command Center to manage something as different as a house construction project, a business plan, a conference, or a YouTube series without pretending they are software projects.**
+
+- - - - - 
+
+From me: 
+Next, for future consideration, a suite of "templates" to be used as a starting point for any one of those potential projects
+
+- - - - - 
+
+Yes. **That's a very natural future capability**, and importantly, it should sit *above* the core project model rather than complicating it.
+
+### Future Capability — Project Templates
+
+Command Center could eventually provide a **Template Library** containing starting structures for different kinds of projects.
+
+For example:
+
+* **General Project**
+* **Software Project**
+* **Business Plan**
+* **Construction / Renovation**
+* **Conference / Event**
+* **Content / Media Project**
+* **Research Project**
+* **Product Development**
+* **Custom Project**
+
+A template wouldn't dictate how the project must operate. It would simply provide a useful starting point.
+
+For example, a **Conference template** might suggest:
+
+```text id="6j2v5a"
+Purpose
+Description
+Target / Goals
+
+Key Dates
+Venue
+Speakers
+Sponsors
+Budget
+
+Milestones
+Next Actions
+Flags
+Blockers
+
+Related Work
+Documents
+Contacts
+Resources
+```
+
+Whereas a **Software Project** template could suggest:
+
+```text id="3b7q1c"
+Purpose
+Description
+Product Direction
+
+Technical Stack
+Tools
+Repository
+AI Team
+
+Milestones
+Next Actions
+Flags
+Blockers
+Decisions
+```
+
+The important architectural rule would be:
+
+> **Templates provide optional starting structure; they do not define or constrain the underlying Project Model.**
+
+That means you could start with a **Construction Project** template and later add whatever information you discover you need.
+
+### This also fits the portability goal
+
+Templates should ideally be **data-driven**, probably Markdown-based, rather than hard-coded into the application.
+
+So eventually:
+
+```text
+07_Templates/
+    General_Project/
+    Software_Project/
+    Business_Plan/
+    Construction/
+    Conference/
+    Content_Project/
+    Research/
+```
+
+And because they're just structured data, they could be edited, added, or ported without rewriting Command Center itself.
+
+### Matrix addition
+
+I'd record this as a **future capability**, not a current implementation requirement:
+
+> **FC-01 — Project Template Library:** Command Center should eventually provide reusable domain-specific project templates that can initialize a new project while preserving the domain-agnostic core Project Model.
+
+That keeps us from accidentally designing the current system around templates before we actually need them.
+
+**Next: Category 7 — Documents, Files, Source Code & Search.**
+
+- - - - - 
+
+## Step 4P — Category 7: Documents, Files, Source Code & Search
+
+This is another category where your earlier comments give us a pretty clear direction.
+
+The key idea is:
+
+> **Command Center is a project information/control center, not a file editor or IDE.**
+
+### 1. Read-only access is a core capability
+
+You should be able to **inspect project files from within CC** without opening VS Code just to see what's inside them.
+
+That includes things like:
+
+* Markdown
+* `.ts`
+* `.js`
+* `.py`
+* JSON
+* configuration files
+* text-based project documents
+* other text/code files
+
+You should be able to:
+
+**open → read → highlight/select → copy**
+
+the contents.
+
+That would have directly solved the problem you encountered with the `.ts` files.
+
+### 2. Source code remains external/authoritative
+
+CC should **not edit code**.
+
+If you decide:
+
+> "This TypeScript file needs changing."
+
+CC should let you inspect it and then open/hand off to the appropriate development tool.
+
+For example:
+
+```text id="3z0xw8"
+Command Center
+     │
+     └── View orientation-bar.ts
+              │
+              ├── Search
+              ├── Highlight/select
+              ├── Copy
+              └── Open in VS Code
+```
+
+The actual modification happens in VS Code/Codex/etc.
+
+That preserves the **read-only boundary** we established.
+
+### 3. Search
+
+You specifically proposed a **single Search button** with a selector:
+
+```text id="f0q2mr"
+SEARCH
+
+[ File ▼ ]
+```
+
+with:
+
+```text id="t4j8pa"
+File
+Project
+```
+
+I like that.
+
+**File search**:
+
+> Search within a specific file or across files.
+
+**Project search**:
+
+> Search the project's relevant documents/files/resources.
+
+Eventually, a search could find:
+
+```text id="1k3z0d"
+"NavigationController"
+
+Found in:
+• navigation-controller.ts
+• navigation-controller.test.ts
+• command-center-view.ts
+• WP13 Phase 3 specification
+```
+
+And clicking a result could open the relevant file at the matching location.
+
+That's substantially more useful than simply opening files one by one.
+
+### 4. Documents aren't just code
+
+Because we've now established that CC is domain-agnostic, "documents" must include things like:
+
+* business plans
+* construction plans
+* conference documents
+* contracts
+* research
+* meeting notes
+* specifications
+* project decisions
+* PDFs
+* spreadsheets
+* images, where useful
+
+The capability should therefore be **document/file inspection**, with source code being one important subtype.
+
+### 5. CC should not duplicate everything
+
+This is important.
+
+We don't want:
+
+```text
+GitHub copy
+     ↓
+CC copy
+     ↓
+VS Code copy
+```
+
+with three potentially different versions.
+
+Instead, CC should reference the authoritative source wherever practical.
+
+### Requirements
+
+| ID      | Requirement                                                                                           | Status                      |
+| ------- | ----------------------------------------------------------------------------------------------------- | --------------------------- |
+| P4-R139 | CC must provide read-only inspection of project documents/files.                                      | **Established**             |
+| P4-R140 | Text/code files must be viewable as text regardless of the host OS's default file association.        | **Established**             |
+| P4-R141 | Users must be able to select/highlight and copy displayed text/code.                                  | **Established**             |
+| P4-R142 | CC must not directly edit source code or manipulate project files as part of its core read-only role. | **Established**             |
+| P4-R143 | CC should provide a handoff/open-in-tool path for editing when appropriate.                           | **Established direction**   |
+| P4-R144 | CC should provide a unified Search function with **File** and **Project** scopes.                     | **Established**             |
+| P4-R145 | Search should operate across relevant text/document content, including source code.                   | **Established**             |
+| P4-R146 | Search results should identify the source file and, where practical, the matching location.           | **Established direction**   |
+| P4-R147 | CC should not create unnecessary duplicate authoritative copies of project artifacts.                 | **Architectural principle** |
+| P4-R148 | File/document support must remain domain-agnostic.                                                    | **Established**             |
+
+### One thing I would deliberately leave open
+
+**Exactly which file types CC can render internally.**
+
+We don't need to decide that in the requirements matrix yet.
+
+We know the principle:
+
+> **If it's a relevant project document, CC should make a reasonable effort to let you inspect it.**
+
+The exact renderer/support matrix can be an implementation decision later.
+
+### Category 7 verdict
+
+This category is **very well defined at the architectural level**.
+
+The major boundary is now clear:
+
+**CC = inspect, organize, search, understand, reference.**
+
+**VS Code / GitHub / Codex / other tools = modify and execute.**
+
+That is consistent with your "read-only except for CC's own project-management information" idea.
+
+- - - - - 
+
+## Step 4Q — Category 8: Project Workspace / What You See When You Open a Project
+
+This is where the pieces we've been defining start coming together into the actual **Project Workspace**.
+
+Your earlier description is the key:
+
+> Click **Current** → see 2–3 projects → choose one → that project's details fill the screen.
+
+So the workspace should be a **single project view**, not another dashboard.
+
+### The project header
+
+At the top, I think we want the identity information we've just established:
+
+```text id="6q5w2m"
+KURT ENGINE CORE
+
+[Current]
+
+Purpose
+Make editing Kurt's homepage easy.
+
+Description
+A homepage-editing project currently being developed
+as a web application with an eventual standalone-app target.
+
+Categories
+Software · Website · Personal
+```
+
+Then the operational information:
+
+```text id="2f8n6v"
+FOCUS
+Building the current web-app implementation.
+
+MILESTONE
+WP13 Phase 4
+
+PROGRESS
+70%
+
+NEXT ACTION
+Complete the Phase 4 matrix.
+
+FLAGS
+⚑ Navigation state architecture needs review
+⚑ ...
+
+BLOCKERS
+None
+```
+
+### Then the project environment
+
+```text id="7k1m4p"
+TOOLS
+VS Code · GitHub Desktop · Obsidian
+
+TECHNICAL STACK
+Python · ...
+
+AI TEAM
+GPT-5.6 — Architecture
+Claude — Independent review
+Codex — Implementation
+
+REPOSITORY
+kurt-engine-core
+```
+
+### And then the "tentacles"
+
+```text id="v8r3q0"
+PROJECT ECOSYSTEM
+
+Products
+Business
+Technical
+Research
+External Services
+Related Projects
+```
+
+The exact presentation is still open.
+
+### Documents / Files
+
+Then a section for things you can **inspect**:
+
+```text id="1n5x8d"
+PROJECT FILES
+
+📄 Project.md
+📄 Decisions.md
+📄 WP13 Phase 3.md
+📄 navigation-controller.ts
+📄 navigation-controller.test.ts
+
+[ Search ]
+```
+
+Again: **view and copy, not edit.**
+
+### The workspace should be modular
+
+This is important for the domain-agnostic requirement.
+
+A construction project might have:
+
+```text id="q7f2n9"
+PROJECT FILES
+Plans
+Permits
+Contracts
+Quotes
+Photos
+
+PROJECT RESOURCES
+Architect
+Contractor
+Suppliers
+```
+
+A conference might have:
+
+```text id="b3k6r1"
+PROJECT FILES
+Schedule
+Speaker agreements
+Budget
+Marketing
+
+PROJECT RESOURCES
+Venue
+Speakers
+Sponsors
+Vendors
+```
+
+Same workspace concept, different available sections.
+
+### Requirements
+
+| ID      | Requirement                                                                                                                                 | Status                        |
+| ------- | ------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------- |
+| P4-R149 | Selecting a project from a status/category view opens a dedicated Project Workspace.                                                        | **Established**               |
+| P4-R150 | The Project Workspace presents the project's identity and operational state in one primary view.                                            | **Established direction**     |
+| P4-R151 | Purpose, Description, Focus, Status, Milestone, Progress, Next Action, Flags, and Blockers should be accessible from the primary workspace. | **Established direction**     |
+| P4-R152 | Technical/project-environment information should be available where relevant.                                                               | **Established**               |
+| P4-R153 | Project ecosystem/related work should be accessible from the workspace.                                                                     | **Established direction**     |
+| P4-R154 | Project documents/files should be accessible from the workspace for read-only inspection.                                                   | **Established**               |
+| P4-R155 | The workspace should adapt to domain-specific project information without changing the core Project Model.                                  | **Architectural requirement** |
+| P4-R156 | Closing a Project Workspace returns the user to the previous project-selection context.                                                     | **Established direction**     |
+
+### One important UX consequence
+
+This means **Current isn't itself the workspace**.
+
+It's a **project selector/view**.
+
+Same for:
+
+* Possible
+* Planned
+* Ongoing
+* Archived
+
+Each one can show the appropriate collection of projects.
+
+Then:
+
+> **Select project → Project Workspace**
+
+That distinction will matter a lot when we eventually build the UI.
+
+### Category 8 verdict
+
+The conceptual workspace is now quite solid.
+
+The **exact visual layout is still intentionally open** — boxes, panels, tabs, horizontal sections, etc.
+
+That's good. We should finish the requirements/matrix before locking the visual implementation.
+
+- - - - - 
+
+From me:
+Question: Should "Repository" have the full GitHub url/code, as opposed to just the folder name?
+Or the link if it's something other than github.com? 
+Maybe also folder map? (ex: desktop/project_folder/kurt-engine-core)
+
+- - - - - 
+
+Yes. I think **Repository/Source Location should be more explicit than just a folder name**.
+
+What you're describing is really a **Source Reference**: enough information to unambiguously locate the authoritative project files.
+
+For a software project, it could contain:
+
+```text
+SOURCE / REPOSITORY
+
+Remote
+https://github.com/22cryys56p-beep/kurt-engine-core
+
+Local
+Desktop/Projects_Folder/kurt-engine-core
+```
+
+And if the authoritative source isn't GitHub:
+
+```text
+Remote
+https://gitlab.com/...
+
+Local
+Desktop/Projects_Folder/...
+```
+
+Or potentially:
+
+```text
+Source
+/Volumes/Projects/...
+```
+
+for a purely local project.
+
+### I would also support a folder map
+
+But I wouldn't make the entire folder tree part of the Project Record.
+
+Instead, the workspace could have:
+
+> **Folder Map**
+
+showing the project's important physical locations, for example:
+
+```text
+Desktop
+└── Projects_Folder
+    └── kurt-engine-core
+        ├── src
+        ├── tests
+        ├── docs
+        └── ...
+```
+
+That becomes particularly useful for **re-entry**. Six months later, you don't have to remember where the project actually lives.
+
+### And there's a subtle distinction
+
+I'd separate:
+
+**Remote Repository**
+
+> Where the authoritative version is hosted.
+
+**Local Workspace**
+
+> Where the working copy exists on this computer.
+
+**Folder Map**
+
+> How the important local project structure is organized.
+
+They're related, but not necessarily the same thing.
+
+For example, you could have:
+
+```text
+Remote Repository
+GitHub → https://github.com/...
+
+Local Workspace
+Desktop/Projects_Folder/kurt-engine-core
+
+Folder Map
+src/
+tests/
+docs/
+...
+```
+
+And a non-code project could simply have:
+
+```text
+Project Location
+Desktop/Projects_Folder/Conference_2027
+```
+
+No repository required.
+
+### Matrix refinement
+
+I'd change the previous requirement from:
+
+> "Project workspace must provide a reference to the authoritative repository"
+
+to the broader:
+
+> **Project Workspace must provide authoritative source/location references appropriate to the project.**
+
+Then:
+
+| Reference         | Applies when                            | Example                                    |
+| ----------------- | --------------------------------------- | ------------------------------------------ |
+| Remote Repository | Code project with remote repo           | GitHub URL                                 |
+| Local Workspace   | Local project files exist               | `Desktop/Projects_Folder/kurt-engine-core` |
+| External Source   | Authoritative resource elsewhere        | URL                                        |
+| Folder Map        | Local structure is useful to understand | `src / tests / docs`                       |
+
+And importantly:
+
+> **These are references, not ownership.**
+
+CC knows **where things are**. It doesn't become the thing that owns or edits them.
+
+I think that fits the Command Center model very well.
+
+- - - - - 
+
+## Step 4R — Category 9: Project Selection & Navigation
+
+We've now got enough pieces to define the navigation model without locking down the visual design yet.
+
+Your original picture was:
+
+> Click **Current** → two or three project choices appear horizontally → choose one → project details fill the screen → close it → choose another.
+
+I think that's still the right basic model.
+
+### Status is a view, not a folder
+
+This is now an important architectural rule:
+
+```text
+Current
+   ↓
+[ Project A ] [ Project B ] [ Project C ]
+```
+
+The projects **do not move** when their status changes.
+
+Their Project Records simply say:
+
+```text
+status: current
+```
+
+So if `Kurt Engine` changes from `Current` to `Ongoing`, CC's Current view changes automatically because the **status value changed**, not because a folder was moved.
+
+### Project selection should be visual
+
+The project selector should probably show compact project cards/buttons containing the minimum useful information:
+
+```text
+┌──────────────────┐
+│ KURT ENGINE CORE │
+│                  │
+│ Make homepage    │
+│ editing easier.  │
+│                  │
+│ Current          │
+└──────────────────┘
+
+┌──────────────────┐
+│ TEACHER TOOLBOX  │
+│                  │
+│ Build teaching   │
+│ tools.           │
+│                  │
+│ Current          │
+└──────────────────┘
+```
+
+And, as you specified earlier, **horizontally**, rather than a long vertical list.
+
+The exact visual object — button, card, folder, tile, etc. — remains open.
+
+### Navigation hierarchy
+
+The conceptual hierarchy now looks like:
+
+```text
+COMMAND CENTER
+      │
+      ├── Current
+      │     ├── Kurt Engine
+      │     ├── Teacher Toolbox
+      │     └── Kurt's English
+      │
+      ├── Planned
+      │     └── ...
+      │
+      ├── Possible
+      │     └── ...
+      │
+      ├── Ongoing
+      │     └── ...
+      │
+      └── Archived
+            └── ...
+```
+
+Then:
+
+```text
+Status View
+     ↓
+Project Selector
+     ↓
+Project Workspace
+     ↓
+Close / Back
+     ↓
+Previous Project Selector
+```
+
+### And category can be another lens
+
+Because category is independent from status, we can eventually have:
+
+```text
+STATUS
+Current
+
+CATEGORY
+Software
+```
+
+and see only current software projects.
+
+Or:
+
+```text
+CATEGORY
+Education
+
+STATUS
+Any
+```
+
+The exact UI for those filters comes later.
+
+### Navigation shouldn't destroy context
+
+When you leave a Project Workspace and return to the selector, CC should preserve enough context that you're not effectively starting over.
+
+That supports the broader **Project Re-entry Requirement**:
+
+> Where was I?
+> How was I doing this?
+> What do I do next?
+
+### Matrix additions
+
+| ID      | Requirement                                                                                  | Status                                    |
+| ------- | -------------------------------------------------------------------------------------------- | ----------------------------------------- |
+| P4-R157 | Status views are generated from Project Record status values, not physical folder locations. | **Established / architectural**           |
+| P4-R158 | Multiple projects may simultaneously have the same status.                                   | **Established**                           |
+| P4-R159 | Project selection should present projects as compact visual choices.                         | **Established direction**                 |
+| P4-R160 | Project choices should be arranged horizontally where practical.                             | **Established direction**                 |
+| P4-R161 | Selecting a project opens its Project Workspace.                                             | **Established**                           |
+| P4-R162 | Leaving a Project Workspace returns the user to the relevant project-selection context.      | **Established direction**                 |
+| P4-R163 | Status and category must remain independent navigation/filtering dimensions.                 | **Established**                           |
+| P4-R164 | Navigation must support the Project Re-entry Requirement.                                    | **Established architectural requirement** |
+| P4-R165 | Exact visual implementation of project selectors remains open.                               | **Open**                                  |
+
+### Category 9 verdict
+
+The **navigation logic is essentially established**.
+
+What's intentionally *not* decided yet is the visual treatment.
+
+That distinction is useful because **we can now finish the requirements matrix without accidentally turning a UI mockup into an architectural decision.**
+
+**Next: Category 10 — Project Creation, Templates, and Status Changes.**
+
+- - - - - 
+
+## Step 4S — Category 10: Project Creation, Templates & Status Changes
+
+This category ties together several things we've already established.
+
+### 1. Creating a project
+
+Creating a project should **not require starting from a blank page**.
+
+Eventually, CC can offer:
+
+```text
+NEW PROJECT
+
+[ General Project ]
+[ Software Project ]
+[ Business Plan ]
+[ Construction ]
+[ Conference / Event ]
+[ Content / Media ]
+[ Research ]
+[ Custom ]
+```
+
+Those are the future templates we discussed.
+
+But the underlying result is always the same:
+
+> **A Project Record + its associated workspace/resources.**
+
+The template merely supplies an initial structure.
+
+---
+
+### 2. Status is assigned — not physically moved
+
+This is now a firm principle.
+
+If you create a project:
+
+```text
+Status: Possible
+```
+
+and later decide:
+
+```text
+Status: Current
+```
+
+CC changes the **Project Record**.
+
+The physical project workspace stays where it is.
+
+```text
+Project location
+    ↓
+stays here
+
+Project status
+    ↓
+Possible → Planned → Current
+```
+
+There is no:
+
+> "Move this project from Possible folder to Current folder."
+
+That would create unnecessary file-management problems and undermine the single-source-of-truth model.
+
+---
+
+### 3. Status isn't necessarily a fixed progression
+
+This is also important.
+
+A project might go:
+
+```text
+Possible → Planned → Current → Ongoing → Archived
+```
+
+But it could also go:
+
+```text
+Possible → Current
+```
+
+or:
+
+```text
+Current → Planned
+```
+
+or:
+
+```text
+Ongoing → Current
+```
+
+depending on what actually happens.
+
+**Kurt determines the status.**
+
+The status vocabulary gives CC a way to organize and display projects; it isn't an automated project-management workflow.
+
+---
+
+### 4. "Ongoing" deserves special treatment
+
+Your earlier change from **Completed** to **Ongoing** is significant.
+
+An Ongoing project isn't necessarily actively being worked on today.
+
+It can mean:
+
+> **This project remains alive and relevant, but isn't necessarily in the current working rotation.**
+
+That makes it different from Current.
+
+For example:
+
+```text
+CURRENT
+Teacher Toolbox
+Kurt's English
+
+ONGOING
+Sun Tzu and You
+```
+
+Sun Tzu can remain an active, living project without demanding attention every day.
+
+And eventually:
+
+```text
+ONGOING → ARCHIVED
+```
+
+means:
+
+> This project is no longer considered an active/living project.
+
+Not necessarily:
+
+> "It was successfully completed."
+
+That is a much better semantic fit.
+
+---
+
+### 5. Status changes should be easy
+
+Because status is metadata, changing it should be a **simple project-management action**, not a file operation.
+
+Eventually something as simple as:
+
+```text
+Status: [ Current ▼ ]
+```
+
+could allow you to select:
+
+```text
+Possible
+Planned
+Current
+Ongoing
+Archived
+```
+
+The exact UI remains open.
+
+### Matrix additions
+
+| ID      | Requirement                                                                                                                | Status                                  |
+| ------- | -------------------------------------------------------------------------------------------------------------------------- | --------------------------------------- |
+| P4-R166 | New projects should eventually be creatable from reusable templates.                                                       | **Future capability**                   |
+| P4-R167 | Templates provide starting structure but do not redefine the core Project Model.                                           | **Established architectural principle** |
+| P4-R168 | Creating a project creates/establishes its Project Record and associated workspace references.                             | **Established direction**               |
+| P4-R169 | Changing project status must modify project metadata, not require physical file/folder movement.                           | **Established / architectural**         |
+| P4-R170 | Multiple projects may share any status.                                                                                    | **Established**                         |
+| P4-R171 | Status transitions are not required to follow a predetermined sequence.                                                    | **Established**                         |
+| P4-R172 | Kurt is the final authority for assigning project status.                                                                  | **Established governance**              |
+| P4-R173 | **Ongoing** means the project remains alive/relevant but is not necessarily part of the current active working set.        | **Established direction**               |
+| P4-R174 | **Archived** means the project is no longer considered active/living; it does not necessarily imply successful completion. | **Established direction**               |
+| P4-R175 | Status changes should be simple metadata operations from the user's perspective.                                           | **Established direction**               |
+
+### Category 10 verdict
+
+I think we've now got a much cleaner lifecycle:
+
+**Possible → Planned → Current → Ongoing → Archived**
+
+but **not as a mandatory pipeline**.
+
+It's simply a vocabulary you use to describe where each project currently stands.
+
+And because the status is metadata rather than physical organization, **the project itself never has to move.**
+
+**Next: Category 11 — Project Notes, Decisions, History & Re-entry Context.**
+
+- - - - - 
+
+## Step 4T — Category 11: Project Notes, Decisions, History & Re-entry Context
+
+This is where I think **Command Center really earns its existence**.
+
+The Project Record tells us *what a project is and where it stands*. The notes/history layer tells us **why it is where it is**.
+
+### 1. Project notes are first-class information
+
+You should be able to add notes directly in CC about a project.
+
+Examples:
+
+* ideas
+* observations
+* questions
+* research findings
+* reminders
+* decisions
+* things an AI suggested
+* things you want to investigate later
+* explanations of why something was done
+
+These are **CC-owned information**, so this is one of the places where the otherwise read-only CC model permits editing.
+
+### 2. Decisions should be preserved
+
+A particularly important type of note is a **Decision**.
+
+For example:
+
+```text id="6q0b5c"
+DECISION
+
+Use Obsidian as the initial platform for Command Center.
+
+Reason
+It provides a fast way to build the visual operational
+environment while keeping the underlying data in Markdown.
+
+Future consideration
+CC should remain portable to another platform.
+```
+
+That gives future-you the answer to:
+
+> "Why the hell did we do it this way?"
+
+rather than forcing you to reconstruct the reasoning from old conversations.
+
+### 3. AI contributions should be attributable
+
+This connects directly to your AI-team idea.
+
+A note might say:
+
+```text id="g5q7y2"
+FLAG RAISED BY
+Claude
+
+DATE
+2026-08-...
+
+CONCERN
+Potential issue with ...
+
+KURT'S DISPOSITION
+Investigated — remains a Flag.
+```
+
+The AI doesn't become the authority.
+
+But its contribution isn't lost.
+
+### 4. History matters
+
+We should preserve significant project history rather than continually overwriting the current state.
+
+For example:
+
+```text id="c8z4p1"
+PROJECT HISTORY
+
+2026-07-20
+Status: Possible → Planned
+
+2026-07-24
+Technical direction changed:
+Web app first, standalone app eventually.
+
+2026-07-29
+Claude raised two architectural Flags.
+
+2026-08-01
+Flags reviewed and retained for further investigation.
+```
+
+That is enormously valuable for project re-entry.
+
+### 5. But don't turn CC into a diary
+
+I don't think every tiny action needs to become permanent history.
+
+The distinction should be:
+
+**Current State**
+
+> What is true now?
+
+**Notes**
+
+> Information worth keeping.
+
+**Decisions**
+
+> Important choices and why they were made.
+
+**History**
+
+> Significant changes to the project's state or direction.
+
+That keeps the system useful rather than becoming an enormous activity log.
+
+### 6. Re-entry becomes the central test
+
+When you haven't touched a project for three months, opening it should answer:
+
+> **Where was I?**
+
+> **How was I doing this?**
+
+> **What do I do next?**
+
+Ideally, the workspace gives you that immediately, with the deeper notes/history available when you need them.
+
+### Matrix additions
+
+| ID      | Requirement                                                                                       | Status                                    |
+| ------- | ------------------------------------------------------------------------------------------------- | ----------------------------------------- |
+| P4-R176 | CC must allow project-specific notes to be created and edited within CC.                          | **Established**                           |
+| P4-R177 | Notes may contain ideas, observations, questions, research, reminders, and other project context. | **Established direction**                 |
+| P4-R178 | Significant project decisions should be recordable within CC.                                     | **Established**                           |
+| P4-R179 | Decision records should be capable of preserving the rationale behind important decisions.        | **Established**                           |
+| P4-R180 | AI-raised concerns/Flags should be attributable to the AI that raised them when known.            | **Established direction**                 |
+| P4-R181 | Kurt's disposition of a Flag should be recordable.                                                | **Established direction**                 |
+| P4-R182 | Significant project-state and direction changes should be preservable as history.                 | **Established**                           |
+| P4-R183 | Current state, notes, decisions, and history should remain conceptually distinct.                 | **Established architectural direction**   |
+| P4-R184 | CC should not automatically record every minor user action as permanent history.                  | **Established direction**                 |
+| P4-R185 | Project information should satisfy the Project Re-entry Requirement after extended absence.       | **Established architectural requirement** |
+
+### Category 11 verdict
+
+This is another category where the **principles are clear but the exact UI/data structure should remain open**.
+
+And there's a nice connection emerging:
+
+**Project Record = what the project is now.**
+
+**Notes = what we want to remember.**
+
+**Decisions = why important choices were made.**
+
+**History = how the project got here.**
+
+That's a very strong foundation for the Command Center concept.
+
+**Next: Category 12 — Completed/Ongoing/Archived project information and long-term retrieval.**
+
+- - - - - 
+
+From me: 
+Question: Will, or should, AI's have direct access to what's in the CC?
+
+- - - - - 
+
+Yes — **I think AI access should be part of the design**, but I would make an important distinction between **access to CC's information** and **control of CC**.
+
+### My recommendation
+
+AI systems should be able to **read the relevant CC information directly**, because that dramatically increases CC's value as the project's operational memory.
+
+For example, you could tell Claude:
+
+> "Review the current state of Teacher Toolbox."
+
+Claude should be able to see:
+
+* Purpose
+* Description
+* Focus
+* Status
+* Milestones
+* Progress
+* Next Action
+* Flags
+* Blockers
+* Tools
+* Technical stack
+* AI roles
+* Project ecosystem
+* relevant notes
+* decisions
+* history
+* links to authoritative files/repositories
+
+Then Claude can reason from the **same project context you're looking at**.
+
+### But I would *not* give every AI unrestricted control
+
+I'd separate the permissions conceptually:
+
+| Capability                            | AI                        |
+| ------------------------------------- | ------------------------- |
+| Read CC project information           | **Yes**                   |
+| Search CC information                 | **Yes**                   |
+| Read linked project documents         | **Yes, where authorized** |
+| Read source code                      | **Yes, where authorized** |
+| Suggest changes to CC information     | **Yes**                   |
+| Raise a Flag                          | **Yes**                   |
+| Recommend a Blocker                   | **Yes**                   |
+| Directly change project Status        | **No**                    |
+| Directly edit source code through CC  | **No**                    |
+| Move project files                    | **No**                    |
+| Delete/modify authoritative artifacts | **No**                    |
+
+That fits extremely well with the distinction we just established:
+
+> **AI can identify and report. Kurt decides.**
+
+### There's another reason I think this is important
+
+Remember the WP13 example.
+
+Claude found those two potential architectural problems.
+
+Imagine that CC already contained:
+
+```text
+Project: Command Center
+
+Current Focus:
+WP13 Phase 4
+
+Relevant Decisions:
+...
+
+Active Flags:
+...
+```
+
+Claude could read that context **before reviewing the code**.
+
+Then it isn't starting from:
+
+> "Here's four TypeScript files. What do you think?"
+
+It's starting from:
+
+> "Here's the project, its architectural history, its current state, the decisions that were made, the unresolved Flags, and the relevant source files. Now review this implementation against that context."
+
+That's **much more powerful**.
+
+### And it reinforces the original purpose of CC
+
+CC becomes something like a **shared operational memory layer**:
+
+```text
+                 COMMAND CENTER
+                       │
+          ┌────────────┼────────────┐
+          │            │            │
+        Kurt          GPT        Claude
+          │            │            │
+          └────────────┼────────────┘
+                       │
+                 Project Context
+                       │
+       ┌───────────────┼────────────────┐
+       │               │                │
+    Decisions        Notes          Current State
+       │               │                │
+       └───────────────┼────────────────┘
+                       │
+                Authoritative Files
+                       │
+             GitHub / Local / etc.
+```
+
+Each AI can **read the same underlying truth**, while still having different roles.
+
+### One thing I would *not* freeze yet
+
+I wouldn't yet decide **how** the AI accesses CC.
+
+It could eventually be:
+
+* direct Markdown/vault access;
+* a CC API;
+* an MCP server;
+* a connector;
+* a generated project-context package;
+* or some combination.
+
+Because we've deliberately made CC **platform-independent and Markdown-based**, we have options.
+
+But I think the **requirement itself should be added now**:
+
+> **Command Center information should be accessible as structured, machine-readable project context to authorized AI systems, without making any AI system the owner or authority of that information.**
+
+That's a significant Phase 4 requirement, not merely a future nice-to-have.
+
+- - - - - 
+
+From me: 
+I can see an AI making certain changes within CC . . . 
+Example: notes where project was left off, what's being worked on, % til completion, etc. 
+
+- - - - - 
+
+Yes — and I think that actually gives us a **better permission model** than simply "AI read-only."
+
+The key distinction is **what kind of information the AI is changing**.
+
+### AI can maintain operational information
+
+For example, after a coding session, you could have Claude update:
+
+```text
+Focus
+NavigationController review
+
+Progress
+75%
+
+Where we left off
+WP13 Phase 4 matrix — Category 11
+
+Next Action
+Continue with Category 12
+
+Notes
+Reviewed the distinction between Flags and Blockers.
+```
+
+That makes perfect sense because the AI is essentially maintaining the **project's operational log**.
+
+### But some information remains human-controlled
+
+I'd divide CC information into three broad permission levels:
+
+| Information                |                                            AI can modify? |    Kurt's authority |
+| -------------------------- | --------------------------------------------------------: | ------------------: |
+| **Operational state**      |                                                     ✅ Yes |        Can override |
+| Notes / session summaries  |                                                     ✅ Yes |   Can edit/override |
+| Suggested Flags            |                                                     ✅ Yes | Decides disposition |
+| Progress estimate          |                                                     ✅ Yes |         Can correct |
+| Next-action recommendation |                                                     ✅ Yes |   Can accept/change |
+| Technical observations     |                                                     ✅ Yes |          Can review |
+| Project Status             |                           ⚠️ Probably no automatic change |    **Kurt decides** |
+| Purpose                    |                                           ⚠️ Suggest only |    **Kurt decides** |
+| Description                |                           ⚠️ Suggest/update with approval |    **Kurt decides** |
+| Category                   |                                           ⚠️ Suggest only |    **Kurt decides** |
+| Architectural Decisions    | ⚠️ Record proposed decision; final decision requires Kurt |    **Kurt decides** |
+| Source code/files          |                                           ❌ No through CC |      External tools |
+
+So an AI could legitimately say:
+
+> "We worked on this for two hours. I've updated the Focus, Progress, Where We Left Off, and Next Action."
+
+But it shouldn't quietly decide:
+
+> "This project is now Ongoing."
+
+### This also solves something important about Progress
+
+I wouldn't treat `% complete` as sacred truth.
+
+An AI could estimate:
+
+> **Progress: 70% — AI estimate**
+
+while you could change it to:
+
+> **Progress: 60% — Kurt assessment**
+
+Or perhaps eventually:
+
+```text
+Progress
+60%
+
+Last updated by
+Kurt
+
+AI estimate
+70%
+```
+
+We don't have to design that level of detail yet, but the architecture should **allow for provenance**.
+
+### And this gives us a very useful principle
+
+> **AI may maintain operational context derived from its work, but may not silently redefine the project's identity, authority, or governing decisions.**
+
+That feels much more like the system we're actually building.
+
+CC isn't merely a **read-only dashboard**.
+
+It's more like:
+
+> **A human-governed project memory that authorized AIs can read and, within defined boundaries, help maintain.**
+
+I would add that distinction to the matrix before we move on.
+
+- - - - - 
+
+From me: 
+Just for the record, I wouldn't have the slightest idea how to judge progress percentages at any point in time - That's an AI parlor trick 
+
+- - - - - 
+
+😄 Fair point — and that actually clarifies the requirement.
+
+**Progress percentage should be an AI-generated operational metric, not something CC expects Kurt to calculate.**
+
+You don't need to know whether you're at 63% or 71%. The AI can make an estimate based on the project's milestones, completed work, remaining work, and current state.
+
+I'd phrase the requirement as:
+
+> **AI may estimate and maintain project progress based on available project information. Progress is explicitly an estimate, not an authoritative measurement.**
+
+And importantly, **different AIs could disagree**. That's okay.
+
+For example:
+
+```text
+Progress
+~70% — Claude estimate
+```
+
+Another AI might conclude:
+
+```text
+~60% — GPT estimate
+```
+
+CC doesn't need to pretend one of them possesses objective truth.
+
+The useful part is that the AI can say:
+
+> "Based on the milestones we've completed and what's remaining, I'd estimate we're about 70% through."
+
+That's exactly the kind of **AI parlor trick that's actually useful** here. 😄
+
+And it reinforces the human/AI boundary:
+
+* **AI:** estimates, summarizes, identifies, recommends, maintains operational notes.
+* **Kurt:** decides what the project *is*, what its status is, and what decisions govern it.
+
+I'll treat that as the intended model going forward.
+
+- - - - - 
+
+## Step 4U — Category 12: Ongoing / Archived Projects & Long-Term Retrieval
+
+This is the other side of the **Project Re-entry Requirement**.
+
+We already decided that **Completed** isn't the right concept. We have:
+
+* **Current** — actively in the working rotation.
+* **Ongoing** — still alive/relevant, but not currently demanding active attention.
+* **Archived** — no longer an active/living project.
+
+### The important question
+
+What happens to all the useful information when a project leaves Current?
+
+**Nothing should be lost.**
+
+The project remains a complete project record with its:
+
+* Purpose
+* Description
+* Categories
+* history
+* notes
+* decisions
+* Flags
+* Blockers
+* AI contributions
+* technical information, if applicable
+* documents/files
+* ecosystem relationships
+* source references
+
+Only its **status/view changes**.
+
+So:
+
+```text id="7f3m2k"
+CURRENT
+    ↓
+ONGOING
+    ↓
+ARCHIVED
+```
+
+does **not** mean:
+
+```text
+Move files
+Archive files
+Delete information
+Compress project
+```
+
+It means:
+
+> **Change how prominently CC presents the project.**
+
+### Archived should remain highly searchable
+
+Suppose two years from now you remember:
+
+> "What did we decide about premium accounts when we were building Teacher Toolbox?"
+
+You should be able to search CC and find the archived material.
+
+That makes **Archived** fundamentally different from "deleted."
+
+### Ongoing is especially important
+
+I think your choice of **Ongoing** gives us a useful middle ground.
+
+For example:
+
+```text
+Current
+    Teacher Toolbox
+    Kurt's English
+    Command Center
+
+Ongoing
+    Sun Tzu and You
+    [another project]
+
+Archived
+    [older projects]
+```
+
+You can have many projects in each.
+
+And an Ongoing project can return to Current at any time without moving anything physically.
+
+### AI access continues
+
+This is also important given our previous decision.
+
+An AI should be able to access an Ongoing or Archived project's relevant context when authorized.
+
+So if you say:
+
+> "Let's bring Sun Tzu and You back."
+
+the AI can potentially retrieve:
+
+* where it stopped;
+* previous decisions;
+* unfinished work;
+* relevant notes;
+* old Flags;
+* historical context.
+
+That is **project re-entry**, not merely file retrieval.
+
+### Matrix additions
+
+| ID      | Requirement                                                                                                | Status                        |
+| ------- | ---------------------------------------------------------------------------------------------------------- | ----------------------------- |
+| P4-R186 | Changing a project to Ongoing or Archived must not destroy or relocate its project information.            | **Established**               |
+| P4-R187 | Archived projects must remain retrievable through CC.                                                      | **Established**               |
+| P4-R188 | Archived project records should retain relevant history, notes, decisions, and associated references.      | **Established direction**     |
+| P4-R189 | Ongoing projects remain fully represented and may return to Current without restructuring their workspace. | **Established**               |
+| P4-R190 | Search should be capable of finding relevant information in Ongoing and Archived projects.                 | **Established direction**     |
+| P4-R191 | Authorized AI systems should be able to access relevant Ongoing/Archived project context when needed.      | **Established direction**     |
+| P4-R192 | Archiving a project is a status/view operation, not a destructive archival process.                        | **Architectural requirement** |
+
+### Category 12 verdict
+
+I think this is essentially resolved.
+
+And there's a larger pattern emerging:
+
+> **CC changes visibility and state, not the underlying project reality.**
+
+A project doesn't physically move because its status changes.
+Its information doesn't disappear because it becomes Archived.
+Its AI context doesn't disappear because it isn't Current.
+
+That is exactly the kind of long-term project memory CC needs.
+
+**Next: Category 13 — AI access, permissions, and the boundary between CC-maintained information and human-controlled information.**
+
+- - - - - 
+
+From me: 
+Regarding "Archived" . . . 
+There are things, especially in the early coding process, that can be used as the base "seed" (kernel?) for a new project to build from, as opposed to starting everything from scratch
+
+- - - - - 
+
+Yes. And **"seed" is actually a good term here**. "Kernel" has a more technical meaning, so I'd use **Project Seed** in Command Center.
+
+This adds an important dimension to **Archived**: an archived project isn't merely something you can look back at. Parts of it may become **reusable starting material for a future project**.
+
+For example:
+
+```text
+ARCHIVED PROJECT
+Kurt Engine v1
+       │
+       ├── History
+       ├── Decisions
+       ├── Notes
+       └── Reusable Seed
+              │
+              ├── project structure
+              ├── useful code
+              ├── proven components
+              └── configuration patterns
+                       ↓
+                 NEW PROJECT
+```
+
+### I would distinguish three things
+
+**Archived Project**
+
+The complete historical project, preserved intact.
+
+**Project Seed**
+
+A deliberately identified subset of that project that could provide a starting point for something new.
+
+**New Project**
+
+A genuinely separate project that may use the seed, but does **not** become a continuation of the archived project's identity.
+
+That last part is important.
+
+If you take something useful from `kurt-engine-core` and use it to start another homepage tool, the new project shouldn't inherit the old project's identity, status, history, etc.
+
+It simply says:
+
+> **Seeded from: Kurt Engine Core**
+
+### Seeds don't have to be code
+
+This is another place where the domain-agnostic architecture pays off.
+
+A seed could be:
+
+* code architecture;
+* a project folder structure;
+* a business-plan framework;
+* a conference planning structure;
+* a collection of research;
+* a checklist;
+* a set of templates;
+* lessons learned;
+* reusable documents;
+* design patterns.
+
+So an archived **conference** might contain:
+
+> "This venue-selection process worked well. Reuse this as the seed for the 2028 conference."
+
+### This also connects directly to the future Template Library
+
+There are really two sources for creating a new project:
+
+```text
+                NEW PROJECT
+                    │
+          ┌─────────┴─────────┐
+          │                   │
+       TEMPLATE              SEED
+          │                   │
+   Generic starting       Proven material
+      structure           from an old project
+```
+
+A **Template** is deliberately generic.
+
+A **Seed** is derived from actual prior experience.
+
+That's potentially a very powerful feature.
+
+### I'd add this to the matrix
+
+| ID      | Requirement                                                                                                            | Status                        |
+| ------- | ---------------------------------------------------------------------------------------------------------------------- | ----------------------------- |
+| P4-R193 | Archived projects must remain available as potential sources of reusable project material.                             | **Established direction**     |
+| P4-R194 | CC should eventually support identifying reusable material within an archived project as a **Project Seed**.           | **Future capability**         |
+| P4-R195 | A Project Seed may contain reusable code, structure, documents, knowledge, patterns, or other project-specific assets. | **Established direction**     |
+| P4-R196 | A new project created from a seed receives its own independent Project ID and identity.                                | **Architectural requirement** |
+| P4-R197 | The originating archived project remains unchanged when its material is reused as a seed.                              | **Established**               |
+| P4-R198 | Project Seeds and generic Project Templates are distinct concepts.                                                     | **Established direction**     |
+
+And I really like this because it changes the meaning of **Archived** from:
+
+> "Stuff we're done with."
+
+to:
+
+> **"Projects we're no longer actively working on, but whose accumulated knowledge and proven components remain valuable."**
+
+That's a much better long-term knowledge model for CC.
+
+- - - - - 
+
+Absolutely. That's an important distinction.
+
+The **Command Center itself has a Project Seed** — the architectural/design seed we're building from now — and that seed has a special characteristic:
+
+> **Obsidian is the initial implementation platform, not the foundation of the underlying system.**
+
+So there are actually **two different kinds of seeds** now.
+
+### 1. Project Seed
+
+A reusable starting point derived from an existing project.
+
+Example:
+
+> Archived project → reusable code/structure → new project.
+
+### 2. Foundational Seed
+
+The material that establishes the **core architecture of a project from the beginning**.
+
+For Command Center:
+
+```text id="wq7c3a"
+COMMAND CENTER FOUNDATIONAL SEED
+             │
+             ├── Project Model
+             ├── Requirements / Matrix
+             ├── Architecture
+             ├── Design Principles
+             ├── Data Structure
+             └── Portability Principles
+                     │
+                     ↓
+              Obsidian implementation
+                     │
+                     ↓
+              Future platform
+```
+
+The crucial point is that **Obsidian is an implementation host**.
+
+The underlying:
+
+* project information;
+* Markdown data;
+* relationships;
+* status;
+* notes;
+* decisions;
+* history;
+* links;
+* project seeds;
+* templates;
+
+should remain sufficiently independent that we can eventually move CC to another platform without rebuilding the conceptual system from scratch.
+
+### This should become an explicit architectural principle
+
+> **Command Center must be designed from a platform-independent foundational seed. Obsidian is the initial implementation platform, not a permanent architectural dependency.**
+
+And I'd add:
+
+> **Platform-specific implementation details must not become prerequisites for understanding or operating the underlying Command Center project data.**
+
+That's actually one of the reasons your insistence on **Markdown, Git, and a domain-agnostic Project Model** is so important.
+
+### And there's a useful hierarchy emerging
+
+```text id="j3n6wq"
+COMMAND CENTER
+│
+├── Foundational Seed
+│     └── Defines what CC fundamentally is
+│
+├── Current Implementation
+│     └── Obsidian + Markdown + plugins/etc.
+│
+├── Future Platform(s)
+│     └── Yet to be determined
+│
+├── Project Templates
+│     └── Generic starting points
+│
+└── Project Seeds
+      └── Reusable material from prior projects
+```
+
+So yes — **the Command Center seed itself needs to be documented as part of the architecture**, not treated as just another template or archived-project artifact.
+
+That should be a **high-level architectural requirement**, and I would carry it forward as we continue the matrix.
+
+- - - - - 
+
+Next is **Category 13 — AI Access, Permissions & Governance**.
+
+This is a good place to consolidate what we've just established about AI being able to **read CC and help maintain certain information**, without becoming the authority over the project.
+
+### Step 4V — Category 13: AI Access & Governance
+
+The working model is now:
+
+> **AI is a participant in Command Center, not its owner.**
+
+#### AI should be able to read
+
+Authorized AI systems should be able to access relevant CC information, including:
+
+* project identity
+* current state
+* focus
+* progress
+* next action
+* notes
+* decisions
+* history
+* Flags
+* relevant project files
+* ecosystem information
+* technical information where applicable
+
+#### AI should be able to maintain operational information
+
+This is where we moved beyond simple "read only."
+
+An AI can update things such as:
+
+* where the project was left;
+* what was worked on;
+* current focus;
+* estimated progress;
+* next action;
+* session notes;
+* technical observations;
+* Flags it identifies.
+
+For example:
+
+> **Claude:** "I finished reviewing Category 11 and updated the project workspace to reflect that."
+
+That's appropriate.
+
+#### AI should not silently change governance
+
+Certain things remain **Kurt-controlled**:
+
+* project identity;
+* Purpose;
+* fundamental Description;
+* Status;
+* major Categories;
+* architectural decisions;
+* final disposition of significant Flags;
+* whether something is a Blocker;
+* project creation/archive decisions.
+
+An AI can **recommend** changes to those things.
+
+Kurt makes the final decision.
+
+### Flag vs Blocker becomes particularly important here
+
+An AI might say:
+
+> "I found a potential architectural problem."
+
+CC records:
+
+```text
+FLAG
+Raised by: Claude
+Status: Unresolved
+```
+
+Kurt can then decide:
+
+```text
+Dismiss
+Investigate
+Accept
+Convert to Blocker
+```
+
+The AI doesn't get to declare:
+
+> "This is now a Blocker."
+
+That preserves the distinction we worked out earlier.
+
+### AI identity and provenance
+
+CC should eventually know **which AI did what**.
+
+Not necessarily for every trivial change, but for meaningful project information.
+
+For example:
+
+```text
+Progress
+~70%
+
+Updated by
+Claude
+
+Updated
+2026-08-...
+```
+
+or:
+
+```text
+Flag raised by
+Claude
+
+Technical review
+GPT-5.6
+
+Implementation
+Codex
+```
+
+This is particularly useful when different AIs are deliberately given different roles.
+
+### Matrix additions
+
+| ID      | Requirement                                                                                                   | Status                                  |
+| ------- | ------------------------------------------------------------------------------------------------------------- | --------------------------------------- |
+| P4-R199 | Authorized AI systems should be able to read relevant CC project information.                                 | **Established**                         |
+| P4-R200 | Authorized AI systems may maintain designated operational project information.                                | **Established**                         |
+| P4-R201 | AI may record session context such as where work stopped, what was accomplished, and what should happen next. | **Established**                         |
+| P4-R202 | AI may estimate project progress.                                                                             | **Established**                         |
+| P4-R203 | AI-generated estimates should be identifiable as estimates rather than objective truth.                       | **Established**                         |
+| P4-R204 | AI may raise Flags based on its observations.                                                                 | **Established**                         |
+| P4-R205 | AI must not automatically determine final project Status.                                                     | **Established**                         |
+| P4-R206 | AI must not silently redefine project identity or governing decisions.                                        | **Established**                         |
+| P4-R207 | AI may recommend changes to human-controlled project information.                                             | **Established direction**               |
+| P4-R208 | Kurt remains the final authority over project governance and significant dispositions.                        | **Established governance principle**    |
+| P4-R209 | Significant AI-generated project information should preserve AI provenance where practical.                   | **Established direction**               |
+| P4-R210 | AI permissions should be scoped rather than universally unrestricted.                                         | **Established architectural principle** |
+
+### One important architectural consequence
+
+We should eventually have some concept of:
+
+**AI Role / Permission Profile**
+
+For example:
+
+```text
+Claude
+Role: Review / Analysis
+CC access: Read + operational updates
+Code: Read
+Governance: Recommend only
+```
+
+while:
+
+```text
+Codex
+Role: Implementation
+CC access: Read + operational updates
+Code: External development environment
+Governance: Recommend only
+```
+
+But **we don't need to design the permission system now**.
+
+The requirement is simply that CC's architecture must leave room for **different AI capabilities and permissions**.
+
+---
+
+### Category 13 verdict
+
+This is now a fairly strong model:
+
+**Kurt controls the project.**
+
+**AI systems contribute to the project.**
+
+**CC preserves the shared operational context.**
+
+And that naturally leads us to the next category:
+
+**Category 14 — The Command Center itself: its own Project Record, foundational seed, architecture, and self-management.**
+
+- - - - - 
+
+From me: 
+Question: Does always referring to "Kurt controls . . ." in any way limit access to someone else who might make use of the finished Command Center app for their own project?
+
+- - - - - 
+
+No — **but the wording we're using right now could accidentally imply that.**
+
+When we've said **"Kurt controls..."**, we're describing the **governance model for your Command Center project**, not a permanent rule that gets baked into the finished application.
+
+For the finished CC, the proper abstraction is:
+
+> **The Project Owner controls the project.**
+
+So if you eventually give the finished Command Center to someone else, their project might look like:
+
+```text
+Project Owner: Jane
+
+Status: Current
+Purpose: Build a catering business
+```
+
+Jane decides:
+
+* the project's status;
+* what counts as a blocker;
+* which flags to accept/dismiss;
+* major project decisions;
+* what the project is ultimately trying to accomplish.
+
+The AI can assist Jane in essentially the same way it assists you.
+
+### So I would change our terminology in the matrix
+
+During planning, we've naturally been saying:
+
+> **Kurt is the final authority.**
+
+But the actual architectural requirement should be:
+
+> **The Project Owner is the final authority over project governance and significant project decisions.**
+
+Then **Kurt** is simply the Project Owner of *our Command Center project*.
+
+That distinction is important enough that I'd make it explicit now.
+
+### There are actually two levels
+
+**Command Center development**
+
+```text
+Project Owner: Kurt
+```
+
+You make the decisions about *this* Command Center.
+
+**Finished Command Center application**
+
+```text
+Project Owner: Whoever owns/controls a particular project
+```
+
+Their authority applies to *their* project.
+
+And potentially, a single person could manage multiple projects while remaining the owner of all of them.
+
+### This also fits our domain-agnostic requirement
+
+The finished application shouldn't know or care that the original architect was Kurt.
+
+It should know concepts such as:
+
+* **Project Owner**
+* **Authorized User**
+* **Authorized AI**
+* **Project Status**
+* **Project Governance**
+
+That makes CC a **general-purpose project command center**, rather than "Kurt's project manager."
+
+So yes: **I'd revise the matrix language from "Kurt controls..." to "Project Owner controls..." everywhere the requirement is meant to describe the finished system.**
+
+For our planning conversation, we can still say "Kurt" when we're talking specifically about *your* Command Center project.
+
+- - - - - 
+
+From me: 
+Just making sure . . . 
+What's next?
+
+- - - - - 
+
+Yep — good catch to make sure that distinction is explicit.
+
+## Step 4W — Category 14: Command Center as Its Own Project
+
+We've been designing CC itself while simultaneously using CC's future project model to describe other projects.
+
+We should now make that **self-hosting/self-describing principle explicit**.
+
+### 1. Command Center is itself a project
+
+CC should have its own Project Record.
+
+Something conceptually like:
+
+```text id="2p8r5n"
+PROJECT
+Command Center
+
+Purpose
+Provide a visual operational headquarters for managing projects
+and their surrounding information.
+
+Description
+A domain-agnostic project command center initially implemented
+with Obsidian/Markdown and designed for future portability.
+
+Focus
+Complete planning and requirements matrix.
+
+Status
+Current
+```
+
+Nothing special should be required simply because this happens to be the project **building Command Center**.
+
+### 2. CC should use its own architecture
+
+The finished system should be capable of managing:
+
+> **Command Center**
+
+using the same Project Model it uses for:
+
+> **Teacher Toolbox**
+
+> **Kurt Engine**
+
+> **Sun Tzu and You**
+
+> **A business plan**
+
+> **A construction project**
+
+etc.
+
+In other words:
+
+> **Command Center should be able to manage itself.**
+
+That's a powerful architectural test.
+
+If we need a special hidden mechanism to manage CC itself, we've probably made the Project Model too domain-specific.
+
+### 3. The Foundational Seed belongs here
+
+This is where we document the distinction you just raised.
+
+CC has a **Foundational Seed** containing:
+
+* the domain-agnostic Project Model;
+* core requirements;
+* architectural principles;
+* portability requirements;
+* initial Obsidian implementation decisions.
+
+Obsidian is therefore recorded as:
+
+> **Current Implementation Platform**
+
+—not as:
+
+> **What Command Center fundamentally is.**
+
+### 4. CC's own technical environment is project information
+
+For CC itself, the workspace can show:
+
+```text id="h3j0l4"
+IMPLEMENTATION
+
+Platform
+Obsidian
+
+Data
+Markdown
+
+Version Control
+Git / GitHub
+
+Initial Environment
+Mac / Obsidian
+
+Portability
+Designed for migration to another platform
+```
+
+Again, these are simply **project-specific fields**.
+
+### 5. This gives us a powerful portability test
+
+At some future point, we should be able to say:
+
+> "We're moving Command Center from Obsidian to Platform X."
+
+The **Project Model and underlying information remain intact**.
+
+Only the implementation layer changes.
+
+Conceptually:
+
+```text id="x5h0zw"
+       DOMAIN-AGNOSTIC CC MODEL
+                  │
+          ┌───────┴───────┐
+          │               │
+       Obsidian        Platform X
+       implementation  implementation
+```
+
+That's exactly what your original requirement was getting at.
+
+### Matrix additions
+
+| ID      | Requirement                                                                                                    | Status                                  |
+| ------- | -------------------------------------------------------------------------------------------------------------- | --------------------------------------- |
+| P4-R211 | Command Center itself must be representable as a normal Project Record.                                        | **Established**                         |
+| P4-R212 | CC's own project workspace should use the same core Project Model available to other projects.                 | **Architectural requirement**           |
+| P4-R213 | CC must not require a special project model merely because it manages itself.                                  | **Architectural requirement**           |
+| P4-R214 | CC must maintain a distinct Foundational Seed representing its platform-independent architecture and design.   | **Established**                         |
+| P4-R215 | Obsidian is the initial implementation platform, not the fundamental definition of CC.                         | **Established / architectural**         |
+| P4-R216 | CC's underlying project information must remain sufficiently platform-independent to support future migration. | **Established / architectural**         |
+| P4-R217 | Platform-specific implementation details should remain separable from the underlying Project Model.            | **Established architectural principle** |
+| P4-R218 | CC should eventually be capable of managing its own project information using its own standard mechanisms.     | **Established direction**               |
+
+### Category 14 verdict
+
+This category is essentially **architecturally resolved**.
+
+And it gives us a very useful test for everything we design from here:
+
+> **If Command Center can manage itself using the same mechanisms it provides to everyone else, we're probably building the right thing.**
+
+**Next: Category 15 — The Dashboard / Home Screen and overall visual hierarchy.**
+
+- - - - - 
+
+## Step 4X — Category 15: Dashboard / Home Screen & Visual Hierarchy
+
+This is where we finally get to the **"See first. Read second."** principle.
+
+The Dashboard shouldn't try to show everything. Its job is to answer:
+
+> **What matters right now?**
+
+### 1. The Dashboard is not a project list
+
+The Dashboard is the **operational overview**.
+
+Something conceptually like:
+
+```text
+┌─────────────────────────────────────────────────────────────┐
+│                    COMMAND CENTER                           │
+│                                                             │
+│  CURRENT        ONGOING       PLANNED       POSSIBLE       │
+│                                                             │
+│  [Project]      [Project]     [Project]     [Project]      │
+│  [Project]      [Project]     ...           ...            │
+│                                                             │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│  CURRENT FOCUS                                              │
+│  ┌───────────────────────────────────────────────────────┐  │
+│  │ WP13 Phase 4 — Command Center                         │  │
+│  │ Continue requirements/matrix consolidation            │  │
+│  └───────────────────────────────────────────────────────┘  │
+│                                                             │
+│  ATTENTION                                                 │
+│  ⚑ 3 Flags requiring review                                │
+│  ⛔ 1 Blocker                                               │
+│                                                             │
+├─────────────────────────────────────────────────────────────┤
+│ Search [File ▼]                                             │
+│                                                             │
+│ Weekly Review     Portfolio     Knowledge     Templates    │
+└─────────────────────────────────────────────────────────────┘
+```
+
+That's **conceptual**, not a proposed final layout.
+
+### 2. Current should be prominent
+
+Because multiple projects can be Current, the Dashboard needs to make that obvious.
+
+For example:
+
+```text id="8s2k4q"
+CURRENT
+
+[ Command Center ] [ Teacher Toolbox ] [ Kurt's English ]
+```
+
+You shouldn't have to open a dropdown just to discover which projects you're currently working on.
+
+### 3. Attention should be visible without becoming noisy
+
+Flags and Blockers deserve prominence.
+
+But they shouldn't overwhelm the Dashboard.
+
+Something like:
+
+```text id="5k8m2v"
+ATTENTION
+
+⚑  4 Flags
+⛔  1 Blocker
+```
+
+Clicking that could take you to the appropriate filtered view.
+
+The Dashboard should **surface** problems, not become a problem-management screen itself.
+
+### 4. Search is global
+
+The Search button we've already established belongs in the overall CC navigation.
+
+```text id="4z7q1m"
+[ Search ▼ ]
+```
+
+with:
+
+```text
+File
+Project
+```
+
+Eventually, search could be available from anywhere in CC.
+
+### 5. Navigation should remain shallow
+
+I don't think CC should become a maze of nested menus.
+
+The major destinations are likely to be something close to:
+
+```text id="q3h6w9"
+Dashboard
+Current
+Ongoing
+Planned
+Possible
+Archived
+Search
+Knowledge
+Templates
+Settings
+```
+
+But we should resist deciding the exact navigation until the rest of the matrix is finished.
+
+### 6. The Dashboard should be customizable eventually
+
+Different users may care about different things.
+
+One project owner might want:
+
+> Current Projects + Flags + Next Actions
+
+Another might want:
+
+> Current Projects + Calendar + Milestones
+
+So I would eventually allow **Dashboard modules/widgets** to be rearranged or enabled/disabled.
+
+But that's a **future capability**, not something we need to build into the initial version.
+
+### 7. The Dashboard must remain domain-agnostic
+
+This is now another architectural test.
+
+A software-heavy dashboard might surface:
+
+```text
+Current Projects
+Flags
+Build Status
+Next Actions
+```
+
+A conference organizer might see:
+
+```text
+Current Projects
+Upcoming Dates
+Open Flags
+Next Actions
+```
+
+A construction project might surface:
+
+```text
+Current Projects
+Upcoming Milestones
+Permits
+Open Issues
+Next Actions
+```
+
+Same Dashboard system; different project information.
+
+---
+
+### Matrix additions
+
+| ID      | Requirement                                                                              | Status                        |
+| ------- | ---------------------------------------------------------------------------------------- | ----------------------------- |
+| P4-R219 | CC must provide a Dashboard serving as the primary operational overview.                 | **Established**               |
+| P4-R220 | Dashboard should prioritize current/relevant information over exhaustive project detail. | **Established**               |
+| P4-R221 | Multiple Current projects must be visible from the Dashboard.                            | **Established**               |
+| P4-R222 | Dashboard should prominently surface unresolved Flags and Blockers requiring attention.  | **Established**               |
+| P4-R223 | Dashboard should provide access to global Search.                                        | **Established**               |
+| P4-R224 | Dashboard navigation should remain shallow and understandable.                           | **Established direction**     |
+| P4-R225 | Dashboard should remain domain-agnostic.                                                 | **Architectural requirement** |
+| P4-R226 | Dashboard modules/widgets may eventually be customizable by the Project Owner.           | **Future capability**         |
+| P4-R227 | Exact Dashboard visual layout remains open until the requirements/matrix is complete.    | **Open**                      |
+
+### Category 15 verdict
+
+The **purpose and hierarchy are established**.
+
+The visual design is deliberately **not frozen yet**.
+
+And I think that's the right decision. We now have enough requirements to understand *what the Dashboard must accomplish* without prematurely deciding exactly where every box goes.
+
+**Next: Category 16 — Weekly Review, Portfolio Overview, and other higher-level views.**
+
+- - - - - 
+
+From me: 
+#2  should just show the options "current" etc. - Not the projects within those options 
+
+- - - - - 
+
+Yes. **You're right.** I misunderstood what you meant by the Dashboard's project navigation.
+
+The Dashboard should show the **status/category choices only**, not expose the projects underneath them.
+
+Conceptually:
+
+```text
+┌─────────────────────────────────────────────────────────────┐
+│                    COMMAND CENTER                           │
+│                                                             │
+│   [ CURRENT ]   [ ONGOING ]   [ PLANNED ]   [ POSSIBLE ]   │
+│                                                             │
+│                     [ ARCHIVED ]                            │
+│                                                             │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│                     CURRENT FOCUS                            │
+│                                                             │
+│              ...whatever is currently important...          │
+│                                                             │
+│                     ATTENTION                               │
+│                  ⚑ Flags    ⛔ Blockers                      │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+```
+
+Then:
+
+**Click `CURRENT`**
+
+→ *now* the Current project selector appears:
+
+```text
+[ Command Center ]   [ Teacher Toolbox ]   [ Kurt's English ]
+```
+
+Choose one:
+
+→ **Project Workspace fills the screen.**
+
+Close it:
+
+→ **Back to the Current project selector.**
+
+So the hierarchy is:
+
+**Dashboard → Status → Projects → Project Workspace**
+
+not:
+
+**Dashboard → Status + Projects simultaneously.**
+
+That's cleaner and much closer to the original vision you described.
+
+I'll also correct the matrix interpretation: **P4-R221 should mean that the Dashboard provides access to the Current/status views, not that it displays the projects contained in those views.**
+
+- - - - - 
+
+From me: 
+Not "current focus" either . . . 
+Top 3 buttons: [Current] [Planning] [Ideas] < (Possible?)
+Under: [Ongoing] [New Project] [Archive]
+
+- - - - 
+
+Yes. **That is much closer to the actual Command Center home screen you've been describing.**
+
+I would currently define it as:
+
+```text
+┌──────────────────────────────────────────────────────────────┐
+│                    COMMAND CENTER                            │
+│                                                              │
+│   [ CURRENT ]   [ PLANNING ]   [ IDEAS ]                     │
+│                                                              │
+│   [ ONGOING ]  [ NEW PROJECT ]  [ ARCHIVE ]                 │
+│                                                              │
+└──────────────────────────────────────────────────────────────┘
+```
+
+And **nothing underneath those buttons by default**.
+
+Each button is a doorway into a different function:
+
+* **Current** → shows the projects currently being actively worked on.
+* **Planning** → projects being developed toward active status.
+* **Ideas** → possible/future projects and their accumulated ideas/notes.
+* **Ongoing** → living projects that aren't currently in the active rotation.
+* **New Project** → starts the project-creation process.
+* **Archive** → access to archived projects and their preserved history/seeds.
+
+### I like these names better
+
+I think **Planning** and **Ideas** are actually better than the more abstract *Planned* and *Possible*.
+
+They describe **what you'll do there**, rather than attempting to define a formal project status.
+
+And there's an important distinction:
+
+**Ideas** can be messy.
+
+That's where the "maybe someday" stuff can accumulate:
+
+> "Could build an iCanMath version..."
+
+> "Maybe this could become a mobile app..."
+
+> "Interesting idea from Claude..."
+
+> "What if Teacher Toolbox eventually..."
+
+It doesn't need to already look like a properly defined project.
+
+Then **New Project** is what turns something into an actual Project Record.
+
+So we may have just uncovered a useful distinction:
+
+**Ideas → New Project → Planning → Current → Ongoing → Archive**
+
+…but **that is not necessarily a mandatory lifecycle**. The buttons are views/functions, while the underlying Project Status remains independently controlled by the Project Owner.
+
+And yes — **I'd remove "Current Focus" from the Dashboard design entirely.** That was me putting information on the home screen that you specifically wanted behind the project selection.
+
+- - - - - 
+
+Next is **Category 16 — the behavior of those six Home Screen buttons**.
+
+We've now got the Home Screen concept established, so we should define what each button actually *does* before moving on.
+
+### Step 4Y — Home Screen Functions
+
+| Button          | Function                                                                       |
+| --------------- | ------------------------------------------------------------------------------ |
+| **Current**     | Opens the selector containing projects whose status is Current                 |
+| **Planning**    | Opens projects currently being planned                                         |
+| **Ideas**       | Opens the collection of possible/future project ideas and associated notes     |
+| **Ongoing**     | Opens projects that remain active/relevant but aren't currently Current        |
+| **New Project** | Begins creation of a new Project Record, eventually optionally from a template |
+| **Archive**     | Opens archived projects, including their history and reusable Seeds            |
+
+The key distinction is:
+
+> **The buttons are navigation/function buttons. They are not six physical project folders.**
+
+That preserves the rule we've already established that changing a project's status **doesn't require moving its files**.
+
+### One particularly important point: Ideas
+
+I think **Ideas should probably not behave exactly like the other five buttons**.
+
+An Idea can be very loose:
+
+```text
+IDEAS
+
+• iCanMath
+  "Maybe build a math worksheet generator..."
+
+• Mobile version of Kurt Engine
+  "Eventually turn the web app into a standalone app..."
+
+• AI Workbench idea
+  "Could this become a reusable workflow?"
+```
+
+Some ideas may eventually become projects.
+
+Others may remain ideas indefinitely.
+
+So **Ideas is more like an idea workspace**, while Current/Planning/Ongoing/Archive are primarily project views.
+
+### New Project
+
+When you select **New Project**, eventually:
+
+```text
+NEW PROJECT
+
+Name: __________
+
+[ Start Blank ]
+[ Use Template ]
+[ Use Project Seed ]
+```
+
+That connects the three concepts we've now established:
+
+**Blank** — start from the core Project Model.
+
+**Template** — start from a generic project structure.
+
+**Project Seed** — start from proven material from an earlier project.
+
+### Matrix additions
+
+| ID      | Requirement                                                                                                    | Status                        |
+| ------- | -------------------------------------------------------------------------------------------------------------- | ----------------------------- |
+| P4-R228 | Home Screen must provide six primary functions/views: Current, Planning, Ideas, Ongoing, New Project, Archive. | **Established**               |
+| P4-R229 | Current opens a project selector rather than displaying projects directly on the Home Screen.                  | **Established**               |
+| P4-R230 | Planning opens its project-selection view.                                                                     | **Established**               |
+| P4-R231 | Ideas provides a space for undeveloped/future project concepts and associated notes.                           | **Established direction**     |
+| P4-R232 | Ongoing opens its project-selection view.                                                                      | **Established**               |
+| P4-R233 | New Project initiates creation of a new Project Record.                                                        | **Established direction**     |
+| P4-R234 | Archive opens the archived-project view.                                                                       | **Established**               |
+| P4-R235 | Home Screen buttons are navigation/function controls, not physical project folders.                            | **Architectural requirement** |
+| P4-R236 | New Project should eventually support blank, template-based, and seed-based creation.                          | **Future capability**         |
+
+### Category 16 verdict
+
+The **Home Screen behavior is now sufficiently defined** to move on.
+
+The next category should be **Category 17 — Ideas / Planning behavior**, because that distinction is becoming important enough that we should define it carefully before we accidentally force Ideas to behave like ordinary projects.
+
+- - - - - 
+
+## Step 4Z — Category 17: Ideas & Planning
+
+This is where I think the distinction between **Ideas** and **Projects** becomes important.
+
+### Ideas
+
+**Ideas are not necessarily projects yet.**
+
+They can be rough, incomplete, and messy.
+
+An Idea might contain:
+
+* a title;
+* a short description;
+* random notes;
+* links;
+* questions;
+* possible uses;
+* related ideas;
+* AI-generated suggestions;
+* references to existing projects.
+
+For example:
+
+```text
+IDEAS
+
+iCanMath
+  "Possible math worksheet generator."
+
+Mobile Kurt Engine
+  "Eventually turn the homepage editor into a real app."
+
+AI Workbench
+  "Could become a reusable AI development environment."
+```
+
+There should be **no requirement that an Idea have Purpose, Focus, Milestones, Progress, etc.**
+
+Those belong to a more mature Project Record.
+
+### Planning
+
+Planning is different.
+
+A project in Planning is already sufficiently real that you've decided:
+
+> **This is a project we're preparing to undertake.**
+
+So it can have the full Project Record structure:
+
+* Purpose
+* Description
+* Focus
+* Status
+* Milestones
+* Next Action
+* Flags
+* Blockers
+* Tools
+* Resources
+* Notes
+* Decisions
+* etc.
+
+But it isn't necessarily being actively worked on yet.
+
+### Ideas can become Projects
+
+Eventually:
+
+```text
+IDEA
+  ↓
+[Promote to New Project]
+  ↓
+PROJECT RECORD
+  ↓
+Planning
+```
+
+But **promotion should not destroy the original idea notes**.
+
+The new Project Record could retain:
+
+> Originated from Idea: iCanMath
+
+That gives us history right from the beginning.
+
+### An Idea can also simply remain an Idea
+
+This is important.
+
+We shouldn't create artificial pressure to turn every idea into a project.
+
+Some ideas are useful simply because they're recorded.
+
+Others may eventually be discarded.
+
+Others may merge into an existing project.
+
+For example:
+
+> "Mobile version of Kurt Engine"
+
+might eventually become:
+
+> a feature/tentacle of Kurt Engine
+
+rather than its own project.
+
+### Planning can also return to Ideas
+
+Because you're the Project Owner, nothing requires a one-way progression.
+
+You might decide:
+
+> "We're not ready to make this a real project after all."
+
+The project can return to an Idea state, while preserving what was learned during planning.
+
+### Matrix additions
+
+| ID      | Requirement                                                                                                        | Status                    |
+| ------- | ------------------------------------------------------------------------------------------------------------------ | ------------------------- |
+| P4-R237 | Ideas must be able to exist without being formal Project Records.                                                  | **Established**           |
+| P4-R238 | Ideas may contain incomplete, informal, or exploratory information.                                                | **Established**           |
+| P4-R239 | Ideas should support notes, references, links, and related concepts.                                               | **Established direction** |
+| P4-R240 | Planning represents a sufficiently defined project that is being prepared but is not necessarily currently active. | **Established direction** |
+| P4-R241 | Planning projects should be capable of using the normal Project Record structure.                                  | **Established direction** |
+| P4-R242 | An Idea should eventually be promotable into a Project Record.                                                     | **Future capability**     |
+| P4-R243 | Promotion from Idea to Project should preserve the originating Idea information.                                   | **Future capability**     |
+| P4-R244 | An Idea may instead become part of an existing project's ecosystem/workstreams.                                    | **Future capability**     |
+| P4-R245 | Not every Idea must become a Project.                                                                              | **Established**           |
+| P4-R246 | A Project may return to an Idea state when appropriate, without losing its accumulated information.                | **Established direction** |
+
+### Category 17 verdict
+
+I think we now have a useful conceptual distinction:
+
+**Ideas = possibilities.**
+
+**Planning = defined projects being prepared.**
+
+**Current = projects actively in the working rotation.**
+
+**Ongoing = living projects outside the current rotation.**
+
+**Archive = preserved projects and their accumulated knowledge.**
+
+And **New Project** is the mechanism that turns something into a formal project when you're ready.
+
+**Next: Category 18 — Project Workspace editing: exactly what Kurt and authorized AI can change inside CC.**
+
+- - - - - 
+
+From me: 
+Also, a "New Project" folder/template can be placed into the "Ideas", giving you a working canvas to start spitballing 
+
+- - - - - 
+
+Yes — and I think that's **better than treating Ideas as just a collection of loose notes**.
+
+A **New Project template can itself be placed in Ideas** as a working canvas.
+
+For example:
+
+```text id="5q8m2v"
+IDEAS
+
+┌─────────────────────┐
+│ New Project         │
+│                     │
+│ Name: iCanMath      │
+│                     │
+│ Purpose:            │
+│ [start thinking]    │
+│                     │
+│ Ideas / Notes:      │
+│ • ...               │
+│ • ...               │
+│                     │
+│ Questions:          │
+│ • ...               │
+└─────────────────────┘
+```
+
+You can then **spitball inside that canvas** without having to formally declare:
+
+> "This is now a Project."
+
+And as it develops, you can decide:
+
+**Keep as Idea**
+→ continue brainstorming.
+
+**Promote to Planning**
+→ it becomes a formal Project Record.
+
+**Promote directly to Current**
+→ if it's ready to work on.
+
+**Discard/archive the Idea**
+→ without losing the notes.
+
+### This also changes how I'd think about "New Project"
+
+The **New Project button** doesn't necessarily mean:
+
+> "Create a fully formed project right now."
+
+It could mean:
+
+> **"Give me a fresh project canvas."**
+
+That canvas can initially live in **Ideas**.
+
+So:
+
+```text id="z1c6nf"
+NEW PROJECT
+     ↓
+Project Seed / Template
+     ↓
+IDEAS
+     ↓
+Brainstorm / develop / research
+     ↓
+PLANNING
+     ↓
+CURRENT
+```
+
+Again, that's a **possible progression**, not a mandatory workflow.
+
+And it gives you exactly what you described: a structured place to start throwing things at the wall **without prematurely committing to what the project is going to become**.
+
+I would add this to the matrix as a fairly significant requirement:
+
+> **An Ideas workspace should be able to contain initialized Project canvases based on the New Project template, allowing informal development before the project is formally promoted to Planning or another status.**
+
+That also makes the future **Template Library** substantially more useful: templates aren't only for formally creating projects; they're also **thinking canvases**.
+
+- - - - - 
+
+From me: Exactly 
+
+- - - - - 
+
+Exactly. That feels like the right model.
+
+**Ideas aren't just a list of ideas. They're a place where an idea can grow into a project.**
+
+And the **New Project canvas** gives you enough structure to think without forcing premature decisions.
+
+We'll carry that forward as an established requirement.
+
+**Next: Category 18 — what can actually be edited inside a Project Workspace, by you vs. authorized AI.**
+
+- - - - - 
+
+* * * End Day 2 Pt.1 - Step 4D thru Step 4Z * * *

@@ -1,0 +1,2734 @@
+
+* * * Phase 4 Matrix recap starting from Step 1 thru Step 4C - Day 1 * * *
+
+- - - - - 
+
+Exactly. **My job now is to establish the Phase 4 specification scope before we write the specification.**
+
+And I want to do this **one step at a time**, rather than immediately generating another giant document.
+
+### Step 1 — Establish the Phase 4 implementation target
+
+We need to answer one question:
+
+> **What, exactly, is WP13 Phase 4 supposed to add/change in the Command Center?**
+
+The frozen ACP tells us **how** certain dependencies must work, but it doesn't define the Phase 4 feature itself.
+
+So the next thing I need to inspect is the **existing WP13 Phase 4 scope/evidence** already established in the project materials—not invent a new Phase 4 design.
+
+I will specifically establish:
+
+* what Phase 4's screen/functionality is supposed to be;
+* which existing components it builds on;
+* what Phase 3 provides to it;
+* what user-visible behavior is actually required;
+* what is explicitly **out of scope**;
+* and which implementation constraints are already frozen.
+
+**I will not draft the specification yet.**
+
+Once that scope is nailed down, the next step will be to turn *that exact scope* into the Phase 4 specification, incorporating the two frozen ACP decisions.
+
+So: **Step 1 is Phase 4 scope extraction, not specification writing.**
+
+- - - - 
+
+**Yes. I can access it right now.**
+
+I just successfully opened the live public repository:
+
+[22cryys56p-beep/Command_Center](https://github.com/22cryys56p-beep/Command_Center?utm_source=chatgpt.com)
+
+And this is **actual live GitHub access**, not relying on our conversation history. I can see the current repository structure, including `docs`, `src`, `tests`, and the repository's **46 commits**. ([github.com][1])
+
+So the 404 problem from yesterday is **not happening for me at this moment**.
+
+That changes our immediate situation: **I can now inspect the actual Phase 4 documentation/repository state before we proceed.**
+
+[1]: https://github.com/22cryys56p-beep/Command_Center "GitHub - 22cryys56p-beep/Command_Center · GitHub"
+
+- - - - - 
+
+I’ve begun from the **live `main` branch**, not from our conversation memory.
+
+### Step 1 result — Phase 4 target
+
+The repository confirms the architectural target very clearly:
+
+**Phase 4 is the Project Dashboard.**
+
+The governing Phase 3 Architecture Record defines the five-screen hierarchy as:
+
+**Entry → Category → Project List → Project Dashboard → Project Workspace**
+
+and defines the Dashboard's single question as:
+
+> **“What is the state of this one project?”**
+
+The Dashboard is supposed to display the **complete metadata layer for the active ProjectRecord**, with fields determined by project status. It reads the record but **does not write to it**.
+
+The Phase 3 record also explicitly says that Phase 4 has **not** begun.
+
+### What the repository currently contains
+
+The corrected Phase 3 specification is present on `main`, with:
+
+* `status: approved — ready for Copilot implementation`
+* the Project List specification governing `src/views/project-list-view.ts`
+* baseline `99d4bcf`.
+
+The actual `ProjectListView` is also present. It currently receives `ProjectRecordProvider` directly, filters records by the active category, displays `name` and `focus`, and calls `selectProject()` when a project is selected.
+
+And importantly: **the ACP we just finalized is already on GitHub.** The repository contains `docs/architecture/WP13_Phase_4_Architectural_Decision_Record.md`, marked `status: approved`, governing the Phase 4 specification and implementation.
+
+### One thing I caught immediately
+
+The ACP's front matter says:
+
+`date: 2026-08-17`
+
+But **today is August 16, 2026**.
+
+That's a documentation error, not an architectural issue, but because this is a governing document, **we should correct that before treating the repository copy as frozen**.
+
+I have **not changed anything**.
+
+The next step is to examine the **Dashboard requirements in the governing architecture record in detail**, and then we'll have the actual Phase 4 scope in front of us before writing the implementation specification.
+
+- - - - -
+
+### Step 2 — Establish the actual Phase 4 requirements
+
+We now move from **“what is Phase 4?”** to **“what must the Phase 4 specification require?”**
+
+The key architectural constraint is already frozen:
+
+> **The Project Dashboard represents one active `ProjectRecord`. It reads project data; it does not own or mutate that data.**
+
+And the two ACP decisions are already settled:
+
+1. **ProjectRecord access:** shared `ProjectRecordProvider` injected from the composition root; `NavigationController` is **not** a record-data gateway.
+2. **`onStateChange`:** required dependency supplied by constructor injection; no nullable setter pattern.
+
+So the next job is to establish the Dashboard's **behavioral contract** without getting into implementation.
+
+The Phase 4 specification needs to answer these questions:
+
+* **How does the Dashboard know which project is active?**
+* **What happens if there is no valid project in navigation state?**
+* **Which `ProjectRecord` fields does it display?**
+* **Which fields are common to every project?**
+* **Which fields depend on the project's status?**
+* **What is the exact relationship between the Dashboard and the ProjectRecordProvider?**
+* **What happens when navigation state changes while the Dashboard exists?**
+* **What does selecting/backing out of the Dashboard do to navigation state?**
+* **What is explicitly outside the Dashboard's responsibility?**
+* **What acceptance conditions must be true before Phase 4 can be considered complete?**
+
+The important thing is that we **do not answer those by inventing a design**. We derive them from the governing architecture and the repository's existing contracts.
+
+So the immediate objective is:
+
+> **Build the Phase 4 requirements matrix from the existing architectural evidence, separating established requirements from decisions that still need to be made.**
+
+Once we have that matrix, **then** we draft the Phase 4 specification.
+
+- - - - - 
+
+Yes. We begin with the **evidence we already have**, and we don't make design decisions yet.
+
+### Step 2A — Requirements matrix, first pass
+
+| Area                              | Established by current architecture/evidence                                        | Still needs a decision                                                              |
+| --------------------------------- | ----------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| **Purpose**                       | Dashboard answers: **“What is the state of this one project?”**                     | None                                                                                |
+| **Subject**                       | One active `ProjectRecord`                                                          | Exact invalid/missing-record behavior                                               |
+| **Position in flow**              | Entry → Category → Project List → **Project Dashboard** → Project Workspace         | Exact navigation mechanics into/out of Dashboard                                    |
+| **Data source**                   | `ProjectRecordProvider` is the data-access contract                                 | None — ACP settles the boundary                                                     |
+| **Provider wiring**               | Same provider instance comes from the composition root                              | None — frozen by ACP                                                                |
+| **Controller role**               | `NavigationController` owns navigation/state; it is **not** a ProjectRecord gateway | None — frozen by ACP                                                                |
+| **Dashboard data responsibility** | Reads project data for presentation                                                 | Exact fields/sections to display                                                    |
+| **Mutation**                      | Dashboard does not own ProjectRecord mutation                                       | Whether any future action controls belong here — currently appears out of scope     |
+| **State updates**                 | Views respond to navigation state changes                                           | Exact Dashboard response when active project changes                                |
+| **Dependency notification**       | `onStateChange` is a required constructor dependency                                | None — frozen by ACP                                                                |
+| **Rendering**                     | Dashboard is a view responsible for presenting the active project                   | Exact layout/presentation rules                                                     |
+| **Status-dependent data**         | Architecture indicates metadata displayed according to project status               | Exact status → field mapping                                                        |
+| **Workspace relationship**        | Dashboard precedes Project Workspace                                                | What information/actions transition from Dashboard to Workspace                     |
+| **Obsidian dependence**           | Architecture should remain portable; data contract is Obsidian-agnostic             | None unless Phase 4 introduces a new Obsidian-specific requirement                  |
+| **Error handling**                | Project architecture favors honest failure over silent degradation                  | Exact user-facing failure state for missing/invalid project                         |
+| **Scope discipline**              | No speculative infrastructure                                                       | Whether any currently proposed Dashboard feature actually requires new architecture |
+
+### The important distinction
+
+We already have **two kinds of things** here:
+
+**Frozen requirements/decisions**
+
+* Dashboard is a distinct screen.
+* It represents one project.
+* `ProjectRecord` remains the source of project data.
+* Shared provider injection is the data boundary.
+* `NavigationController` does not become a data gateway.
+* `onStateChange` is required constructor injection.
+* Dashboard reads/presents data rather than becoming the owner of that data.
+* Phase 4 follows the existing navigation hierarchy.
+
+**Open questions**
+
+The big one is now **exactly what information the Dashboard displays**.
+
+That's where we should go next—not into code and not into implementation mechanics.
+
+### Step 2B — Identify the ProjectRecord fields
+
+We need to map the **actual `ProjectRecord` contract** against the Dashboard requirement.
+
+The question is simply:
+
+> **What information does a Project Dashboard have available to display, and which of that information is actually required by the architecture?**
+
+That will let us distinguish **“the record contains this”** from **“the Dashboard must display this.”**
+
+That distinction is critical. A data contract containing a field does **not** automatically make that field a UI requirement.
+
+**Next: we examine the ProjectRecord contract and build the field-level Dashboard requirements.**
+
+
+- - - - - 
+
+### Step 2B — ProjectRecord field-level requirements
+
+We now inspect the **actual contract** and separate three things:
+
+1. **Fields that exist**
+2. **Fields the Dashboard is architecturally required to display**
+3. **Fields that exist but are not Dashboard requirements**
+
+The important rule is: **we do not turn every field in `ProjectRecord` into UI simply because it exists.**
+
+For the Phase 4 requirements matrix, we'll record each field like this:
+
+| ProjectRecord field | Exists in contract | Dashboard requirement          | Reason / evidence                                                         |
+| ------------------- | ------------------ | ------------------------------ | ------------------------------------------------------------------------- |
+| `project_id`        | Yes                | **Likely required**            | Identifies the active project; exact presentation still to be established |
+| `name`              | Yes                | **Required**                   | Project identity                                                          |
+| `status`            | Yes                | **Required**                   | Determines project state and status-dependent presentation                |
+| `focus`             | Yes                | **Required**                   | Part of the project's current descriptive state                           |
+| Other metadata      | Contract-dependent | **Not automatically required** | Must be justified by the architecture/specification                       |
+
+There is a crucial distinction here.
+
+The **Project List** was deliberately restricted to `name` and `focus`. That restriction belongs to the **List screen**; it does **not** automatically constrain the Dashboard. The Dashboard's job is explicitly broader: represent the state of the selected project.
+
+So we should not accidentally carry the Phase 3 List screen's narrow display boundary forward into Phase 4.
+
+### What this tells us
+
+The Dashboard specification needs a **status-driven display model**, rather than simply saying:
+
+> “Render all fields in ProjectRecord.”
+
+That would couple the UI to the data contract in a way the architecture hasn't authorized.
+
+The next question is therefore narrower:
+
+> **What does each project status mean, and what Dashboard information is required for each status?**
+
+That is the point where we can determine the Dashboard's actual content without inventing new project concepts.
+
+**Step 2C will establish the status → Dashboard-information relationship.**
+
+- - - - -
+
+### Step 2C — Status → Dashboard information
+
+This is where I need to be careful not to manufacture requirements.
+
+From the evidence we've established so far, we **know the Dashboard is status-aware**, but we have **not yet established the exact status-specific field mapping** strongly enough to put it into the requirements matrix as a fact.
+
+So the matrix should currently say:
+
+| Question                                                                          | Current status                                  |
+| --------------------------------------------------------------------------------- | ----------------------------------------------- |
+| Does Dashboard display the active project's status?                               | **Established**                                 |
+| Does status affect what metadata the Dashboard displays?                          | **Established**                                 |
+| Is the Dashboard allowed to display different information for different statuses? | **Established**                                 |
+| Exact fields for each status                                                      | **Not yet established**                         |
+| Exact layout/ordering of those fields                                             | **Not yet established**                         |
+| Whether every `ProjectRecord` field should appear somewhere                       | **Not established — and should not be assumed** |
+
+That's actually useful progress, because we've now identified a **real open specification decision** rather than quietly inventing one.
+
+### The next thing we need
+
+We need the **authoritative Phase 4 architectural evidence that defines those status-specific Dashboard requirements**.
+
+If that information exists in the repository, we'll use it.
+
+If it doesn't, then we have reached the point where **Phase 4 needs an explicit architectural/specification decision**, rather than me filling in the blanks.
+
+And that distinction matters under the Project Bible:
+
+> **Implementation follows architecture.**
+
+We don't want Copilot—or me—to turn an undocumented assumption into an accidental architectural precedent.
+
+**Step 2D:** identify the authoritative document/section that defines the Phase 4 Dashboard's status-specific information. If the repository doesn't establish it, I'll flag that as an open decision rather than inventing the requirement.
+
+- - - - - 
+
+### Step 2D — Result
+
+I checked the live repository specifically for an authoritative Phase 4 Dashboard requirements source.
+
+**I do not find one yet.**
+
+What I *can* establish from the repository is:
+
+* The approved ACP explicitly identifies **Phase 4 as “Project Dashboard.”**
+* The ACP says its decisions **govern the WP13 Phase 4 specification and implementation**.
+* The ACP establishes that the Dashboard represents the next architectural layer after Project List, but it **does not define the Dashboard's complete status → field mapping**.
+* I searched the repository for WP13/Phase 4/Dashboard terminology and did not get a usable result from the repository search.
+* I also attempted the previously assumed Phase 3 architecture-record filename, and that path **does not exist** at that location. I'm not going to invent a replacement filename.
+
+### Therefore, the requirements matrix currently has a genuine open area
+
+**Established:**
+
+> Phase 4 = Project Dashboard for one selected project.
+
+**Established:**
+
+> The Dashboard reads the selected `ProjectRecord` through the shared `ProjectRecordProvider` boundary.
+
+**Established:**
+
+> The Dashboard follows the frozen navigation/rendering architecture and the two ACP decisions.
+
+**Not yet established by repository evidence:**
+
+> Exactly which fields/metadata the Dashboard must display for each project status.
+
+That means **we have reached the boundary where we need more evidence before drafting the Phase 4 specification.**
+
+I don't want to fill that gap from memory or from an earlier conversation, because that would violate the rule we've been using throughout this project: **repository/documentation reality overrides conversational memory.**
+
+So **Step 2D is complete**: we have identified the missing authoritative requirement rather than silently inventing it.
+
+The next move should be to locate the **actual Phase 4 source material** if it exists somewhere else in the repository/documentation.
+
+- - - - - 
+
+From me: 
+From what I recall - Everything pertaining to WP13 Phase 4 was put on hold until the flags brought up in WP 13 Phase 3 were resolved . . . 
+But, you can check the file to be sure if you like
+
+- - - - -
+
+Yes — and your recollection is consistent with what we have established.
+
+The **approved ACP itself explicitly says**:
+
+* WP13 Phase 3 is closed and accepted.
+* The two Phase 3 ambiguities are now resolved as architectural decisions.
+* **“Implementation: Not yet begun under these decisions.”**
+* **“The next artifact is the WP13 Phase 4 implementation specification.”**
+
+So we should **not assume there was some pre-existing Phase 4 requirements document waiting for us**.
+
+That changes my interpretation of Step 2D:
+
+> **Phase 4 was intentionally held at the architectural/specification boundary while the Phase 3 flags were unresolved.**
+
+Now that both flags are resolved and the ACP is approved, **we are actually at the point where Phase 4 specification work begins.**
+
+So I think we should stop looking for a mythical existing Phase 4 spec.
+
+### The next step
+
+We should take the **frozen architecture + ACP + existing repository contracts** and define the Phase 4 Dashboard requirements *now*.
+
+And I want to correct something from my earlier process: I was treating “find the existing Phase 4 requirements” as though they necessarily existed. That was an unnecessary assumption.
+
+**Step 3:** establish the Phase 4 Dashboard requirements from the governing architecture and current repository reality, explicitly marking anything that requires a new architectural/specification decision.
+
+That's the right place to continue.
+
+- - - - - 
+
+### Step 3 — Define the Phase 4 Dashboard requirements
+
+We now have the correct starting point:
+
+**Phase 3 is closed. The two flags are resolved. The ACP is frozen. Phase 4 specification work begins now.**
+
+So we're going to define the Dashboard from the architecture that actually exists—not resurrect an old Phase 4 design.
+
+The first requirement is already clear:
+
+> **The Project Dashboard represents one selected `ProjectRecord` and answers the question: “What is the state of this one project?”**
+
+From that, we can establish the Dashboard's responsibility boundary:
+
+| Responsibility                        | Phase 4 Dashboard                                                 |
+| ------------------------------------- | ----------------------------------------------------------------- |
+| Identify the active project           | **Yes**                                                           |
+| Read the active `ProjectRecord`       | **Yes**                                                           |
+| Present project state/metadata        | **Yes**                                                           |
+| React to navigation-state changes     | **Yes**                                                           |
+| Change navigation state               | **Only through established navigation contracts**                 |
+| Modify the `ProjectRecord`            | **No**                                                            |
+| Own project data                      | **No**                                                            |
+| Become a `ProjectRecord` data gateway | **No**                                                            |
+| Resolve navigation relationships      | **No — NavigationController's responsibility**                    |
+| Introduce a new data abstraction      | **No — ACP explicitly resolves the current boundary without one** |
+
+### The next architectural question
+
+We now need to establish **how the Dashboard identifies the selected project**.
+
+There are two separate pieces of information involved:
+
+1. `NavigationController` owns the navigation state.
+2. `ProjectRecordProvider` provides the project records.
+
+The Dashboard therefore needs to correlate:
+
+**current navigation selection → corresponding `ProjectRecord`**
+
+But we should **not decide yet** whether that correlation belongs in the Dashboard, the controller, or another abstraction.
+
+That is exactly the kind of implementation-level boundary that should be resolved explicitly rather than allowed to emerge accidentally.
+
+So our next requirement question is:
+
+> **Given the current `NavigationState` and `ProjectRecord` contract, what is the authoritative mechanism for identifying the Dashboard's active project?**
+
+I'll establish that from the actual current code next.
+
+- - - - - 
+
+### Step 3A — Active-project identification: what we can establish
+
+I need to correct course slightly: the repository connector is currently returning 404s again, so I **cannot honestly claim a fresh live-code inspection from GitHub right now**. I did not find a usable public search result for this repository either.
+
+That means I won't manufacture the answer from yesterday's inspection.
+
+What we **already established from the verified repository evidence in this conversation** is:
+
+* `NavigationController` owns the navigation state.
+* `ProjectRecordProvider` owns access to the records.
+* Phase 3's `ProjectListView` receives the shared provider directly.
+* The List selects a project through the navigation controller's established `selectProject()` contract.
+* The Dashboard sits immediately after Project List in the frozen hierarchy.
+* The ACP explicitly prohibits turning `NavigationController` into a ProjectRecord data gateway.
+
+### The unresolved question
+
+We therefore have **not yet established from primary repository evidence** exactly how the selected project's identity is represented in the current `NavigationState`.
+
+And that's important because there are several possibilities we must not casually conflate:
+
+* the navigation object may directly contain a `project`;
+* it may contain a `projectId`;
+* it may contain some other project-selection identifier;
+* or `selectProject()` may establish a state shape that the Dashboard is expected to consume.
+
+**We need the actual current `NavigationState` contract and `selectProject()` implementation before specifying the Dashboard's lookup mechanism.**
+
+So I am stopping here rather than guessing.
+
+**Next step:** when GitHub access is available again, inspect the current `NavigationState`/`selectProject()` path and establish exactly how the selected ProjectRecord is identified.
+
+- - - - -
+
+From me: Can I "copy/paste" the actual files for you to examine?
+
+- - - - - 
+
+Yes — **those four together are the right first batch**.
+
+Please paste:
+
+1. `navigation-controller.ts`
+2. `navigation-inspector.ts`
+3. `project-record.ts`
+4. `project-list-view.ts`
+
+We don't need `navigation-controller.test.ts` yet unless the implementation leaves something ambiguous.
+
+I'll use these to answer **one question only**:
+
+> **What is the actual current mechanism for identifying the selected project, and what does that establish for the Phase 4 Dashboard?**
+
+Then we'll move to the next question.
+
+- - - - -
+
+Good. **Now we have the actual evidence we needed.** And it resolves the question cleanly.
+
+### Step 3A — How the Dashboard identifies its active project
+
+The authoritative mechanism is:
+
+**`NavigationController.getState()` → `state.object.kind === "project"` → `state.object.project_id`**
+
+The `NavigationState` contract explicitly defines:
+
+```text
+object: CurrentObject | null
+depth: Depth
+```
+
+and `selectProject()` creates:
+
+```text
+{
+  object: {
+    kind: "project",
+    project_id,
+    category: this.state.object.category
+  },
+  depth: "dashboard"
+}
+```
+
+So the Dashboard **does not need the controller to return a ProjectRecord**.
+
+It gets:
+
+* **navigation identity** from `NavigationController.getState()`
+* **project data** from the shared `ProjectRecordProvider`
+
+That is exactly consistent with the ACP's Flag #1 decision.
+
+### The resulting Dashboard data path
+
+Conceptually:
+
+**NavigationController**
+
+→ tells Dashboard **which project is active** (`project_id`)
+
+**ProjectRecordProvider**
+
+→ gives Dashboard the **records**
+
+**Dashboard**
+
+→ finds the record whose `project_id` matches the navigation state's `project_id`
+
+That gives us a very clean separation:
+
+| Responsibility                      | Owner                              |
+| ----------------------------------- | ---------------------------------- |
+| Current navigation depth            | `NavigationController`             |
+| Current project identity            | `NavigationController`             |
+| ProjectRecord collection            | `ProjectRecordProvider`            |
+| Correlating selected ID with record | Dashboard/view logic               |
+| Rendering project information       | Dashboard                          |
+| Mutating navigation state           | `NavigationController`             |
+| Mutating ProjectRecord data         | **Not Dashboard's responsibility** |
+
+### One particularly important point
+
+`ProjectListView` already demonstrates the intended pattern:
+
+```text
+getState()
+    ↓
+state.object.category
+    ↓
+getRecords()
+    ↓
+filter(...)
+```
+
+The Dashboard should follow the analogous pattern:
+
+```text
+getState()
+    ↓
+state.object.project_id
+    ↓
+getRecords()
+    ↓
+find(project_id)
+```
+
+**Not:**
+
+```text
+Dashboard
+    ↓
+NavigationController.getProject(...)
+    ↓
+ProjectRecord
+```
+
+That would violate the Flag #1 decision we just froze.
+
+### We can now add this to the requirements matrix
+
+| Requirement                                                                | Status                                     |
+| -------------------------------------------------------------------------- | ------------------------------------------ |
+| Dashboard identifies active project from `NavigationController.getState()` | **Established**                            |
+| Active project identity is `state.object.project_id`                       | **Established**                            |
+| Dashboard obtains records through shared `ProjectRecordProvider`           | **Established / ACP-frozen**               |
+| Dashboard asks `NavigationController` for a `ProjectRecord`                | **Explicitly prohibited**                  |
+| Dashboard performs ID → record correlation                                 | **Established by current architecture**    |
+| Dashboard renders the resulting record                                     | **Established**                            |
+| Dashboard modifies the record                                              | **Not established / out of current scope** |
+
+And there's an important bonus here:
+
+**We now have enough evidence to stop looking for a separate “navigation state” file.** `NavigationState` is explicitly defined in `navigation-controller.ts`. My earlier assumption that it would have its own file was simply wrong.
+
+### Next step
+
+We have established **how the Dashboard gets its project**.
+
+Now we need to determine **what the Dashboard does with the `ProjectRecord` once it has it**—particularly the status-tiered fields:
+
+* `possible`
+* `planned`
+* `current`
+* `completed`
+
+That is where the `ProjectRecord` contract gives us substantial evidence, so **Step 3B should map those status tiers to Dashboard requirements without inventing UI behavior that isn't actually established.**
+
+- - - - - 
+
+### Step 3B — Map `ProjectStatus` to Dashboard requirements
+
+Now the `ProjectRecord` contract gives us a much stronger foundation than we had before.
+
+The record itself establishes **tiered data requirements**:
+
+| Status      | Always-required fields                  | Additional required fields                                                           |
+| ----------- | --------------------------------------- | ------------------------------------------------------------------------------------ |
+| `possible`  | `project_id`, `name`, `status`, `focus` | None                                                                                 |
+| `planned`   | Above                                   | `milestone`, `progress`, `next_action`, `blockers`, `last_updated`                   |
+| `current`   | Above                                   | `milestone`, `progress`, `next_action`, `blockers`, `last_updated`, `repo_reference` |
+| `completed` | `project_id`, `name`, `status`, `focus` | None                                                                                 |
+
+That's a **data-validity rule**, not automatically a UI-display rule.
+
+But there is one very strong Dashboard-specific clue in the contract:
+
+> `hasNoBlockers()` exists specifically because **WP5's Dashboard rendering rule** depends on distinguishing `blockers: null` from `undefined`.
+
+That's important evidence.
+
+### What we can therefore establish
+
+#### 1. Common project identity
+
+The Dashboard needs to represent:
+
+* project name
+* status
+* focus
+
+And it has the stable `project_id` available as the identity used to correlate navigation with the record.
+
+Whether `project_id` is **visibly rendered** is a separate presentation decision.
+
+#### 2. `planned` and `current` are richer project states
+
+The data contract explicitly requires:
+
+* milestone
+* progress
+* next action
+* blockers
+* last updated
+
+for these states.
+
+That strongly establishes that these are **meaningful project-state metadata**, rather than arbitrary fields.
+
+The Dashboard is the architectural location intended to expose that state.
+
+#### 3. `current` adds repository identity
+
+`repo_reference` becomes required when a project reaches `current`.
+
+That is therefore Dashboard-relevant metadata for a current project.
+
+Again, whether it is rendered as a link, text, badge, etc. is a later presentation decision.
+
+#### 4. `blockers: null` has special semantics
+
+This is perhaps the clearest Dashboard-specific requirement currently in the code.
+
+There are three different states:
+
+```text
+undefined
+    = field is not applicable yet
+
+null
+    = explicitly no blockers
+
+string[]
+    = blockers exist
+```
+
+The Dashboard **must not collapse those states into one generic “missing” condition**.
+
+In particular, `null` means **“no blockers”**, not “missing data.”
+
+That aligns directly with the Project Bible principle:
+
+> **Honest failure over silent degradation.**
+
+### What we still cannot establish
+
+We still need to avoid making the leap:
+
+> “Every required field in the data contract must be displayed verbatim.”
+
+The contract establishes **data requirements**.
+
+The Dashboard specification must establish **presentation requirements**.
+
+Those aren't necessarily identical.
+
+So our matrix now looks like this:
+
+| Dashboard requirement                                                                         | Status          |
+| --------------------------------------------------------------------------------------------- | --------------- |
+| Display selected project's identity/state                                                     | **Established** |
+| Display `name`                                                                                | **Established** |
+| Display `status`                                                                              | **Established** |
+| Display `focus`                                                                               | **Established** |
+| Dashboard is status-aware                                                                     | **Established** |
+| `planned` state has milestone/progress/next-action/blocker/last-updated information available | **Established** |
+| `current` additionally has repository reference                                               | **Established** |
+| `blockers: null` means explicitly “no blockers”                                               | **Established** |
+| Dashboard must distinguish `undefined` from `null` blockers                                   | **Established** |
+| Exact visual representation of each field                                                     | **Open**        |
+| Exact ordering/layout                                                                         | **Open**        |
+| Whether `project_id` is visible to user                                                       | **Open**        |
+| Exact treatment of `completed` Dashboard                                                      | **Open**        |
+| Exact treatment of `possible` Dashboard                                                       | **Open**        |
+| Missing/invalid ProjectRecord behavior                                                        | **Open**        |
+
+### One thing I want to flag before moving on
+
+The comment in `project-record.ts` says:
+
+> “a future WP5 Dashboard renderer”
+
+That terminology is **not something I want to blindly promote into the Phase 4 specification**.
+
+The actual contract is useful evidence. The comment's reference to a future WP5 is conversational/implementation history and may be stale relative to the current WP13 sequence.
+
+So for the Phase 4 spec we'll say what the **current contract establishes**, not “WP5 says...” unless we locate authoritative documentation confirming that.
+
+That keeps us aligned with our governing rule:
+
+**Repository reality and authoritative documentation outrank old comments and conversational history.**
+
+### Next step
+
+We now have the **data model → Dashboard state** mapping.
+
+The next question is the most important remaining content question:
+
+> **What should the user actually see for each of those four statuses?**
+
+That's where we need to distinguish **architecturally required content** from **UI design choices**.
+
+**Step 3C: define the Dashboard's status-specific presentation contract.**
+
+- - - - -
+
+### Step 3C — Status-specific presentation contract
+
+This is where we need to be especially disciplined.
+
+The `ProjectRecord` contract establishes **what data exists and when it becomes required**. It does **not** by itself establish a detailed visual design for four different Dashboard layouts.
+
+So we should **not invent four separate screen designs**.
+
+Instead, the cleanest requirement we can establish from the evidence is a **single Dashboard presentation model whose content expands according to project status**.
+
+### Current evidence
+
+The four statuses form a progression:
+
+```text
+possible
+   ↓
+planned
+   ↓
+current
+   ↓
+completed
+```
+
+But `completed` is not simply the next tier after `current` in the data contract. Its required fields revert to the common four:
+
+* `project_id`
+* `name`
+* `status`
+* `focus`
+
+There is **no requirement in the current contract that completed projects retain or display milestone/progress/next_action/repo_reference information**.
+
+Therefore, we should not invent a “completed-project history” section.
+
+### Requirements we can safely establish
+
+| Dashboard content     | `possible` | `planned` | `current` | `completed` |
+| --------------------- | ---------: | --------: | --------: | ----------: |
+| Project identity/name |          ✓ |         ✓ |         ✓ |           ✓ |
+| Status                |          ✓ |         ✓ |         ✓ |           ✓ |
+| Focus                 |          ✓ |         ✓ |         ✓ |           ✓ |
+| Milestone             |          — |         ✓ |         ✓ |           — |
+| Progress              |          — |         ✓ |         ✓ |           — |
+| Next action           |          — |         ✓ |         ✓ |           — |
+| Blockers              |          — |         ✓ |         ✓ |           — |
+| Last updated          |          — |         ✓ |         ✓ |           — |
+| Repository reference  |          — |         — |         ✓ |           — |
+
+The important qualification:
+
+**The table above is a proposed content mapping derived from the data contract, not yet a frozen UI specification.**
+
+The contract tells us those fields are required for those statuses. It is therefore reasonable for the Dashboard specification to expose them. But the *presentation details* remain open.
+
+### `blockers` deserves special treatment
+
+For `planned` and `current`:
+
+* `undefined` is invalid.
+* `null` is valid and means **no blockers**.
+* `string[]` means blockers exist.
+
+Therefore the Dashboard should have an explicit rendering rule:
+
+> **A valid `blockers: null` value must render as an intentional “no blockers” state, not as missing or invalid data.**
+
+That is a real behavioral requirement, not merely cosmetic preference.
+
+### What we should NOT specify yet
+
+We should **not** decide yet:
+
+* cards vs. rows;
+* badges vs. plain text;
+* colors;
+* exact typography;
+* whether `progress` is a badge, bar, or label;
+* whether `last_updated` is formatted or shown as ISO;
+* whether `repo_reference` is a button/link;
+* whether completed projects get historical information;
+* whether the Dashboard has a “Back” button;
+* whether it has actions beyond navigation.
+
+Those belong in the next layer of specification, after we establish the Dashboard's **behavioral contract**.
+
+### One more important observation
+
+The current `ProjectRecord` contract deliberately makes `progress` a controlled vocabulary:
+
+`not_started | underway | nearly_done`
+
+That means Phase 4 should **not reinterpret progress as an arbitrary percentage**.
+
+Likewise, `status` is a closed enum. The Dashboard should not invent additional statuses such as “blocked,” “paused,” or “in review.”
+
+If such states are ever needed, that's a **data-model/architecture decision**, not a UI embellishment.
+
+---
+
+### Step 3C result
+
+We can now state the core Dashboard content contract:
+
+> **The Dashboard presents the active ProjectRecord's current state. It presents the common project identity information for every valid status and presents the additional metadata applicable to that status according to the ProjectRecord's tiered requirements. It does not invent fields, statuses, or interpretations not present in the ProjectRecord contract.**
+
+That's solid enough to carry forward.
+
+**Next: Step 3D — determine the Dashboard's behavior when the navigation state or ProjectRecord is invalid/missing.**
+
+- - - - - 
+
+### Step 3D — Invalid / missing state behavior
+
+This is the point where the project's **“honest failure over silent degradation”** principle becomes concrete.
+
+We have enough evidence to establish several things, but we need to distinguish what the existing code **requires** from what Phase 4 still needs to decide.
+
+#### 1. No current project
+
+`NavigationController` explicitly allows:
+
+```text
+object: null
+depth: "category"
+```
+
+That is a **valid, expected state**.
+
+So the Dashboard must not treat `object === null` as corrupted data.
+
+It simply means there is no selected project to display.
+
+The existing architecture therefore establishes:
+
+> **No selected project is a legitimate navigation state, not an error condition.**
+
+What remains open is what the Dashboard does visually in that situation.
+
+---
+
+#### 2. Navigation says “dashboard,” but the object isn't a project
+
+`selectProject()` deliberately guarantees that a dashboard state contains:
+
+```text
+{
+    kind: "project",
+    project_id: ...,
+    category: ...
+}
+```
+
+And `goUp()` contains explicit guards against impossible state combinations.
+
+That gives us a useful Phase 4 invariant:
+
+> **A Dashboard render is expected to receive a navigation object of `kind: "project"`.**
+
+If it doesn't, we should **not silently manufacture a screen or pretend everything is fine**.
+
+The precise UI response remains an open decision, but the architectural requirement is clear:
+
+> **Invalid navigation state must be handled explicitly rather than silently degraded into a plausible-looking Dashboard.**
+
+---
+
+#### 3. Navigation project exists, but the corresponding record doesn't
+
+This is more interesting.
+
+`NavigationController` stores a `project_id`.
+
+`ProjectListView` obtains actual `ProjectRecord`s through the provider.
+
+There is currently **no code in the supplied files establishing what happens if the controller has a project ID for which the provider returns no matching record**.
+
+So this is genuinely an unresolved Phase 4 requirement.
+
+Possible behaviors include:
+
+* explicit invalid/missing-project state;
+* diagnostic error;
+* user-facing “project unavailable” state;
+* some other deliberately specified failure mode.
+
+**We should not choose one yet.**
+
+What we *can* freeze is the principle:
+
+> **A missing ProjectRecord must not silently become an empty or fabricated Dashboard.**
+
+---
+
+#### 4. Invalid ProjectRecord
+
+`validateProjectRecord()` establishes deterministic validation.
+
+It returns **all discovered issues**, rather than stopping at the first one.
+
+That means the Dashboard cannot reasonably assume that every record supplied by the provider is valid.
+
+But again, the current files don't establish whether Dashboard rendering itself is responsible for validation.
+
+That is an important boundary question.
+
+My recommendation is:
+
+> **Phase 4 should consume the ProjectRecord contract and render according to its validity, but should not duplicate the data-layer validation algorithm.**
+
+The validation function already owns that concern.
+
+If Phase 4 needs to know whether a record is valid, it should use the established validation contract rather than reproduce the rules.
+
+---
+
+### Step 3D matrix
+
+| Condition                               | Established requirement             | UI behavior                                       |
+| --------------------------------------- | ----------------------------------- | ------------------------------------------------- |
+| No selected project (`object === null`) | Valid state                         | **Open**                                          |
+| Dashboard depth + category object       | Invalid combination                 | Must fail explicitly; exact presentation **Open** |
+| Dashboard depth + project object        | Valid expected state                | Dashboard renders                                 |
+| Project ID has no matching record       | Must not silently fabricate/degrade | Exact behavior **Open**                           |
+| ProjectRecord fails validation          | Validation belongs to data layer    | Exact Dashboard presentation **Open**             |
+| Valid ProjectRecord                     | Dashboard can render it             | **Established**                                   |
+
+### The important boundary
+
+We're now establishing a useful separation:
+
+**NavigationController answers:**
+
+> *Which project is selected?*
+
+**ProjectRecordProvider answers:**
+
+> *What is the project's data?*
+
+**ProjectRecord validation answers:**
+
+> *Is that data structurally valid?*
+
+**Dashboard answers:**
+
+> *How should the selected project's valid state be presented?*
+
+That separation is consistent with the Flag #1 decision we just froze as **Option B**. The Dashboard should not turn `NavigationController` into a record gateway.
+
+---
+
+### Step 3D result
+
+The strongest requirement we can add to the Phase 4 matrix is:
+
+> **Phase 4 must define explicit behavior for every state in which a Dashboard cannot obtain a valid ProjectRecord. It must not silently substitute fabricated, stale, empty, or otherwise misleading project content.**
+
+That gives us the architectural guardrail without prematurely choosing the UI.
+
+**Next: Step 3E — identify the Dashboard's interaction responsibilities and, importantly, what it is *not* allowed to own.**
+
+- - - - - 
+
+### Step 3E — Dashboard interaction responsibilities
+
+We can now separate **Dashboard behavior** from **Dashboard rendering**.
+
+The existing code gives us one very clear interaction pattern: `ProjectListView` does not manipulate navigation state directly. It calls:
+
+```text
+id="4k7j82"
+this.controller.selectProject(project.project_id);
+```
+
+The controller remains the owner of navigation-state transitions.
+
+The Dashboard should follow that same boundary.
+
+### Established Dashboard responsibilities
+
+The Dashboard will need to:
+
+1. **Read the current navigation state.**
+2. **Identify the active `project_id`.**
+3. **Obtain ProjectRecords through the shared `ProjectRecordProvider`.**
+4. **Locate the active ProjectRecord.**
+5. **Render the project's applicable information.**
+6. **Initiate navigation actions through `NavigationController` rather than modifying navigation state itself.**
+
+The last point is particularly important.
+
+The Dashboard should not do something like:
+
+```text
+controller.state = ...
+```
+
+or gain knowledge of how navigation destinations are constructed.
+
+Its relationship is:
+
+```text
+Dashboard
+   │
+   ├── reads ────────→ NavigationController
+   │
+   ├── reads ────────→ ProjectRecordProvider
+   │
+   └── requests ─────→ NavigationController actions
+```
+
+### What Dashboard does NOT own
+
+The architecture establishes several negative requirements:
+
+| Concern                                     | Dashboard ownership |
+| ------------------------------------------- | ------------------- |
+| Navigation state                            | **No**              |
+| Resolver calls                              | **No**              |
+| ProjectRecord storage                       | **No**              |
+| ProjectRecord validation rules              | **No**              |
+| Provider construction                       | **No**              |
+| Navigation transition mechanics             | **No**              |
+| Project presentation                        | **Yes**             |
+| User interaction with the displayed project | **Yes**             |
+
+That keeps the Dashboard from becoming another controller.
+
+---
+
+## What about editing ProjectRecords?
+
+This is where we need to stop and mark an open decision.
+
+Nothing in the four supplied files establishes Dashboard editing behavior.
+
+The `ProjectRecord` module is currently explicitly described as:
+
+> “The record shape and its validation rules only.”
+
+It does **not** read or write files.
+
+So Phase 4 should **not silently assume that the Dashboard edits project records**.
+
+At this point:
+
+> **Dashboard is a presentation/interaction consumer of ProjectRecord data, not yet an editor of ProjectRecord data.**
+
+If editing is intended, that needs an explicit architectural/data-layer decision before we implement it.
+
+That is especially important because otherwise we'd be inventing a write path that the current architecture deliberately doesn't contain.
+
+---
+
+## What about navigation controls?
+
+The Dashboard will presumably coexist with the orientation/navigation element.
+
+But we already have an explicit boundary from WP12:
+
+`NavigationController` owns resolver calls and navigation state.
+
+Therefore, if the Dashboard needs to trigger:
+
+* Up
+* Top
+* Previous
+* Next
+
+those actions should go **through the controller's public action methods**.
+
+The Dashboard must not call:
+
+* `resolvePaging()`
+* `resolveUp()`
+* `resolveTop()`
+
+directly.
+
+That's already an established rule from `NavigationController` and its `getAvailability()` contract.
+
+---
+
+## Resulting interaction contract
+
+We can now write this into the requirements matrix:
+
+| Requirement                                              | Status                                   |
+| -------------------------------------------------------- | ---------------------------------------- |
+| Dashboard reads navigation state                         | **Established**                          |
+| Dashboard gets active `project_id` from navigation state | **Established**                          |
+| Dashboard obtains records through shared provider        | **Established / ACP-frozen**             |
+| Dashboard correlates ID → record                         | **Established architectural pattern**    |
+| Dashboard renders ProjectRecord                          | **Established**                          |
+| Dashboard owns navigation state                          | **Prohibited**                           |
+| Dashboard calls navigation resolvers directly            | **Prohibited**                           |
+| Dashboard constructs the provider                        | **Prohibited**                           |
+| Dashboard duplicates ProjectRecord validation logic      | **Prohibited**                           |
+| Dashboard edits ProjectRecords                           | **Open decision**                        |
+| Dashboard creates/deletes projects                       | **Open / currently unsupported**         |
+| Exact Dashboard navigation controls                      | **Open presentation/interaction detail** |
+
+### Step 3E conclusion
+
+The Dashboard is shaping up as a **consumer**, not a new domain authority:
+
+> **NavigationController owns navigation. ProjectRecordProvider owns access to project data. The Dashboard consumes both contracts and presents the resulting project state. It does not become a second navigation controller or a project-data service.**
+
+That is a very clean boundary.
+
+**Next: Step 3F — determine the Dashboard's lifecycle and render coordination with `CommandCenterView`.**
+
+- - - - -
+
+## Step 3F — Dashboard lifecycle and render coordination
+
+This is where the supplied `NavigationInspector` and `ProjectListView` code becomes especially useful.
+
+### 1. `CommandCenterView` is the composition root
+
+From the architecture we've already established, `CommandCenterView` owns the lifecycle of the Command Center components.
+
+That means the Dashboard should **not construct its own controller or provider**.
+
+The intended dependency direction is:
+
+```text id="6o4j9f"
+CommandCenterView
+       │
+       ├── NavigationController
+       │
+       ├── ProjectRecordProvider
+       │
+       ├── NavigationInspector
+       │
+       ├── ProjectListView
+       │
+       └── Dashboard
+```
+
+The important part is that the **same provider instance** is injected into every component that needs project records.
+
+That's our frozen Flag #1 decision.
+
+---
+
+### 2. The Dashboard should be constructed once
+
+`NavigationInspector` explicitly establishes a passive-view model:
+
+> a caller must invoke `render()`.
+
+`ProjectListView` similarly has a `render()` method rather than owning its own application lifecycle.
+
+That strongly suggests the Dashboard should follow the same model:
+
+```text id="2clz7v"
+constructor(...)
+render()
+```
+
+rather than:
+
+```text id="w4u2px"
+constructor(...)
+startWatchingEverything()
+subscribeToController()
+subscribeToProvider()
+renderWheneverSomethingChanges()
+```
+
+The latter would create another state-management mechanism.
+
+We have no evidence that such a mechanism is wanted.
+
+---
+
+## 3. Who calls `render()`?
+
+The answer should be **`CommandCenterView`**.
+
+This is already explicitly established for `NavigationInspector`:
+
+> “Re-render coordination (who calls render() and when) remains entirely deferred to Slice 7's CommandCenterView.”
+
+And `ProjectListView` already follows the same general model.
+
+So Phase 4 should preserve this architectural rule:
+
+> **Child views render when instructed by the composition root; they do not independently coordinate application-wide rendering.**
+
+That gives us:
+
+```text id="t3gk4d"
+User action
+    ↓
+Child / NavigationController action
+    ↓
+Navigation state changes
+    ↓
+CommandCenterView coordinates render()
+    ↓
+Dashboard.render()
+ProjectListView.render()
+NavigationInspector.render()
+...
+```
+
+The exact list of components rendered at each state transition is still a later implementation detail.
+
+---
+
+## 4. Should Dashboard subscribe to navigation changes?
+
+**No.**
+
+Nothing in the current architecture establishes child-view subscriptions.
+
+In fact, `NavigationInspector` explicitly **MUST NOT subscribe to state changes**.
+
+That is strong evidence that state-change coordination belongs above the individual views.
+
+The Dashboard should therefore not acquire its own subscription mechanism simply because it needs to respond to navigation changes.
+
+Instead:
+
+```text id="xj73up"
+NavigationController
+        ↓
+CommandCenterView
+        ↓
+Dashboard.render()
+```
+
+---
+
+## 5. Should Dashboard hide/show itself?
+
+This is slightly less certain.
+
+`ProjectListView` currently does:
+
+```text id="a6m2t7"
+if (state.depth !== "list") {
+    this.container.empty();
+    this.container.style.display = "none";
+    return;
+}
+```
+
+So there is an existing precedent for a view being responsible for its own visibility based on navigation state.
+
+The Dashboard may reasonably do the same.
+
+However, we should distinguish:
+
+**Established pattern:**
+
+> A view may determine whether it has content to render based on navigation state.
+
+**Not yet established:**
+
+> The exact DOM visibility strategy for the Dashboard.
+
+So we shouldn't freeze `display: none`, `flex`, specific containers, etc. in the requirements document.
+
+---
+
+## 6. Dashboard lifecycle
+
+The clean model is:
+
+### Construction
+
+`CommandCenterView` creates the Dashboard and injects:
+
+* its container
+* the `NavigationController`
+* the shared `ProjectRecordProvider`
+
+### Runtime
+
+`CommandCenterView` calls `Dashboard.render()` whenever the application state requires the Dashboard to be refreshed.
+
+### Destruction
+
+`CommandCenterView.onClose()` owns teardown.
+
+The Dashboard itself should not own application lifetime.
+
+---
+
+## Step 3F requirements matrix
+
+| Requirement                                               | Status                                                                |
+| --------------------------------------------------------- | --------------------------------------------------------------------- |
+| Dashboard constructed by `CommandCenterView`              | **Established**                                                       |
+| Dashboard receives `NavigationController` by injection    | **Established architectural pattern**                                 |
+| Dashboard receives same `ProjectRecordProvider` instance  | **Established / ACP-frozen**                                          |
+| Dashboard creates its own provider                        | **Prohibited**                                                        |
+| Dashboard creates its own NavigationController            | **Prohibited**                                                        |
+| Dashboard owns application lifecycle                      | **Prohibited**                                                        |
+| Dashboard exposes `render()`                              | **Established pattern**                                               |
+| `CommandCenterView` coordinates Dashboard rendering       | **Established**                                                       |
+| Dashboard subscribes directly to navigation changes       | **Prohibited**                                                        |
+| Dashboard independently triggers application-wide renders | **Prohibited**                                                        |
+| Exact DOM visibility mechanism                            | **Open**                                                              |
+| Exact render ordering relative to other views             | **Open implementation detail**                                        |
+| Exact teardown mechanics inside Dashboard                 | **Open implementation detail**, subject to composition-root ownership |
+
+---
+
+## Step 3F conclusion
+
+We now have a fairly strong lifecycle contract:
+
+> **The Dashboard is a composition-root-owned child view. It receives the shared navigation and record-provider dependencies through constructor injection, exposes a passive `render()` operation, and does not independently subscribe to or coordinate application state changes. `CommandCenterView` remains responsible for deciding when the Dashboard renders and for the Dashboard's lifetime.**
+
+And this gives us an important architectural symmetry:
+
+```text
+NavigationController
+        │
+        │ state
+        ▼
+CommandCenterView  ← composition/lifecycle authority
+        │
+        ├──→ ProjectListView.render()
+        ├──→ Dashboard.render()
+        └──→ NavigationInspector.render()
+
+ProjectRecordProvider
+        │
+        ├──→ ProjectListView
+        └──→ Dashboard
+```
+
+That is consistent with **both** flags we've just resolved.
+
+**Step 3F is therefore complete.**
+
+The next logical step is **Step 3G — consolidate Steps 3A–3F into the Dashboard's complete behavioral contract and identify any remaining genuinely architectural decisions before we move from requirements extraction into implementation planning.**
+
+- - - - -
+
+## Step 3G — Consolidation: Phase 4 Dashboard Behavioral Contract
+
+This is the point where we stop accumulating individual observations and turn them into one coherent Phase 4 contract.
+
+The key distinction remains:
+
+**Established requirements are not the same thing as UI choices.**
+
+We should freeze the former and leave the latter open until they are actually needed.
+
+---
+
+### A. Dashboard purpose
+
+The Dashboard is the **project-state presentation view** reached after a project is selected from `ProjectListView`.
+
+Its responsibility is to present the selected `ProjectRecord`.
+
+It is **not**:
+
+* a navigation controller;
+* a project-data service;
+* a record repository;
+* a validation engine;
+* an application lifecycle manager.
+
+---
+
+### B. Dependencies and ownership
+
+The Dashboard receives its dependencies from `CommandCenterView` through constructor injection.
+
+Required dependencies:
+
+* Dashboard container;
+* `NavigationController`;
+* the **same `ProjectRecordProvider` instance** used elsewhere.
+
+This incorporates the finalized Flag #1 decision.
+
+**Frozen boundary:**
+
+> `NavigationController` is not a ProjectRecord gateway. Components that need ProjectRecord access receive the shared provider directly from the composition root.
+
+The Dashboard must not construct either dependency itself.
+
+---
+
+### C. Navigation relationship
+
+The Dashboard reads the controller's state to determine the active project.
+
+Expected Dashboard state:
+
+```text
+depth = "dashboard"
+object.kind = "project"
+```
+
+The Dashboard must not:
+
+* access `NavigationController`'s private state;
+* call `resolvePaging()`;
+* call `resolveUp()`;
+* call `resolveTop()`;
+* construct navigation destinations itself.
+
+If the Dashboard needs to initiate navigation, it uses the controller's public action methods.
+
+---
+
+### D. Record acquisition
+
+Once the active `project_id` is known, the Dashboard obtains records from the injected `ProjectRecordProvider` and identifies the corresponding `ProjectRecord`.
+
+The Dashboard does **not** receive records through `NavigationController`.
+
+The Dashboard also does not create a second data source.
+
+This preserves the **Single Source of Truth** principle.
+
+---
+
+### E. ProjectRecord status contract
+
+The Dashboard must respect the existing `ProjectStatus` vocabulary:
+
+```text
+possible
+planned
+current
+completed
+```
+
+It must not invent additional status meanings.
+
+The record contract establishes these content tiers:
+
+| Status      | Required Dashboard-relevant data                                                              |
+| ----------- | --------------------------------------------------------------------------------------------- |
+| `possible`  | name, status, focus                                                                           |
+| `planned`   | name, status, focus, milestone, progress, next_action, blockers, last_updated                 |
+| `current`   | name, status, focus, milestone, progress, next_action, blockers, last_updated, repo_reference |
+| `completed` | name, status, focus                                                                           |
+
+The exact visual treatment remains open.
+
+---
+
+### F. Blocker semantics
+
+This is a **frozen behavioral requirement**, not a design preference.
+
+For `planned` and `current` records:
+
+* `blockers === null` means **explicitly no blockers**;
+* `blockers === undefined` is invalid at those tiers;
+* `blockers` containing strings means blockers exist.
+
+The Dashboard must not render `null` as though the field were missing.
+
+In other words:
+
+> **Valid absence is different from missing data.**
+
+---
+
+### G. Validation boundary
+
+`validateProjectRecord()` owns ProjectRecord validation.
+
+The Dashboard must not duplicate those validation rules.
+
+If invalid data reaches the Dashboard, Phase 4 must define an explicit handling path rather than silently presenting misleading content.
+
+The exact UI for invalid records remains an open decision.
+
+---
+
+### H. Missing-record behavior
+
+A navigation state can theoretically identify a project while the provider fails to supply a matching record.
+
+The supplied architecture does not currently define the UI behavior for that case.
+
+Therefore the requirement we freeze is:
+
+> **A missing ProjectRecord must never silently become a fabricated, stale, or misleading Dashboard.**
+
+The precise failure presentation remains open.
+
+---
+
+### I. Rendering/lifecycle model
+
+The Dashboard is a passive child view.
+
+It should expose:
+
+```text
+render()
+```
+
+`CommandCenterView` controls when that method is called.
+
+The Dashboard must not independently subscribe to navigation state or create an application-wide render loop.
+
+This incorporates the established Slice 6/7 architectural pattern.
+
+---
+
+### J. Flag #2 consequence
+
+The finalized Flag #2 decision also applies here.
+
+The Dashboard's state-change callback, if required by its interaction contract, uses **constructor injection** rather than the old nullable setter-injection pattern.
+
+The Phase 4 implementation must therefore not introduce the deprecated pattern:
+
+```text
+callback = null
+setOnStateChange(...)
+callback?.()
+```
+
+If the Dashboard needs to notify its owner, that callback is part of its required constructor contract.
+
+---
+
+# Consolidated Phase 4 Requirements Matrix
+
+| ID     | Requirement                                                                  | Classification                           |
+| ------ | ---------------------------------------------------------------------------- | ---------------------------------------- |
+| P4-R01 | Dashboard presents the selected ProjectRecord                                | **Established**                          |
+| P4-R02 | Dashboard is owned/constructed by CommandCenterView                          | **Established**                          |
+| P4-R03 | Dashboard receives NavigationController by constructor injection             | **Established architecture**             |
+| P4-R04 | Dashboard receives the shared ProjectRecordProvider directly                 | **Frozen — Flag #1**                     |
+| P4-R05 | NavigationController is not a ProjectRecord gateway                          | **Frozen — Flag #1**                     |
+| P4-R06 | Dashboard derives active project identity from NavigationController state    | **Established**                          |
+| P4-R07 | Dashboard obtains ProjectRecord data through ProjectRecordProvider           | **Established**                          |
+| P4-R08 | Dashboard does not create its own provider or controller                     | **Established boundary**                 |
+| P4-R09 | Dashboard respects the closed ProjectStatus enum                             | **Established**                          |
+| P4-R10 | Status determines which ProjectRecord fields are applicable                  | **Established**                          |
+| P4-R11 | `blockers: null` renders as intentional “no blockers”                        | **Established**                          |
+| P4-R12 | Dashboard does not duplicate ProjectRecord validation logic                  | **Established boundary**                 |
+| P4-R13 | Missing/invalid project data must fail honestly rather than silently degrade | **Established principle; exact UI open** |
+| P4-R14 | Dashboard exposes a passive `render()` operation                             | **Established pattern**                  |
+| P4-R15 | CommandCenterView coordinates Dashboard rendering                            | **Established architecture**             |
+| P4-R16 | Dashboard does not independently subscribe to navigation state               | **Established boundary**                 |
+| P4-R17 | Dashboard does not own application lifecycle                                 | **Established boundary**                 |
+| P4-R18 | Required state-change callback, if present, is constructor-injected          | **Frozen — Flag #2**                     |
+| P4-R19 | Setter-based nullable callback pattern is removed by Phase 4 implementation  | **Frozen — Flag #2**                     |
+| P4-R20 | Exact visual layout                                                          | **Open**                                 |
+| P4-R21 | Exact field ordering                                                         | **Open**                                 |
+| P4-R22 | Exact formatting of progress                                                 | **Open**                                 |
+| P4-R23 | Exact presentation of `repo_reference`                                       | **Open**                                 |
+| P4-R24 | Exact no-project presentation                                                | **Open**                                 |
+| P4-R25 | Exact missing-record presentation                                            | **Open**                                 |
+| P4-R26 | Exact invalid-record presentation                                            | **Open**                                 |
+| P4-R27 | Dashboard editing/writing of ProjectRecords                                  | **Open / not currently established**     |
+
+---
+
+## What is genuinely still undecided?
+
+After consolidation, the list is actually pretty short.
+
+The **architecture is no longer the problem**.
+
+The remaining decisions are primarily:
+
+1. **What exactly does the Dashboard look like?**
+2. **What does it display for each status?**
+3. **What does it display when there is no selected project?**
+4. **What happens when the selected project has no valid record?**
+5. **Does Phase 4 include editing, or is Dashboard initially read-only?**
+
+That last one is the only item I would classify as potentially **architectural** rather than merely presentational.
+
+Everything else can probably be resolved as part of the Phase 4 specification without reopening the architecture.
+
+### Step 3G conclusion
+
+We now have a clean separation:
+
+> **Phase 4 architecture is established. Phase 4 behavior is substantially established. The remaining work is primarily to specify the Dashboard's actual presentation and its explicit failure states, plus determine whether editing is in scope.**
+
+So I would **not** move to Copilot implementation yet.
+
+The next step is **Step 4 — resolve the remaining open requirements**, starting with the most consequential one:
+
+### **Step 4A — Is the Phase 4 Dashboard read-only, or does it have a ProjectRecord editing responsibility?**
+
+That decision determines whether we're specifying a presentation view or accidentally introducing a new write architecture.
+
+- - - - - 
+
+From me: 
+My thought is that Command Center itself should probably generally be "read only" . . . 
+Except for things like describing which AI is doing what, adding project notes, etc. . . . 
+Not for editing code or manipulating files
+
+- - - - - 
+
+Yes. I think that's the right boundary, and it actually gives us a much cleaner Phase 4 decision.
+
+The distinction I'd make is:
+
+> **Command Center is operationally editable, but it is not an engineering workspace.**
+
+It can manage **Command Center metadata** about projects and AI work. It should not become the place where the underlying project artifacts are edited.
+
+### That gives us three categories
+
+| Command Center can do               | Command Center should not do          |
+| ----------------------------------- | ------------------------------------- |
+| Record project notes                | Edit source code                      |
+| Record current focus                | Modify repository files               |
+| Record next actions                 | Commit/push code                      |
+| Record project status               | Act as a file manager                 |
+| Record milestones/progress          | Directly manipulate project artifacts |
+| Record blockers                     | Replace VS Code/GitHub Desktop        |
+| Record which AI is assigned to what | Become an IDE                         |
+| Record AI handoffs/context          | Modify the underlying project itself  |
+| Link to repositories/files          | Own the actual project files          |
+
+And importantly, **links are references, not ownership**.
+
+So a Command Center record might say:
+
+> Teacher Toolbox — Claude = verification / GPT = architecture / Copilot = implementation
+
+and contain a repository reference.
+
+But the actual code remains in the repository, and the actual editing happens through the appropriate engineering tools.
+
+### This also clarifies the ProjectRecord model
+
+`ProjectRecord` is therefore not necessarily an immutable database record.
+
+It can contain **Command Center-managed metadata**.
+
+For example:
+
+```text id="b3v0f7"
+status
+focus
+milestone
+progress
+next_action
+blockers
+last_updated
+repo_reference
+```
+
+Those are exactly the kinds of things Command Center could legitimately maintain.
+
+But `repo_reference` is a **pointer to the engineering world**, not permission for Command Center to modify it.
+
+### And I think this should become a Phase 4 architectural boundary
+
+I'd phrase the decision roughly as:
+
+> **Command Center is an operational management and coordination system, not an engineering workspace. It may create and modify its own project-management metadata, notes, AI assignments, decisions, and operational context. It does not directly edit source code, manipulate project files, or perform engineering repository operations. Engineering artifacts remain owned by their respective project repositories and are modified through the project's designated development tools and workflow.**
+
+That fits extremely well with the Project Bible's **Single Source of Truth**, **Simplicity over complexity**, and **AI assists the human architect** principles.
+
+It also prevents a potentially nasty future problem: someone eventually deciding that because Command Center knows a repository location, it should also have filesystem/Git access and start becoming a second development environment.
+
+**I would freeze this as the answer to Step 4A: Command Center-managed metadata may be editable; engineering artifacts are read/reference-only from Command Center.**
+
+Then we can move to **Step 4B: determine exactly what “editable Command Center metadata” means for Phase 4**, so we don't accidentally give Phase 4 a much larger scope than you intended.
+
+- - - - - 
+
+## Step 4B — Define the editable Command Center metadata boundary
+
+I think we can make this fairly tight.
+
+The key question is not **“What can the user edit?”** in the abstract.
+
+It is:
+
+> **What information belongs to Command Center itself, as opposed to information belonging to the underlying project?**
+
+### 1. Command Center-owned metadata
+
+These are reasonable candidates for direct editing inside Command Center:
+
+* **Project status**
+* **Focus**
+* **Milestone**
+* **Progress**
+* **Next action**
+* **Blockers**
+* **Project notes**
+* **AI assignments/roles**
+* **AI handoff/context notes**
+* **Command Center decisions**
+* **Operational links/references**
+* **Last-updated metadata**
+
+These describe **how Kurt is managing the project**, rather than modifying the project artifact itself.
+
+### 2. Project-owned information
+
+These should remain outside Command Center's editing authority:
+
+* source code
+* project configuration
+* repository contents
+* source assets
+* application data
+* tests
+* build artifacts
+* Git history
+* project-specific files
+
+Command Center can **reference** these things, but shouldn't edit them.
+
+### 3. One subtle distinction: `name`
+
+`ProjectRecord.name` is currently required, but we haven't established who owns changing it.
+
+I would **not automatically make it editable in Phase 4**.
+
+A project's name is closer to **project identity** than operational metadata. If we allow it to change casually, that can create problems with references and external systems.
+
+So I'd currently classify:
+
+> `project_id` = immutable identity
+> `name` = project identity/display label; editability remains open
+> operational fields = Command Center-managed metadata
+
+That gives us a useful identity boundary.
+
+---
+
+## 4B requirements matrix
+
+| Data / capability          |     Command Center may edit? | Phase 4             |
+| -------------------------- | ---------------------------: | ------------------- |
+| `project_id`               |                       **No** | Immutable identity  |
+| `name`                     |          **Not yet decided** | Open                |
+| `status`                   |                      **Yes** | Candidate           |
+| `focus`                    |                      **Yes** | Candidate           |
+| `milestone`                |                      **Yes** | Candidate           |
+| `progress`                 |                      **Yes** | Candidate           |
+| `next_action`              |                      **Yes** | Candidate           |
+| `blockers`                 |                      **Yes** | Candidate           |
+| `last_updated`             |           **System-managed** | Established concept |
+| `repo_reference`           |       **Reference metadata** | Candidate           |
+| Project notes              |                      **Yes** | Candidate           |
+| AI assignments             |                      **Yes** | Candidate           |
+| AI role/context notes      |                      **Yes** | Candidate           |
+| ACP/decision records       | **Yes, as CC documentation** | Candidate           |
+| Source code                |                       **No** | Prohibited          |
+| Repository files           |                       **No** | Prohibited          |
+| Git operations             |                       **No** | Prohibited          |
+| Project-specific artifacts |                       **No** | Prohibited          |
+
+### But here's the important scope question
+
+We should **not automatically put all of those editable fields into Phase 4**.
+
+The current `ProjectRecord` contract tells us what the data model supports. It does **not** mean Phase 4 must implement editing controls for every field.
+
+For example, Phase 4 could legitimately be:
+
+> **Dashboard is read-only with respect to ProjectRecord data.**
+
+while the underlying Command Center architecture reserves the right for a later workspace/editor to modify that metadata.
+
+Or:
+
+> **Dashboard permits editing of selected operational fields.**
+
+Those are different scopes.
+
+---
+
+## My recommendation
+
+Given where we are in WP13, I'd keep Phase 4 **read-only for ProjectRecord data**.
+
+That would mean:
+
+**Phase 4 Dashboard:**
+
+* reads the selected ProjectRecord;
+* presents its operational state;
+* provides navigation;
+* may provide links/references;
+* does **not** edit the record.
+
+Command Center can eventually have a separate **Project Management / Edit** surface that edits its own metadata.
+
+That keeps the Dashboard focused and avoids quietly expanding Phase 4 into a CRUD implementation.
+
+It also fits your broader principle:
+
+> **See first. Read second.**
+
+The Dashboard should primarily tell you **where things stand**, not become a form you have to maintain every time you open it.
+
+### Proposed Step 4B decision
+
+> **Phase 4 Dashboard is read-only with respect to ProjectRecord data. Command Center may eventually provide separate mechanisms for editing Command Center-owned operational metadata, but such editing is outside the Phase 4 Dashboard scope. Engineering artifacts remain strictly reference-only from Command Center.**
+
+If you agree with that, **Step 4C** should address the other major open item: **what exactly the Dashboard must show for `possible`, `planned`, `current`, and `completed` projects.**
+
+- - - - - 
+
+From me: That's just for now, correct?
+
+- - - - - 
+
+Yes — **for now**.
+
+The decision is specifically about **WP13 Phase 4's Dashboard scope**, not a permanent prohibition on editing Command Center metadata.
+
+So:
+
+* **Phase 4 Dashboard:** read-only.
+* **Later Command Center functionality:** may edit Command Center-owned metadata such as status, focus, notes, AI assignments, etc.
+* **Engineering artifacts:** remain outside Command Center's editing role.
+
+In other words, we're deliberately **not building the editing machinery yet**, rather than deciding that Command Center can never have it.
+
+That distinction should go into the Phase 4 specification so nobody interprets "read-only" as a permanent architectural freeze.
+
+- - - - - 
+
+From me: I agree 
+
+- - - - - 
+
+Agreed. **Step 4B is now settled.**
+
+The Phase 4 specification should record it as:
+
+> **Phase 4 Dashboard is read-only with respect to `ProjectRecord` data.** Editing of Command Center-owned operational metadata may be introduced in a later phase through an appropriate management surface. This is a scope boundary for Phase 4, not a permanent prohibition on metadata editing. Engineering artifacts remain outside Command Center's editing role.
+
+### Step 4C
+
+Next we should define **what the Dashboard actually presents for each project status**:
+
+* `possible`
+* `planned`
+* `current`
+* `completed`
+
+This is where the existing ProjectRecord contract becomes an actual Dashboard specification.
+
+I suggest we do **one status at a time**, starting with `possible`.
+
+- - - - - 
+
+## Step 4C — Dashboard status presentation
+
+### `possible`
+
+The existing `ProjectRecord` contract gives us:
+
+* `project_id`
+* `name`
+* `status`
+* `focus`
+
+No `planned`-tier fields are required.
+
+So the Dashboard should **not invent missing project-management information** just to make the card look complete.
+
+### Proposed `possible` presentation
+
+A `possible` project should communicate:
+
+> **This is a recognized project idea, but it is not currently committed to active development.**
+
+The Dashboard should show:
+
+* **Project name**
+* **Status:** Possible
+* **Focus / description**
+
+It should **not** display empty placeholders for:
+
+* milestone
+* progress
+* next action
+* blockers
+* last updated
+* repository
+
+Those fields are not applicable at this status.
+
+### Important distinction
+
+This is not the same as an error.
+
+A `possible` project legitimately doesn't have those fields yet.
+
+That follows the same principle we've already established with `blockers === null`:
+
+> **Not applicable is different from missing or invalid.**
+
+### Proposed requirement
+
+| ID     | Requirement                                                                        | Classification                    |
+| ------ | ---------------------------------------------------------------------------------- | --------------------------------- |
+| P4-R28 | `possible` projects display name, status, and focus                                | **Proposed → freeze if approved** |
+| P4-R29 | `possible` projects do not require planned/current-tier fields                     | **Established by data model**     |
+| P4-R30 | Dashboard does not display misleading empty placeholders for non-applicable fields | **Proposed**                      |
+| P4-R31 | Absence of planned/current data on a `possible` project is not treated as an error | **Proposed**                      |
+
+I would **not** decide the exact visual layout yet. We're defining the *information contract*, not the CSS.
+
+If this looks right, the next one is **`planned`**, where the Dashboard has substantially more information to present.
+
+- - - - - 
+
+From me: 
+Ok for now, but open for revision . . . 
+I'd imagine that "possible future projects" would be full of ideas, notes, etc. . . . 
+Lots of changes before it graduates
+
+- - - - - 
+
+Exactly. That distinction is important.
+
+A `possible` project in the **ProjectRecord data model** may be minimal, while the **Command Center workspace** for a possible project can be much richer.
+
+A possible project might accumulate:
+
+* ideas
+* notes
+* research
+* links
+* AI discussions
+* rough goals
+* competing approaches
+* decisions
+* abandoned ideas
+* eventually, a proposed next step
+
+None of that means the project has graduated to `planned`.
+
+So let's **not freeze the sparse `possible` Dashboard presentation as a permanent rule**.
+
+### Step 4C status
+
+**Provisionally accepted, explicitly open for revision.**
+
+The current Phase 4 assumption is simply:
+
+> A `possible` project's required ProjectRecord fields are `name`, `status`, and `focus`. Phase 4 will not require the Dashboard to expose additional possible-project metadata, but the eventual Command Center treatment of `possible` projects remains open and may evolve substantially as the project matures.
+
+That actually fits the Command Center concept better: **possible projects are incubators**, not just three-field records.
+
+And it gives us a useful distinction going forward:
+
+**ProjectRecord = canonical structured state.**
+**Project workspace = richer operational context.**
+
+We should keep that distinction in mind as we work through `planned`, `current`, and `completed`.
+
+**Next: Step 4C-2 — `planned`.**
+
+- - - - - 
+
+## Step 4C-2 — `planned`
+
+This one is much more clearly defined by the existing Phase 3 contract.
+
+A `planned` project has crossed the threshold from *idea* to *intentional project*, so the Dashboard should expose the information that makes it operationally understandable.
+
+### Established `planned` fields
+
+From `ProjectRecord` / ACP-003:
+
+* **name**
+* **status**
+* **focus**
+* **milestone**
+* **progress**
+* **next action**
+* **blockers**
+* **last updated**
+
+`repo_reference` is **not required yet**.
+
+That last point matters: a project can be genuinely planned without having a repository or implementation underway.
+
+### Proposed Dashboard presentation
+
+A `planned` project should answer:
+
+> **What is this, what are we trying to accomplish, where are we in the plan, and what happens next?**
+
+So the Dashboard should present:
+
+**Identity**
+
+* Project name
+* Status
+
+**Purpose**
+
+* Focus
+
+**Plan**
+
+* Milestone
+* Progress
+
+**Action**
+
+* Next action
+
+**Risk / impediment**
+
+* Blockers
+
+**Freshness**
+
+* Last updated
+
+### `blockers` deserves special treatment
+
+We already have a deliberate three-state model:
+
+* `undefined` → not applicable yet
+* `null` → **explicitly no blockers**
+* `string[]` → blockers exist
+
+Therefore the Dashboard should distinguish:
+
+> **No blockers**
+
+from:
+
+> **Blocker information unavailable**
+
+and from:
+
+> **There are blockers**
+
+For a valid `planned` record, `undefined` isn't permitted, so the Dashboard shouldn't encounter the second state unless the underlying record is invalid.
+
+That gives us a good **honest-failure** boundary rather than silently treating missing data as "no blockers."
+
+### Proposed requirements
+
+| ID     | Requirement                                                                   | Classification                                                          |
+| ------ | ----------------------------------------------------------------------------- | ----------------------------------------------------------------------- |
+| P4-R32 | `planned` projects display name and status                                    | Proposed                                                                |
+| P4-R33 | Display focus, milestone, progress, and next action                           | Proposed                                                                |
+| P4-R34 | Display blocker state distinctly                                              | Proposed                                                                |
+| P4-R35 | Display `last_updated`                                                        | Proposed                                                                |
+| P4-R36 | `repo_reference` is not required for `planned`                                | **Established**                                                         |
+| P4-R37 | `blockers: null` renders as an intentional "no blockers" state                | **Established by Phase 3 semantics**                                    |
+| P4-R38 | Invalid/missing required data must not silently render as valid project state | **Established principle; Dashboard behavior still needs specification** |
+
+### One thing I would leave open
+
+We shouldn't yet decide **how much detail** the Dashboard displays for blockers or notes.
+
+For example, a compact project card might show:
+
+> **Blockers: 2**
+
+while a project workspace could show the actual blocker descriptions.
+
+That's a **presentation decision**, not something the ProjectRecord contract dictates.
+
+So, just like `possible`, this status presentation is **provisional until we finish the complete status model**.
+
+The next logical step is **`current`**, where `repo_reference` becomes required and the distinction between Command Center and the engineering workspace becomes especially important.
+
+- - - - - 
+
+From me: 
+Would "Blockers" be like "Flag 1" and "Flag 2"?
+
+- - - - - 
+
+**Potentially, yes — but I would not equate them automatically.**
+
+In the Command Center model, a **blocker** is something that is currently preventing or materially impeding progress on the project.
+
+So WP13's Flag #1 and Flag #2 *could* have been blockers **if they were actually stopping Phase 4 from proceeding**.
+
+In our case, they were more precisely **architectural issues/decisions discovered during Phase 3**:
+
+* Flag #1 → data-access boundary
+* Flag #2 → `onStateChange` injection pattern
+
+They temporarily blocked Phase 4 because we deliberately put Phase 4 on hold until those decisions were resolved.
+
+Once resolved, however, they aren't necessarily ongoing blockers.
+
+### I'd distinguish three things
+
+**Blocker**
+
+> "I cannot proceed until X is resolved."
+
+**Flag / issue**
+
+> "Something needs architectural attention."
+
+**Decision / resolution**
+
+> "X was examined and resolved."
+
+So the lifecycle could look like:
+
+**Flag #1 discovered → becomes a blocker → architectural review → Option B decided → blocker cleared → decision recorded.**
+
+That distinction is actually quite valuable for Command Center.
+
+It means the **current project card doesn't need to carry the entire history of Flag #1 and Flag #2**. The project workspace/decision log can preserve that history, while the ProjectRecord's `blockers` field represents **what is blocking the project now**.
+
+So I'd amend our Step 4C-2 thinking slightly:
+
+> **`blockers` represents current actionable impediments, not the project's historical flags or unresolved architectural discussions.**
+
+And I'd keep that as a **provisional Phase 4 interpretation**, because we haven't yet formally defined the relationship between *flags, blockers, decisions, and ACPs*. That should probably become one of our next requirements questions.
+
+- - - - - 
+
+From me: 
+I was just trying to understand the terminology 
+
+- - - - - 
+
+Ah — yes. In that case, **your interpretation was basically right**.
+
+I was using *blocker* in the ordinary project-management sense:
+
+> **Something that is currently preventing progress.**
+
+So when we were working through WP13, **Flag #1 and Flag #2 functioned as blockers for Phase 4** because we intentionally stopped Phase 4 until they were resolved.
+
+But they were called **flags** because that's how the architectural review process identified them. Once resolved, they became **decisions**, rather than continuing to be blockers.
+
+So, simply:
+
+**Flag → identifies a problem/question**
+**Blocker → prevents progress**
+**Decision → resolves the question**
+
+They can describe the same issue at different points in its lifecycle.
+
+- - - - - 
+
+## Step 4C-3 — `current`
+
+This is where the Command Center / engineering-workspace boundary becomes especially important.
+
+A `current` project has moved from **planned** into **active work**.
+
+### Established `current` fields
+
+The ProjectRecord requires everything from `planned`, plus:
+
+* **`repo_reference`**
+
+So a valid current project has:
+
+* name
+* status
+* focus
+* milestone
+* progress
+* next action
+* blockers
+* last updated
+* repo reference
+
+### What the Dashboard should answer
+
+For a current project:
+
+> **What am I actively working on, where am I in it, what's next, what's blocking me, and where is the actual project?**
+
+That suggests the Dashboard should prominently show:
+
+**Identity**
+
+* Project name
+* Status
+
+**Current work**
+
+* Focus
+* Milestone
+* Progress
+
+**Immediate action**
+
+* Next action
+
+**Problems**
+
+* Blockers
+
+**Freshness**
+
+* Last updated
+
+**Engineering reference**
+
+* Repository reference/link
+
+### The important boundary
+
+`repo_reference` **does not turn the Command Center into the engineering workspace.**
+
+It simply answers:
+
+> **"Where do I go to work on the actual project?"**
+
+So the Dashboard can provide a repository link, but the user leaves Command Center to edit code, inspect files, run tests, commit, etc.
+
+That fits the boundary we just established in Step 4B.
+
+### Proposed requirements
+
+| ID     | Requirement                                                                    | Classification                                    |
+| ------ | ------------------------------------------------------------------------------ | ------------------------------------------------- |
+| P4-R39 | `current` projects display their operational ProjectRecord fields              | Proposed                                          |
+| P4-R40 | `repo_reference` is displayed as an engineering-workspace reference            | **Established by data model / boundary decision** |
+| P4-R41 | Command Center may link to the repository but does not edit it                 | **Established**                                   |
+| P4-R42 | Current-project presentation should make the immediate `next_action` prominent | Proposed                                          |
+| P4-R43 | Current-project presentation should make active blockers visible               | Proposed                                          |
+| P4-R44 | Dashboard presentation remains read-only in Phase 4                            | **Established Step 4B**                           |
+
+### One thing I'd keep open
+
+We haven't decided whether **one project can be "current" at a time**.
+
+The architecture we've discussed tends to imply a **Current Focus**, but that isn't necessarily the same thing as saying the data model permits only one `status: "current"` record.
+
+That's an important distinction, so I would **not invent a single-current-project rule here**.
+
+We should flag it as an open decision rather than quietly building it into Phase 4.
+
+**Next: `completed` — which should be simpler, but raises the question of how much historical information the Dashboard should retain.**
+
+- - - - - 
+
+From me: 
+While Claude was on "pause", I used the time to work on my kurtsenglish.com project . . . 
+So, there can definitely be more than 1 "current" project
+
+- - - - - 
+
+Exactly. That gives us a concrete correction to Step 4C-3.
+
+**`current` is not a singleton status.** It is a lifecycle state that **multiple projects can occupy simultaneously**.
+
+For example:
+
+* Teacher Toolbox → `current`
+* Kurt's English → `current`
+* Command Center → `current`
+
+Your actual workflow demonstrates why a single-current-project rule would be wrong: when Claude paused on one project, you simply shifted active work to another. Both projects can legitimately remain `current`.
+
+### So the requirement becomes
+
+> **Any number of projects may have `status: "current"`. `current` means actively being worked on, not "the one and only current project."**
+
+And we should distinguish that from **Current Focus** on the Dashboard.
+
+**Current projects** = all projects currently active.
+
+**Current Focus** = whichever project(s) Kurt has chosen to emphasize right now.
+
+That means the Dashboard can show a portfolio of current projects while still highlighting the immediate focus.
+
+I'll mark the single-current-project question as **resolved: no singleton constraint** and carry that into the requirements matrix.
+
+**Next: Step 4C-4 — `completed`.**
+
+- - - - - 
+
+## Step 4C-4 — `completed`
+
+A `completed` project is different from the other three because its primary role in Command Center is **historical/reference**, not active operations.
+
+### Established `completed` fields
+
+The data model requires only:
+
+* `project_id`
+* `name`
+* `status`
+* `focus`
+
+The `planned`/`current` fields are no longer required by the validation rules.
+
+So technically, a completed record could be quite small.
+
+### But the Dashboard shouldn't erase history
+
+This is where I think we should distinguish **data validity** from **useful presentation**.
+
+A completed project should probably still be useful as a record of:
+
+> **What was this project, and what did we accomplish?**
+
+We shouldn't assume that because `milestone`, `next_action`, `progress`, etc. are no longer *required* that they should be discarded.
+
+The ProjectRecord schema allows those fields to remain present.
+
+So the likely Dashboard treatment is:
+
+**Identity**
+
+* Project name
+* Status: Completed
+
+**Purpose**
+
+* Focus
+
+**Historical context**
+
+* Milestone, if present
+* Progress, if present
+* Last updated, if present
+* Repository reference, if present
+
+But:
+
+* **No active next-action emphasis**
+* **No implication that blockers are still active**
+* **No requirement that current/planned fields exist**
+
+### Proposed requirements
+
+| ID     | Requirement                                                                                     | Classification            |
+| ------ | ----------------------------------------------------------------------------------------------- | ------------------------- |
+| P4-R45 | Completed projects are identifiable as completed                                                | Proposed                  |
+| P4-R46 | Completed projects remain discoverable as historical project records                            | Proposed                  |
+| P4-R47 | `name` and `focus` remain available                                                             | Established               |
+| P4-R48 | Dashboard does not require active-project fields for completed projects                         | Established by data model |
+| P4-R49 | Existing historical metadata may remain visible when present                                    | Proposed                  |
+| P4-R50 | Completed projects do not present `next_action` or blockers as current operational requirements | Proposed                  |
+
+### One important open question
+
+We should **not decide yet whether completed projects belong on the main Dashboard**.
+
+There are at least two reasonable possibilities:
+
+**A.** Main Dashboard shows active projects only; completed projects live in a separate Completed Projects area.
+
+**B.** Main Dashboard includes a compact completed-project section/archive.
+
+Given the Command Center structure we already established — `03_Completed_Projects` exists separately — **A currently looks more consistent**.
+
+But I would leave that as a presentation decision until we finish the Dashboard requirements as a whole.
+
+---
+
+### Status model so far
+
+We now have a useful provisional lifecycle:
+
+**Possible** → ideas/incubation
+**Planned** → committed/intended work
+**Current** → actively being worked on; **multiple allowed**
+**Completed** → historical/reference state
+
+And importantly, **status does not dictate the richness of the project's workspace**. A possible project can accumulate substantial notes and research before becoming planned.
+
+That gives us enough of the status semantics to move to the next part of Step 4: **how the Dashboard represents the collection of projects and Current Focus.**
+
+- - - - - 
+
+From me: 
+I'm up in the air in regards to "Completed" . . . 
+What is the best way to store and access all of the relevant data/facts on finished projects?
+
+- - - - -
+
+I think this is one of those places where **Command Center should preserve history rather than compress it into the `ProjectRecord`.**
+
+For finished projects, I'd recommend a **two-layer model**:
+
+### 1. `ProjectRecord` = current canonical index
+
+Keep the completed record relatively small:
+
+* `project_id`
+* `name`
+* `status: completed`
+* `focus`
+* `repo_reference`
+* perhaps `last_updated`
+
+This gives Command Center a reliable index of **what the project was and where it lives**.
+
+### 2. Completed Project workspace = historical record
+
+The actual accumulated knowledge should live in the project's own Command Center workspace.
+
+Something like:
+
+```text
+03_Completed_Projects/
+└── Kurt's_English/
+    ├── Project.md
+    ├── Timeline.md
+    ├── Decisions/
+    ├── Notes/
+    ├── AI_Context/
+    ├── Links.md
+    └── Artifacts/
+```
+
+The exact structure doesn't need to be frozen now.
+
+The important principle is:
+
+> **Completion changes a project's operational state; it does not erase its accumulated context.**
+
+### Why I prefer this
+
+Imagine six months from now you ask:
+
+> "Why did we build Kurt's English this way?"
+
+The `ProjectRecord` shouldn't have to contain the answer.
+
+It should get you to the **Kurt's English project archive**, where the answer lives.
+
+That also directly supports the **Project Re-entry Requirement** we established earlier:
+
+> *Where was I, how was I doing this, and what do I do next?*
+
+For a completed project, the last question changes to:
+
+> **Why did I do it this way, what happened, and what did I learn?**
+
+### And there's an important connection to Git
+
+For engineering projects, we have **two histories**:
+
+**GitHub**
+→ what actually happened to the code.
+
+**Command Center archive**
+→ what happened to the *project as a human/AI endeavor*.
+
+Command Center could preserve:
+
+* why architectural decisions were made;
+* which AIs participated and in what roles;
+* important handoffs;
+* major milestones;
+* problems/flags and their resolutions;
+* important decisions;
+* lessons learned;
+* links to relevant repositories;
+* references to important artifacts.
+
+It should **not duplicate the repository's source code or Git history**.
+
+### My recommendation for Phase 4
+
+Don't design the completed-project archive in detail yet.
+
+Instead, freeze one architectural principle:
+
+> **Completed projects remain first-class historical records. Their ProjectRecord provides canonical identity and discoverability, while richer project history and context are preserved in the project's archived Command Center workspace. Command Center does not duplicate engineering artifacts or Git history; it preserves the human/AI operational context surrounding them.**
+
+Then we can design the actual archive structure later, when we have enough experience with the active-project workflow to know what information is genuinely worth preserving.
+
+That keeps us from making the classic mistake of designing a giant "history database" before we've learned what history we actually need.
+
+- - - - - 
+
+From me: Agreed 
+
+- - - - - 
+
+Agreed. **That becomes the provisional Phase 4 architectural requirement for `completed` projects.**
+
+It also gives us a clean rule:
+
+> **Completed does not mean deleted, flattened, or forgotten. It means no longer operationally active.**
+
+The richer historical context stays accessible without bloating the live `ProjectRecord`.
+
+### Step 4C status
+
+The four project states are now provisionally defined:
+
+* **Possible** — incubation / ideas; deliberately flexible.
+* **Planned** — committed/intended work with an operational plan.
+* **Current** — actively being worked; multiple current projects are allowed.
+* **Completed** — historical/reference state with an archived project workspace.
+
+And we have **not** frozen the exact Dashboard presentation for any of them yet.
+
+### Next step
+
+I'd move to **Step 4D — Current Focus**.
+
+This is important because we've now established that there can be **multiple current projects**, while Command Center still needs to tell you:
+
+> **"What am I actually focusing on right now?"**
+
+That distinction needs to be defined before we finalize the Dashboard behavior.
+
+- - - - - 
+
+From me: 
+I imagined, in Command Center, when I clicked the "Current" button, two or three project folders would appear to choose from . . . 
+You choose one - The details from that project would fill the screen . . . 
+Close that and choose another - The details from that project would fill the screen . . . 
+Etc.
+
+- - - - - 
+
+Yes. And that actually makes the distinction much clearer.
+
+What you're describing is **not a "Current Focus" singleton**. It's a **Current Projects view**:
+
+1. Click **Current**.
+2. Command Center shows the projects currently marked `current`.
+3. You might see:
+
+   * Teacher Toolbox
+   * Kurt's English
+   * Command Center
+4. Choose one.
+5. That project's **workspace/details view** fills the main area.
+6. Close/back out.
+7. Choose another project.
+8. Repeat.
+
+So the architecture should support **multiple current projects naturally**, with **one selected project at a time for viewing**.
+
+### That suggests a useful distinction
+
+**Current status**
+
+> Which projects are actively being worked on?
+
+**Selected project**
+
+> Which one am I looking at right now?
+
+Those are two different pieces of state.
+
+For example:
+
+```text
+Current projects
+├── Teacher Toolbox      ← current
+├── Kurt's English       ← current
+└── Command Center       ← current
+
+Selected:
+└── Kurt's English
+```
+
+When you close Kurt's English, **nothing about its status changes**. You simply return to the Current-project selection.
+
+### And this fits the larger architecture nicely
+
+The **Current screen** becomes a selector/navigation layer.
+
+The **Project workspace** becomes the detailed view.
+
+That workspace can eventually contain the richer information we discussed:
+
+* focus
+* milestone
+* progress
+* next action
+* blockers
+* notes
+* AI assignments
+* AI context/handoffs
+* decisions
+* links
+* eventually other project-specific context
+
+And importantly, **Phase 4 doesn't have to make that workspace editable yet**. It can initially be a read-only presentation of the project's information.
+
+I think your original mental model is actually a better foundation than the "Current Focus" idea I was about to introduce.
+
+**So I would remove the singleton "Current Focus" concept from our Phase 4 requirements and replace it with:**
+
+> **Current Projects are a collection. Selecting a Current Project opens its project workspace as the active detail view. Multiple projects may simultaneously have `status: current`; selection represents viewing context, not project status.**
+
+That feels much closer to the Command Center you originally described.
+
+- - - - - 
+
+From me: That's the idea 
+
+- - - - - 
+
+Good. Then we've got the conceptual model.
+
+I’d treat that as **settled direction, but not yet a frozen implementation specification**:
+
+> **Current is a project collection, not a single focus. Selecting a project opens its detailed workspace; closing it returns to the Current project selection.**
+
+That also gives us a very natural pattern we can reuse for **Possible**, **Planned**, and eventually **Completed** without forcing all four statuses to behave identically.
+
+**Next step:** define what the **project selection screen/card** needs to show before you open a project. That’s the next concrete Dashboard requirement.
+
+- - - - - 
+
+From me: 
+It's getting late, so I'm going to pause it here for the night . . . 
+Is there anything that you need to document at this point? 
+
+- - - - - 
+
+Yes — but **nothing that requires you to do anything tonight**.
+
+The important thing is to preserve the decisions we've just established so we don't have to reconstruct them tomorrow.
+
+### What should be documented
+
+I'd record these as **Phase 4 working decisions**, not freeze the whole Phase 4 specification yet:
+
+1. **Phase 4 Dashboard is read-only**
+
+   * For now, Command Center presents project information.
+   * Later phases may add editing of Command Center-owned metadata.
+   * Command Center does **not** become an engineering/code-editing environment.
+
+2. **`current` is not a singleton**
+
+   * Multiple projects can simultaneously have `status: "current"`.
+   * The real-world example of you working on Kurt's English while Claude was paused confirms this.
+
+3. **Current = collection → selection → workspace**
+
+   * Clicking **Current** shows the current projects.
+   * Selecting one opens its detailed project workspace.
+   * Closing it returns to the Current-project selection.
+   * "Selected project" is viewing state, **not** project status.
+
+4. **`completed` projects remain first-class historical records**
+
+   * The `ProjectRecord` provides identity/discoverability.
+   * Richer history remains in the archived project workspace.
+   * Command Center preserves human/AI/project context rather than duplicating Git history or source code.
+
+5. **`possible` projects remain intentionally flexible**
+
+   * The ProjectRecord may be minimal.
+   * A possible project can accumulate substantial ideas, notes, research, AI discussions, etc. before becoming `planned`.
+   * Our current Dashboard presentation is **open for revision**.
+
+6. **Blockers vs. flags**
+
+   * A blocker is a **current impediment**.
+   * A flag identifies an issue/question requiring attention.
+   * A resolved flag becomes part of the project's decision/history rather than remaining a blocker.
+
+That's enough.
+
+**I would not create another document tonight.** These are working decisions that belong in the Phase 4 requirements matrix/specification we're already building. Tomorrow we can pick up exactly where we stopped: **the project-selection view that appears after clicking Current.**
+
+Get some sleep. We have a much clearer Command Center model now than we did when we started this phase.
+ 
+- - - - - 
+
+* * * End Day 1 * * *

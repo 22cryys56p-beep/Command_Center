@@ -1,0 +1,5173 @@
+* * * Begin Day 2 Pt.3 - Step 4BA thru Step 4BU * * *
+
+- - - - - 
+
+## Step 4BA — Category 44: Project Workspace / Drill-Down
+
+The Dashboard answers:
+
+> **"What's going on?"**
+
+The Workspace answers:
+
+> **"Let me get into the actual work."**
+
+This distinction is important because otherwise the Dashboard becomes overloaded.
+
+### 1. Dashboard → Workspace is the natural transition
+
+We've already established the navigation flow:
+
+```text
+Current / Planning / Ideas
+        ↓
+Ongoing / New Project / Archive
+        ↓
+Project List
+        ↓
+Project Dashboard
+        ↓
+Project Workspace
+```
+
+The Workspace is where the detailed operational material lives.
+
+### 2. Workspace should be project-specific
+
+For the Command Center project, you might see:
+
+```text id="5m8q2p"
+COMMAND CENTER WORKSPACE
+
+Files
+Repositories
+Threads
+Decisions
+Tasks
+Flags
+Handovers
+Reviews
+Seeds
+AI / Agents
+History
+```
+
+A different project could expose a completely different collection.
+
+### 3. The Workspace is where relationships become useful
+
+For example:
+
+```text id="7q3n8v"
+D-071 — State Injection Pattern
+
+Decision
+Constructor injection
+
+Related:
+├── WP13 Phase 3 Specification
+├── orientation-bar.ts
+├── category-view.ts
+├── project-list-view.ts
+├── command-center-view.ts
+├── GPT-5.5 Thread
+└── Claude Review Thread
+```
+
+You don't need to remember where every piece lives.
+
+The relationships are recorded.
+
+### 4. Workspace should support multiple views
+
+Not necessarily all at once.
+
+Potential views:
+
+```text id="8p4m2q"
+Overview
+Files
+Tasks
+Decisions
+AI / Threads
+History
+Sources
+```
+
+The Dashboard remains the primary operational view.
+
+The Workspace gives you **depth**.
+
+### 5. The Workspace should preserve the project context
+
+If you jump from a Decision to a File, then to a Thread, you should be able to get back to the Project without losing your place.
+
+This sounds trivial, but it matters enormously in the way you actually work.
+
+You frequently bounce between:
+
+* ChatGPT threads
+* Claude threads
+* GitHub
+* local files
+* project documentation
+
+So CC should maintain the **Project context around the navigation**.
+
+### 6. "Thread Reference" becomes especially valuable here
+
+We've already established that a Thread Reference isn't just a URL.
+
+It can tell CC:
+
+```text id="3v7m1q"
+THREAD REFERENCE
+
+AI:
+GPT-5.5
+
+Thread:
+WP13 Phase 2 Verification
+
+Purpose:
+Architectural handover
+
+Relevant:
+D-071
+Phase 3 Specification
+State injection discussion
+
+Handover:
+GPT-5.5 → GPT-5.6
+```
+
+That means an old conversation becomes a **retrievable project resource**, rather than an orphaned chat.
+
+### 7. Workspace shouldn't duplicate external tools
+
+For example, CC doesn't need to become a Git client.
+
+If you select:
+
+> Repository → Command_Center
+
+CC should take you to the repository/tool that actually manages the repository.
+
+Likewise:
+
+> Edit File → Edit Using → VS Code
+
+CC acts as the **launch point/context layer**, not a replacement for VS Code.
+
+### 8. This connects directly to your "Edit Using" idea
+
+The Workspace could show:
+
+```text id="n6q4p8"
+orientation-bar.ts
+
+Location:
+Command_Center/src/...
+
+[Open] [Edit Using ▾]
+
+Edit Using:
+→ VS Code
+→ Cursor
+→ BBEdit
+→ Other...
+```
+
+And the available applications can depend on the file type and the applications actually installed on the Mac.
+
+So CC shouldn't assume:
+
+> `.ts` = video editor.
+
+It should use the OS/application associations or an explicit user-configured list.
+
+### Matrix additions
+
+| ID      | Requirement                                                                                                               | Status                                    |
+| ------- | ------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------- |
+| P4-R589 | Each Project should provide a detailed Workspace accessible from its Dashboard.                                           | **Established architectural direction**   |
+| P4-R590 | Workspace should provide deeper access to project resources without overloading the Dashboard.                            | **Established**                           |
+| P4-R591 | Workspace views should be capable of exposing Files, Tasks, Decisions, AI/Threads, History, and Sources.                  | **Established direction**                 |
+| P4-R592 | Workspace should preserve Project context while navigating among related resources.                                       | **Established architectural requirement** |
+| P4-R593 | Relationships between CC artifacts and external resources should be navigable from the Workspace.                         | **Established**                           |
+| P4-R594 | Thread References should provide enough metadata to identify their purpose and project relevance.                         | **Established**                           |
+| P4-R595 | CC should launch/hand off to specialized external applications rather than attempting to replace them.                    | **Established architectural principle**   |
+| P4-R596 | File editing should support an "Edit Using" mechanism appropriate to the actual file type and available Mac applications. | **Established direction**                 |
+| P4-R597 | Application choices should not be hard-coded around assumptions about file types.                                         | **Established**                           |
+
+### Category 44 verdict
+
+The distinction is now clean:
+
+**Dashboard**
+→ *Understand the project.*
+
+**Workspace**
+→ *Work with the project.*
+
+**External Tool**
+→ *Actually perform specialized work.*
+
+That keeps Command Center from becoming a bloated replacement for GitHub, VS Code, Obsidian, Finder, Google Drive, or your AI applications.
+
+It becomes the **place from which you understand and navigate all of them**.
+
+**Next: Category 45 — History, Audit Trail & "What Happened?"**
+
+- - - - - 
+
+## Step 4BB — Category 45: History, Audit Trail & "What Happened?"
+
+This is one of the most important pieces for your **Project Re-entry Requirement**.
+
+After six months away, you don't just need to know where the project is.
+
+You may need to know:
+
+> **"How did it get here?"**
+
+### 1. History is different from Notes
+
+A Note says:
+
+> "We decided to use constructor injection."
+
+History says:
+
+> **Aug 14 — Kurt accepted Decision D-071: constructor injection.**
+
+The first is information.
+
+The second is an event.
+
+### 2. History should record meaningful events
+
+Potential events include:
+
+* Project created
+* Status changed
+* Task created/completed
+* Flag raised/resolved
+* Blocker declared/resolved
+* Decision proposed/accepted/revised
+* External Cutoff added/changed
+* AI joined project
+* Agent executed an authorized action
+* Handover created
+* Review completed
+* Checkpoint reached
+* Repository changed
+* Source associated
+* File moved/associated
+
+Not every microscopic operation needs to be recorded.
+
+### 3. History should identify the actor
+
+This is especially important once multiple AIs and Agents are involved.
+
+```text id="6q3m8v"
+AUG 17
+
+Decision D-071 established
+
+Actor:
+Kurt
+
+Source:
+GPT-5.6 discussion
+
+────────────────
+
+AUG 17
+
+Where Things Stand updated
+
+Actor:
+Claude
+
+Source:
+Claude Thread — WP13
+
+────────────────
+
+AUG 18
+
+Repository Monitor detected commit
+
+Actor:
+Agent: RepoMonitor
+
+Source:
+GitHub
+```
+
+Now you can tell **who actually did what**.
+
+### 4. History should preserve before/after when useful
+
+For important changes:
+
+```text id="8p4n2m"
+PROJECT STATUS
+
+Before:
+Planning
+
+After:
+Current
+
+Changed By:
+Kurt
+
+Reason:
+Implementation authorized
+```
+
+This is much more useful than simply saying:
+
+> "Status changed."
+
+### 5. History should be immutable—or at least extremely difficult to rewrite
+
+This is where I think the Project Bible principle:
+
+> **Single Source of Truth**
+
+needs a companion principle:
+
+> **History is a record, not a workspace.**
+
+You can correct an error, but you shouldn't silently rewrite the historical record.
+
+If something was wrong:
+
+```text id="r7m3q8"
+Original:
+Decision recorded as "Use setter injection."
+
+Correction:
+Original record was incorrect.
+Actual decision: constructor injection.
+
+Corrected By:
+Kurt
+
+Date:
+...
+```
+
+That preserves the trail.
+
+### 6. AI-generated history must be clearly attributable
+
+An AI should never create the illusion that:
+
+> Kurt did something he didn't do.
+
+For example:
+
+**Bad:**
+
+> "Project Status changed to Current."
+
+**Good:**
+
+> "Claude changed Project Status to Current under authorization X."
+
+Or, if status changes are not AI-authorized:
+
+> "Claude proposed changing Project Status to Current."
+
+That distinction matters.
+
+### 7. History should be searchable
+
+This connects directly to our Search work.
+
+You should be able to search:
+
+> `constructor injection`
+
+and find:
+
+* Decision
+* Flag
+* Task
+* related Threads
+* Files
+* History events
+
+You should also be able to ask:
+
+> **"What happened with constructor injection?"**
+
+An AI could synthesize the history from those records.
+
+### 8. History should support a timeline view
+
+Eventually:
+
+```text id="m5q8v2"
+PROJECT HISTORY
+
+Aug 02  ─ Project created
+   │
+Aug 05  ─ Architecture discussion
+   │
+Aug 08  ─ Flag raised
+   │
+Aug 10  ─ GPT-5.5 handover
+   │
+Aug 12  ─ Decision proposed
+   │
+Aug 14  ─ Decision accepted
+   │
+Aug 16  ─ Phase completed
+   │
+Aug 17  ─ Project moved to Current
+```
+
+That's potentially one of the most useful re-entry tools in CC.
+
+### 9. History shouldn't become a surveillance log
+
+There's a balance.
+
+We don't need:
+
+> "Kurt opened orientation-bar.ts at 14:37:12."
+
+That's noise.
+
+History should focus on **meaningful project events**, especially changes to project knowledge, state, relationships, and governance.
+
+### Matrix additions
+
+| ID      | Requirement                                                                                                                                                    | Status                                    |
+| ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------- |
+| P4-R598 | CC must maintain a Project History/Audit Trail of meaningful project events.                                                                                   | **Established architectural requirement** |
+| P4-R599 | History must distinguish events from ordinary Notes.                                                                                                           | **Established**                           |
+| P4-R600 | Meaningful changes to Project state and CC artifacts should be recorded in History.                                                                            | **Established**                           |
+| P4-R601 | History events should identify the actor responsible for the event where practical.                                                                            | **Established**                           |
+| P4-R602 | Important changes should preserve before/after state where useful.                                                                                             | **Established direction**                 |
+| P4-R603 | Historical records should not be silently rewritten. Corrections should preserve provenance.                                                                   | **Established architectural principle**   |
+| P4-R604 | AI-generated events must clearly identify the AI/Agent responsible.                                                                                            | **Established**                           |
+| P4-R605 | AI actions must not be represented as actions taken by Kurt unless Kurt actually performed/authorized that action according to the configured authority model. | **Established**                           |
+| P4-R606 | History should be searchable and connected to related artifacts.                                                                                               | **Established direction**                 |
+| P4-R607 | CC should eventually provide a chronological Project Timeline view.                                                                                            | **Established direction**                 |
+| P4-R608 | History should record meaningful project events rather than low-value UI/activity telemetry.                                                                   | **Established architectural principle**   |
+
+### Category 45 verdict
+
+This gives CC a memory that isn't dependent on **any particular AI's memory**.
+
+That's particularly important given your GPT-5.5 → GPT-5.6 experience.
+
+If six months from now you open the project and ask:
+
+> **"Why are we doing it this way?"**
+
+CC shouldn't need to rely on whether the current AI remembers the old conversation.
+
+It should be able to reconstruct the answer from:
+
+**History + Decisions + Threads + Handovers + Sources.**
+
+**Next: Category 46 — Project Seeds, Lineage & Reuse.**
+ 
+- - - - - 
+
+## Step 4BC — Category 46: Project Seeds, Lineage & Reuse
+
+This is the category that addresses the point you made earlier about **Archived** projects.
+
+An Archived project isn't necessarily dead.
+
+Sometimes it's actually a **source of reusable architecture, code, ideas, templates, or knowledge for a future project**.
+
+So we need to distinguish:
+
+> **Archive** = no longer an active project.
+
+from:
+
+> **Discarded** = no longer considered useful.
+
+Those are very different things.
+
+### 1. A Seed is reusable project material
+
+A **Seed** is something extracted from an existing project specifically because it may serve as the starting point for something else.
+
+For example:
+
+```text id="6m8q2p"
+SEED
+
+Name:
+Worksheet SVG Rendering Kernel
+
+Origin:
+Teacher Toolbox
+
+Contains:
+• Rendering architecture
+• SVG document model
+• Font/path handling
+• Validation concepts
+
+Potential Uses:
+• iCanSpell
+• iCanMath
+• Future worksheet tools
+```
+
+The new project doesn't have to inherit the entire old project.
+
+It can start from the Seed.
+
+### 2. The Command Center itself is a Seed
+
+This is especially important.
+
+The original CC implementation is:
+
+> **Built on Obsidian, but architected so it can be ported to another platform.**
+
+That means CC isn't merely an application.
+
+It's also a **seed architecture** for potentially building the finished Command Center elsewhere.
+
+So we should record that lineage explicitly.
+
+```text id="8q4n7m"
+SEED
+
+Command Center Core
+
+Origin:
+Project Command Center / Obsidian implementation
+
+Purpose:
+Reusable operational-project-management architecture
+
+Platform:
+Obsidian implementation
+
+Portability:
+Platform-independent data/model intended
+```
+
+### 3. Seeds should preserve lineage
+
+If Project B starts from Project A, CC should be able to tell us that.
+
+```text id="p7m3k8"
+Project A
+Teacher Toolbox
+     │
+     └── Seed: SVG Rendering Kernel
+              │
+              ▼
+Project B
+iCanSpell
+```
+
+And potentially:
+
+```text id="r5n8q2"
+Project A
+Command Center
+     │
+     └── Seed: Portable CC Core
+              │
+              ├── Project B
+              └── Project C
+```
+
+This becomes a **lineage graph**.
+
+### 4. A Seed isn't necessarily copied
+
+This is another important distinction.
+
+A future project might:
+
+**Reuse**
+
+> Directly use the Seed.
+
+**Fork**
+
+> Use the Seed as a starting point and substantially modify it.
+
+**Reference**
+
+> Use the Seed as conceptual inspiration without copying it.
+
+**Extract**
+
+> Pull only selected components from the Seed.
+
+Those relationships should be representable.
+
+### 5. Seeds can come from many places
+
+Not just completed projects.
+
+A Seed could originate from:
+
+* Archived Project
+* Current Project
+* Prototype
+* Experiment
+* AI conversation
+* Code fragment
+* Architecture document
+* Failed project
+* Template
+* External resource
+
+In fact, a **failed project may be an excellent Seed**.
+
+The project failed.
+
+The architecture didn't necessarily fail.
+
+### 6. Seeds shouldn't be hidden inside Archive
+
+This is the key UI implication.
+
+Archive might contain:
+
+```text
+Archived Projects
+
+Teacher Toolbox Prototype
+Old Website Refurbishment
+Experimental AI Workbench
+```
+
+But the user should also be able to see:
+
+```text
+Reusable Seeds
+
+SVG Rendering Kernel
+CC Portable Core
+AI Handover Template
+Project Re-entry Template
+```
+
+The Seed becomes discoverable independently of its origin.
+
+### 7. Seeds need provenance
+
+A Seed should tell you:
+
+> **Where did this come from?**
+
+and:
+
+> **What has it been used for?**
+
+For example:
+
+```text id="m4q8v2"
+SEED
+AI Handover Process
+
+Origin:
+GPT-5.5 → GPT-5.6 handover
+
+Created:
+Aug 2026
+
+Used By:
+Command Center
+Kurt Engine
+
+Related:
+Handover Prompts
+AI Context
+Thread References
+```
+
+This directly incorporates the handover experience we've already had.
+
+### 8. Seeds can evolve
+
+A Seed isn't necessarily frozen forever.
+
+You could have:
+
+```text id="7n3p5q"
+Seed v1
+   ↓
+Seed v2
+   ↓
+Seed v3
+```
+
+while preserving the original.
+
+That means a future project can deliberately say:
+
+> "Start from Seed v2."
+
+rather than silently getting whatever happens to be the latest version.
+
+### Matrix additions
+
+| ID      | Requirement                                                                                            | Status                                    |
+| ------- | ------------------------------------------------------------------------------------------------------ | ----------------------------------------- |
+| P4-R609 | CC must distinguish Archived Projects from discarded/irrelevant material.                              | **Established**                           |
+| P4-R610 | Archived Projects may remain sources of reusable material for future Projects.                         | **Established**                           |
+| P4-R611 | CC must support the concept of a reusable Project Seed.                                                | **Established architectural requirement** |
+| P4-R612 | Seeds must preserve their origin/provenance.                                                           | **Established**                           |
+| P4-R613 | CC should record relationships between Seeds and Projects that reuse them.                             | **Established direction**                 |
+| P4-R614 | Seed relationships should support reuse, fork, reference, and extraction concepts where useful.        | **Established direction**                 |
+| P4-R615 | Seeds may originate from active, archived, failed, experimental, or otherwise non-completed Projects.  | **Established**                           |
+| P4-R616 | Seeds should be independently discoverable rather than hidden solely inside their originating Project. | **Established direction**                 |
+| P4-R617 | Seeds may have versions/iterations while preserving lineage.                                           | **Established direction**                 |
+| P4-R618 | CC's own portable architecture should be representable as a reusable Seed.                             | **Established architectural requirement** |
+| P4-R619 | AI handover processes/prompts may themselves become reusable Seeds.                                    | **Established direction**                 |
+
+### Category 46 verdict
+
+This gives **Archive** a much better meaning.
+
+It's not the graveyard.
+
+It's more like a **library of completed, dormant, or superseded work** — some of which may contain valuable genetic material for future projects.
+
+And **Seed** becomes the mechanism for deliberately extracting that reusable material.
+
+So the relationship is:
+
+**Project → Archive → Seed → New Project**
+
+while preserving:
+
+**Origin → Lineage → Reuse**
+
+That's a pretty powerful capability for CC, because over time it means you're not repeatedly starting projects from zero.
+
+**Next: Category 47 — Templates, Kernels & the distinction between a Seed and a Template.**
+ 
+- - - - - 
+
+## Step 4BD — Category 47: Templates, Kernels & Seed vs. Template
+
+This is worth separating now because we have three related ideas floating around:
+
+* **Seed**
+* **Template**
+* **Kernel**
+
+They're not the same thing.
+
+### 1. Template
+
+A **Template** is a reusable **structure**.
+
+It says:
+
+> "Here's a framework for creating this kind of thing."
+
+For example:
+
+```text id="6q3m8v"
+NEW PROJECT TEMPLATE
+
+Project Identity
+Purpose
+Description
+Status
+Where Things Stand
+Sources
+Tasks
+Flags
+Decisions
+AI
+Threads
+History
+```
+
+You don't inherit an old project's actual content.
+
+You create a **new instance from the structure**.
+
+### 2. Seed
+
+A **Seed** contains something substantive from an existing project that can become the basis for something new.
+
+For example:
+
+> Teacher Toolbox's SVG rendering engine.
+
+A new project might start with that actual architecture/code/concept.
+
+So:
+
+**Template = structure**
+
+**Seed = reusable substance**
+
+### 3. Kernel
+
+I think **Kernel** is useful, but I'd treat it as a special kind of Seed.
+
+A Kernel is a particularly fundamental reusable core.
+
+Something like:
+
+> "The smallest meaningful foundation from which several projects can grow."
+
+For example:
+
+```text id="8p4n2q"
+KERNEL
+
+Portable Command Center Core
+
+Contains:
+• Project model
+• Source model
+• Thread Reference model
+• Decision model
+• History model
+• AI authority model
+
+Does not contain:
+• Obsidian-specific UI
+• Project-specific content
+• Provider-specific implementation
+```
+
+That is more fundamental than an ordinary Seed.
+
+### 4. The three-level relationship
+
+This gives us a useful hierarchy:
+
+```text id="m7q3v8"
+TEMPLATE
+   │
+   │ provides structure
+   ▼
+NEW PROJECT
+   │
+   │ may begin from
+   ▼
+SEED / KERNEL
+   │
+   │ provides reusable substance
+   ▼
+IMPLEMENTATION
+```
+
+Or a project could start from both:
+
+```text id="r5n8q2"
+Template
+   +
+Seed / Kernel
+   ↓
+New Project
+```
+
+### 5. The Command Center is potentially both
+
+This is an important nuance.
+
+The current Command Center project could produce:
+
+**Template**
+
+> A reusable Project Template for future CC instances.
+
+**Kernel**
+
+> The platform-independent operational model.
+
+**Seed**
+
+> The existing Obsidian implementation and accumulated architectural knowledge.
+
+Those are three different reusable outputs from the same project.
+
+### 6. A Template should be clean
+
+A Template shouldn't accidentally carry:
+
+* old project Tasks;
+* old Flags;
+* old Blockers;
+* old AI conversations;
+* old project-specific Decisions.
+
+It should contain the **structure and default configuration**, not historical baggage.
+
+### 7. A Kernel may deliberately contain baggage
+
+A Kernel can contain actual implementation decisions.
+
+For example:
+
+> "Projects use immutable IDs."
+
+That's part of the Kernel.
+
+A Template might simply provide:
+
+> `Project ID: [generated]`
+
+The distinction becomes important when creating future projects.
+
+### 8. Seeds should be deliberate
+
+We shouldn't automatically turn every archived project into a Seed.
+
+A Seed is a **deliberate designation**:
+
+> "There is something here worth reusing."
+
+That keeps the Seed library useful.
+
+### 9. AI can identify candidate Seeds
+
+This is another good AI role.
+
+After a project is archived, AI could say:
+
+> "This project contains three components that may be useful as Seeds."
+
+Then show:
+
+```text id="n4q8p2"
+Potential Seeds
+
+• SVG rendering architecture
+• Font validation system
+• Worksheet document model
+
+[Create Seed Records]
+```
+
+Kurt decides whether they actually become Seeds.
+
+### Matrix additions
+
+| ID      | Requirement                                                                                                                               | Status                                  |
+| ------- | ----------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------- |
+| P4-R620 | CC must distinguish Templates from Seeds.                                                                                                 | **Established**                         |
+| P4-R621 | A Template represents reusable structure for creating a new Project.                                                                      | **Established**                         |
+| P4-R622 | A Seed represents reusable substantive material derived from an existing source Project or other source.                                  | **Established**                         |
+| P4-R623 | A Kernel should represent a particularly fundamental reusable core and may be treated as a specialized Seed.                              | **Established direction**               |
+| P4-R624 | Templates should not inherit project-specific Tasks, Flags, Blockers, Decisions, Threads, or History unless explicitly designed to do so. | **Established**                         |
+| P4-R625 | Kernels may intentionally contain reusable architectural/implementation decisions.                                                        | **Established direction**               |
+| P4-R626 | A Project may be created from a Template, a Seed/Kernel, or both.                                                                         | **Established direction**               |
+| P4-R627 | Seeds should be deliberately designated rather than automatically generated from every archived Project.                                  | **Established**                         |
+| P4-R628 | AI may identify potential reusable Seeds but should not automatically designate them as authoritative Seeds.                              | **Established direction**               |
+| P4-R629 | Command Center should be capable of producing reusable Template, Seed, and Kernel artifacts from its own development.                     | **Established architectural direction** |
+
+### Category 47 verdict
+
+I'd keep the terminology simple:
+
+> **Template = how to start.**
+
+> **Seed = what to start from.**
+
+> **Kernel = the essential core of what to start from.**
+
+And that distinction will be valuable well beyond Command Center.
+
+It means your future projects can deliberately say:
+
+> "Start me with this structure."
+
+or:
+
+> "Start me with this existing foundation."
+
+or:
+
+> **"Start me with this foundation, inside this structure."**
+
+**Next: Category 48 — Project Creation & the New Project workflow.**
+
+- - - - - 
+
+## Step 4BE — Category 48: Project Creation & the New Project Workflow
+
+This brings together something we established much earlier:
+
+> **A New Project should be easy to start without requiring the entire project architecture to be figured out first.**
+
+And importantly, **Ideas can contain a New Project template/canvas**.
+
+### 1. "New Project" isn't just a button
+
+It can be both:
+
+* a **top-level navigation option**, and
+* a **reusable project-starting canvas/template** that can live under **Ideas**.
+
+Your earlier structure was:
+
+```text
+Top
+[ Current ] [ Planning ] [ Ideas ]
+
+Under
+[ Ongoing ] [ New Project ] [ Archive ]
+```
+
+The important thing is that **New Project is an action/workspace**, not a list of existing projects.
+
+### 2. Starting from Ideas
+
+You could be in:
+
+**Ideas**
+
+and have:
+
+```text id="6m8q2p"
+IDEAS
+
+New Project
+┌──────────────────────────────┐
+│ + Start a New Project        │
+│                              │
+│ Working canvas for exploring │
+│ a project before committing  │
+│ it to the active portfolio.  │
+└──────────────────────────────┘
+
+Other Ideas
+...
+```
+
+You can spitball there without having to create a fully formal Project immediately.
+
+### 3. The New Project canvas should be lightweight
+
+I don't think CC should force you through a 20-field wizard.
+
+Something closer to:
+
+```text id="8q4n7m"
+NEW PROJECT
+
+Name
+____________________
+
+What is this?
+____________________
+
+Why might I want it?
+____________________
+
+Initial thoughts
+____________________
+
+Possible Sources
+____________________
+
+Possible Seed / Kernel
+____________________
+
+AI / Threads
+____________________
+```
+
+That's enough to get started.
+
+### 4. Formalization can happen later
+
+At some point you may decide:
+
+> "Yeah, this is actually a project."
+
+Then CC can **promote** the Idea into a Project.
+
+The existing thinking shouldn't be lost.
+
+```text id="p7m3q8"
+IDEA
+   ↓
+Project Candidate
+   ↓
+Project
+```
+
+The Idea's history can remain attached.
+
+### 5. Or an Idea can simply die
+
+Not every Idea becomes a Project.
+
+That's okay.
+
+It can remain an Idea, be archived, or eventually be discarded.
+
+Again, we don't want the system forcing everything into a Project.
+
+### 6. Starting from a Template
+
+When creating a Project, you could optionally choose:
+
+```text id="r5n8q2"
+STARTING POINT
+
+○ Blank Project
+
+○ Project Template
+
+○ Seed
+
+○ Kernel
+
+○ Template + Seed
+
+○ Existing Project
+```
+
+"Existing Project" could support a deliberate fork.
+
+### 7. Existing Project → New Project
+
+This is another important reuse mechanism.
+
+For example:
+
+> "Create a new project based on Teacher Toolbox Prototype."
+
+CC should **not duplicate the old project and pretend it's independent**.
+
+Instead:
+
+```text id="v3m8q1"
+NEW PROJECT
+
+Created From:
+Teacher Toolbox Prototype
+
+Relationship:
+Fork
+
+Inherited:
+Seed / Kernel X
+
+Not Inherited:
+Tasks
+Flags
+History
+Project Status
+```
+
+That preserves lineage.
+
+### 8. AI can help initialize
+
+Once the initial information exists, AI can propose:
+
+* Project Description
+* initial Focus
+* likely Sources
+* likely Tasks
+* relevant Seeds
+* relevant previous Projects
+* relevant AI Threads
+
+But the Project shouldn't become AI-defined merely because the AI generated the initial material.
+
+### 9. The Project ID should be created early
+
+As soon as the Idea becomes a Project Candidate, CC should give it a stable identity.
+
+That way:
+
+> files, Threads, Seeds, Decisions, and AI work
+
+can begin attaching to it immediately.
+
+You don't have to wait until the project is "official."
+
+### Matrix additions
+
+| ID      | Requirement                                                                                                                           | Status                                  |
+| ------- | ------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------- |
+| P4-R630 | CC must provide a lightweight New Project creation workflow.                                                                          | **Established architectural direction** |
+| P4-R631 | A reusable New Project canvas/template may exist within Ideas.                                                                        | **Established**                         |
+| P4-R632 | New Project creation should not require completion of a large setup form before work can begin.                                       | **Established**                         |
+| P4-R633 | An Idea should be promotable to a Project without losing its existing context/history.                                                | **Established direction**               |
+| P4-R634 | Not every Idea must become a Project.                                                                                                 | **Established**                         |
+| P4-R635 | Project creation should optionally support Blank, Template, Seed, Kernel, Template + Seed, and Existing Project/Fork starting points. | **Established direction**               |
+| P4-R636 | Projects created from existing Projects must preserve their lineage/relationship.                                                     | **Established**                         |
+| P4-R637 | Forking a Project must not silently inherit historical operational state such as Tasks, Flags, Blockers, or History.                  | **Established**                         |
+| P4-R638 | AI may assist Project initialization but must not silently establish authoritative Project governance.                                | **Established**                         |
+| P4-R639 | A stable Project identity should be created early enough to associate emerging Sources, Threads, and other artifacts.                 | **Established direction**               |
+
+### Category 48 verdict
+
+This gives us a very natural lifecycle:
+
+**Idea**
+
+> "Maybe..."
+
+↓
+
+**New Project canvas**
+
+> "Let's play with this."
+
+↓
+
+**Project Candidate**
+
+> "This looks real."
+
+↓
+
+**Project**
+
+> "We're doing it."
+
+↓
+
+**Archive**
+
+> "We're no longer actively working on it."
+
+↓
+
+**Seed / Kernel**
+
+> "But something here is worth carrying forward."
+
+And none of those transitions have to destroy the history that came before them.
+
+**Next: Category 49 — Project Lifecycle & State Transitions.**
+ 
+- - - - - 
+
+## Step 4BF — Category 49: Project Lifecycle & State Transitions
+
+Now we can formalize the lifecycle we've been building without turning it into a rigid project-management methodology.
+
+The key idea:
+
+> **A Project changes state, but the Project itself remains the same Project.**
+
+### 1. The top-level categories are views, not project states
+
+We established:
+
+```text id="6q3m8v"
+[ Current ] [ Planning ] [ Ideas ]
+
+[ Ongoing ] [ New Project ] [ Archive ]
+```
+
+These should **not** be interpreted as six mutually exclusive Project Status values.
+
+They're navigation/organizational views.
+
+That's important.
+
+For example, **New Project** isn't a status.
+
+### 2. Project Status should be its own thing
+
+A Project might have:
+
+```text id="8p4n2q"
+Status:
+Planning
+```
+
+or:
+
+```text id="r7m3q8"
+Status:
+Active
+```
+
+or:
+
+```text id="v5q8n2"
+Status:
+Paused
+```
+
+or:
+
+```text id="m4q7p1"
+Status:
+Completed
+```
+
+or:
+
+```text id="k8n3q5"
+Status:
+Archived
+```
+
+We shouldn't finalize the exact vocabulary yet if we don't need to.
+
+The important architectural requirement is that **Status and navigation category are separate concepts**.
+
+### 3. Status changes should be deliberate
+
+A Project doesn't become Archived merely because nobody touched it for 30 days.
+
+That might generate:
+
+> ⚠ Project appears inactive.
+
+But the actual transition:
+
+> **Active → Archived**
+
+is a governance decision.
+
+This is consistent with our AI authority model.
+
+### 4. Lifecycle transitions should be recorded
+
+If a Project changes state:
+
+```text id="n6q4p8"
+PROJECT LIFECYCLE
+
+Planning
+   ↓
+Active
+   ↓
+Paused
+   ↓
+Active
+   ↓
+Completed
+   ↓
+Archived
+```
+
+History records the meaningful transitions.
+
+### 5. Some transitions should be reversible
+
+For example:
+
+**Paused → Active**
+
+**Archived → Active**
+
+This is especially important because we've already established that Archive doesn't mean dead.
+
+### 6. Some transitions should be explicit terminal states
+
+A completed project may remain Completed without becoming Archived.
+
+That's useful because:
+
+> **Completed** = the work achieved its intended outcome.
+
+while:
+
+> **Archived** = no longer part of the active working environment.
+
+A completed project can remain visible for reference.
+
+### 7. Cancellation is different from failure
+
+This may become useful later:
+
+**Completed**
+
+> Intended objective achieved.
+
+**Cancelled**
+
+> Project deliberately stopped.
+
+**Failed**
+
+> Objective was pursued but not achieved.
+
+Those are meaningfully different historical outcomes.
+
+We don't necessarily need all of these in the first implementation, but the model shouldn't make them impossible.
+
+### 8. Lifecycle should preserve lineage
+
+If a project is archived and later becomes a Seed:
+
+```text id="p5m8q2"
+Project A
+Completed
+   ↓
+Archived
+   ↓
+Seed extracted
+   ↓
+Project B created
+```
+
+The original Project remains intact.
+
+Project B doesn't replace it.
+
+### Matrix additions
+
+| ID      | Requirement                                                                                                                       | Status                                    |
+| ------- | --------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------- |
+| P4-R640 | CC must distinguish Project Status from top-level navigation/organizational categories.                                           | **Established architectural requirement** |
+| P4-R641 | New Project is an action/workspace, not a Project Status.                                                                         | **Established**                           |
+| P4-R642 | Project Status must represent the actual state of the Project independently of navigation views.                                  | **Established**                           |
+| P4-R643 | Project lifecycle transitions should be deliberate and recorded in History.                                                       | **Established**                           |
+| P4-R644 | Inactivity should not automatically change Project Status.                                                                        | **Established**                           |
+| P4-R645 | AI may identify apparent inactivity and surface it as Attention/Signal without automatically changing Status.                     | **Established**                           |
+| P4-R646 | Lifecycle transitions should support reactivation where appropriate.                                                              | **Established direction**                 |
+| P4-R647 | Completed and Archived should remain conceptually distinct.                                                                       | **Established**                           |
+| P4-R648 | The lifecycle model should be capable of distinguishing Completed, Cancelled, and Failed outcomes if required by future projects. | **Established direction**                 |
+| P4-R649 | Lifecycle transitions must preserve Project identity, History, and lineage.                                                       | **Established architectural requirement** |
+
+### Category 49 verdict
+
+The architecture now has a useful distinction between:
+
+**Where CC puts something for navigation**
+
+and
+
+**what the Project actually is doing.**
+
+That prevents the UI from accidentally becoming the data model.
+
+It also gives us room for very different kinds of projects without forcing them through an artificial workflow.
+
+**Next: Category 50 — The overall CC navigation model and how all these pieces fit together.**
+
+- - - - - 
+
+## Step 4BG — Category 50: The Overall CC Navigation Model
+
+We've accumulated enough pieces now that it's useful to look at the **navigation model as a whole**.
+
+Not the final visual design yet—the **information architecture** underneath it.
+
+### 1. The top level stays deliberately simple
+
+Your proposed structure remains the starting point:
+
+```text
+┌─────────────────────────────────────────────┐
+│ [ Current ]   [ Planning ]   [ Ideas ]      │
+│                                             │
+│ [ Ongoing ]  [ New Project ]  [ Archive ]  │
+└─────────────────────────────────────────────┘
+```
+
+And importantly, **these buttons don't expose the Projects themselves in the top navigation**.
+
+They take you to the appropriate view.
+
+### 2. Current
+
+**Current** answers:
+
+> What matters now?
+
+It might surface:
+
+* active Projects;
+* important Attention items;
+* approaching External Cutoffs;
+* urgent Notifications;
+* current work.
+
+But it doesn't need to expose every Project detail.
+
+### 3. Planning
+
+**Planning** answers:
+
+> What's coming?
+
+Potentially:
+
+* Projects being prepared;
+* Project Candidates;
+* upcoming work;
+* planned starts;
+* dependencies;
+* known External Cutoffs.
+
+Again, this is a **view**, not a Project Status.
+
+### 4. Ideas
+
+**Ideas** answers:
+
+> What might become something?
+
+This is where the **New Project canvas** can live.
+
+So you can have:
+
+```text
+Ideas
+
++ New Project
+
+Idea A
+Idea B
+Idea C
+```
+
+An Idea can remain an Idea indefinitely.
+
+### 5. Ongoing
+
+This is the deeper working collection.
+
+It can expose Projects currently being worked on, regardless of exactly what their internal Status is.
+
+Selecting one takes you to:
+
+**Project Dashboard → Project Workspace**
+
+### 6. New Project
+
+This is the creation workspace.
+
+It can start from:
+
+* Blank;
+* Template;
+* Seed;
+* Kernel;
+* Template + Seed;
+* Existing Project/Fork.
+
+### 7. Archive
+
+Archive is the historical project library.
+
+But it also becomes a **source library** because archived Projects may contain Seeds and Kernels.
+
+So:
+
+```text
+Archive
+│
+├── Archived Projects
+│
+└── Reusable Seeds / Kernels
+```
+
+Whether those are visually combined or separated later is a UI question.
+
+### 8. Search is outside this hierarchy
+
+This is important.
+
+Search shouldn't force you to know:
+
+> "I think this is probably under Ongoing."
+
+You should be able to search globally from anywhere.
+
+```text
+Search: WP13
+
+Project
+File
+Repository
+Thread
+Decision
+Flag
+Handover
+Seed
+Source
+```
+
+Search becomes the **cross-cutting discovery layer**.
+
+### 9. AI is also cross-cutting
+
+Likewise, AI shouldn't be another folder-like destination.
+
+AI participates **inside the Projects and their workflows**.
+
+So:
+
+```text
+Project
+├── Human work
+├── Files / Sources
+├── AI Participants
+├── Threads
+├── Agents
+├── Decisions
+├── Tasks
+├── Flags
+└── History
+```
+
+The AI section is therefore an **operational capability**, not merely a place where AI-related files are stored.
+
+### 10. The resulting architecture
+
+At the highest level:
+
+```text
+                    COMMAND CENTER
+                          │
+          ┌───────────────┼────────────────┐
+          │               │                │
+       NAVIGATION       SEARCH             AI
+          │               │                │
+    ┌─────┼─────┐         │         ┌──────┼──────┐
+    │     │     │         │         │      │      │
+ Current Planning Ideas   │        AI     Agents Threads
+    │           │         │
+    └──────┬────┘         │
+           │              │
+      Ongoing /           │
+      New Project /       │
+      Archive             │
+           │              │
+           ▼              ▼
+        PROJECT ◄────── RESOURCES
+           │
+     ┌─────┼──────────────────────┐
+     │     │      │      │        │
+ Dashboard Tasks Decisions Flags History
+     │
+ Workspace
+     │
+ ┌───┼──────────────┐
+ Files Sources Threads Repositories
+```
+
+That's the architecture I think we've been converging toward.
+
+### Matrix additions
+
+| ID      | Requirement                                                                                                              | Status                                  |
+| ------- | ------------------------------------------------------------------------------------------------------------------------ | --------------------------------------- |
+| P4-R650 | CC top-level navigation should remain simple and view-oriented.                                                          | **Established**                         |
+| P4-R651 | Current, Planning, and Ideas should function as top-level views rather than containers exposing their Projects directly. | **Established**                         |
+| P4-R652 | Ongoing, New Project, and Archive should function as secondary navigation/workspaces.                                    | **Established**                         |
+| P4-R653 | Search should operate as a cross-cutting discovery layer independent of navigation location.                             | **Established**                         |
+| P4-R654 | AI should operate as a cross-cutting project capability rather than merely another storage/navigation destination.       | **Established**                         |
+| P4-R655 | Project Dashboard should be the primary project-level orientation surface.                                               | **Established**                         |
+| P4-R656 | Project Workspace should provide deeper operational access without overloading the Dashboard.                            | **Established**                         |
+| P4-R657 | Navigation, Search, Project data, Resources, and AI capabilities should remain distinct architectural concerns.          | **Established architectural principle** |
+
+### Category 50 verdict
+
+This is a pretty clean architecture:
+
+> **Navigation tells you where to look.**
+> **Search helps you find what you don't know where to look for.**
+> **The Project tells you what you're managing.**
+> **The Workspace lets you work with it.**
+> **Resources remain where they actually live.**
+> **AI and Agents operate within explicit authority.**
+> **History remembers what happened.**
+
+I think we've reached a useful point where the next category should shift away from individual CC features and address the **underlying data model**.
+
+**Next: Category 51 — The Core Object Model: what the fundamental CC objects actually are and how they relate to each other.**
+
+- - - - - 
+
+## Step 4BH — Category 51: The Core Object Model
+
+This is where we stop adding visible features for a moment and ask:
+
+> **What are the fundamental things that CC actually knows about?**
+
+This matters because we've accumulated a lot of concepts, and we don't want them accidentally becoming one giant "Project" object.
+
+### 1. Project is the central object — but not the only object
+
+At minimum, CC now has these distinct objects:
+
+```text id="6m4q8p"
+PROJECT
+SOURCE
+FILE
+REPOSITORY
+THREAD REFERENCE
+DECISION
+TASK
+FLAG
+BLOCKER
+DEADLINE / EXTERNAL CUTOFF
+HANDOVER
+SEED
+KERNEL
+TEMPLATE
+AI PARTICIPANT
+AGENT
+HISTORY EVENT
+NOTIFICATION
+```
+
+These should be **separate object types**.
+
+### 2. Relationships are as important as the objects
+
+For example:
+
+```text id="8q3n7m"
+PROJECT
+   │
+   ├── has → TASK
+   ├── has → DECISION
+   ├── has → FLAG
+   ├── has → BLOCKER
+   ├── has → EXTERNAL CUTOFF
+   ├── has → THREAD REFERENCE
+   ├── has → HANDOVER
+   ├── has → AI PARTICIPANT
+   ├── has → SOURCE
+   └── has → HISTORY
+```
+
+But it gets more interesting:
+
+```text id="p7m4q2"
+THREAD
+   └── discusses → DECISION
+
+DECISION
+   └── relates to → FILE
+
+FILE
+   └── lives in → REPOSITORY
+
+SEED
+   └── originated from → PROJECT
+
+NEW PROJECT
+   └── created from → SEED
+
+AI AGENT
+   └── performed → HISTORY EVENT
+```
+
+This is the beginning of a **relationship model**, rather than merely a folder structure.
+
+### 3. A File shouldn't necessarily belong to only one Project
+
+This is worth anticipating.
+
+A reusable library, specification, image, or reference document might legitimately serve several Projects.
+
+So rather than:
+
+> File belongs to Project X.
+
+the relationship can be:
+
+> File is **associated with** Project X.
+
+and:
+
+> File is **associated with** Project Y.
+
+That fits our earlier decision that association and physical location are separate.
+
+### 4. A Thread Reference is an object, not merely a URL
+
+We've already established this through your GPT-5.5 → GPT-5.6 experience.
+
+A Thread Reference might contain:
+
+```text id="r5n8q2"
+THREAD REFERENCE
+
+AI:
+GPT-5.5
+
+Thread:
+WP13 Phase 2 Verification
+
+Provider:
+ChatGPT
+
+Purpose:
+Architectural verification
+
+Project:
+Command Center
+
+Relevant Decisions:
+D-071
+
+Relevant Files:
+...
+
+Handover:
+Yes
+
+Last Known Relevance:
+Phase 3 implementation
+```
+
+The actual conversation remains with the AI provider.
+
+CC owns the **reference and context**.
+
+### 5. A Decision has provenance
+
+A Decision should be able to answer:
+
+> Who decided this?
+
+> When?
+
+> What led to it?
+
+> What does it affect?
+
+So:
+
+```text id="w4m8q3"
+DECISION D-071
+
+Decision:
+Use constructor injection.
+
+Decided By:
+Kurt
+
+Date:
+...
+
+Basis:
+Architecture review
+
+Related Threads:
+GPT-5.5
+GPT-5.6
+Claude
+
+Related Files:
+orientation-bar.ts
+category-view.ts
+...
+```
+
+### 6. Tasks are not the same as Next Action
+
+This is another distinction I'd preserve.
+
+A Project may contain dozens of Tasks.
+
+But the Dashboard's **Next Action** is the currently most relevant action.
+
+So:
+
+```text id="q8n3m5"
+PROJECT
+│
+├── Tasks
+│   ├── Task A
+│   ├── Task B
+│   ├── Task C
+│   └── Task D
+│
+└── Next Action
+      └── Task B
+```
+
+"Next Action" can therefore be a **reference to a Task**, rather than another duplicate Task.
+
+### 7. Attention is also a view, not an object
+
+We've already established this, but it belongs in the model.
+
+There shouldn't necessarily be an:
+
+> Attention Object
+
+Instead:
+
+```text id="m6q2v8"
+ATTENTION VIEW
+
+← Flag
+← Blocker
+← External Cutoff
+← Overdue Task
+← Notification
+← AI Signal
+```
+
+That keeps the model clean.
+
+### 8. Same with Search
+
+Search isn't an object.
+
+It's a way of querying objects and relationships.
+
+### 9. Same with Dashboard
+
+Dashboard isn't the Project itself.
+
+It's a **view of the Project**.
+
+This is a very important architectural separation:
+
+```text id="j7p4n2"
+DATA / OBJECTS
+       ↓
+RELATIONSHIPS
+       ↓
+VIEWS
+       ↓
+DASHBOARD / WORKSPACE / SEARCH / ATTENTION
+```
+
+That is what will make platform portability possible.
+
+### 10. The resulting core model
+
+I'd currently visualize the conceptual model like this:
+
+```text id="v8m3q1"
+                         PROJECT
+                            │
+        ┌───────────────────┼───────────────────┐
+        │                   │                   │
+      STATE              CONTEXT             HISTORY
+        │                   │                   │
+   Tasks/Flags         Sources/Files       Events
+   Blockers             Repos              Actions
+   Cutoffs              Threads
+   Decisions            Handovers
+                        AI/Agents
+                            │
+                    ┌───────┴───────┐
+                    │               │
+                  SEEDS          TEMPLATES
+                    │
+                  KERNELS
+```
+
+And then:
+
+```text
+                    VIEWS
+                      │
+       ┌──────────────┼──────────────┐
+       │              │              │
+   Dashboard      Workspace       Search
+       │
+   Attention
+```
+
+The views **consume the model**.
+
+They don't redefine it.
+
+### Matrix additions
+
+| ID      | Requirement                                                                                                                                                                                                                | Status                                    |
+| ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------- |
+| P4-R658 | CC must define distinct core object types rather than representing all information as generic Project content.                                                                                                             | **Established architectural requirement** |
+| P4-R659 | Core objects should include Project, Source, File, Repository, Thread Reference, Decision, Task, Flag, Blocker, External Cutoff, Handover, Seed, Kernel, Template, AI Participant, Agent, History Event, and Notification. | **Established direction**                 |
+| P4-R660 | Objects must support explicit relationships between one another.                                                                                                                                                           | **Established architectural requirement** |
+| P4-R661 | Physical file location and Project association must remain separate concepts.                                                                                                                                              | **Established**                           |
+| P4-R662 | A File may be associated with multiple Projects where appropriate.                                                                                                                                                         | **Established direction**                 |
+| P4-R663 | Thread References must be first-class CC records containing provider, thread identity, purpose, Project association, and relevant context where available.                                                                 | **Established**                           |
+| P4-R664 | Decisions must preserve provenance, including who established the authoritative decision.                                                                                                                                  | **Established**                           |
+| P4-R665 | Next Action should normally reference an existing Task rather than duplicate Task information.                                                                                                                             | **Established direction**                 |
+| P4-R666 | Attention should remain a view/surface over underlying objects rather than becoming a duplicate data object.                                                                                                               | **Established**                           |
+| P4-R667 | Search should remain a query/discovery mechanism rather than a stored object type.                                                                                                                                         | **Established**                           |
+| P4-R668 | Dashboard and Workspace should remain views over the underlying CC data model.                                                                                                                                             | **Established architectural requirement** |
+| P4-R669 | The core object/relationship model must be independent of Obsidian-specific presentation.                                                                                                                                  | **Established**                           |
+
+### Category 51 verdict
+
+This is probably one of the most important architectural boundaries we've established so far:
+
+> **CC's data model is not its interface.**
+
+A Project is data.
+
+A Decision is data.
+
+A Thread Reference is data.
+
+A relationship between them is data.
+
+**Dashboard, Workspace, Search, and Attention are ways of looking at that data.**
+
+That's the foundation that lets us keep the original promise:
+
+> **Built on Obsidian, but not built *for* Obsidian.**
+
+**Next: Category 52 — The Portable Data Layer: what the actual underlying CC records should look like and why Markdown remains a viable foundation.**
+
+- - - - - 
+
+## Step 4BI — Category 52: The Portable Data Layer
+
+This is the point where the original **"Obsidian, but not Obsidian-dependent"** requirement becomes concrete.
+
+The question is:
+
+> **What is the actual data underneath CC?**
+
+Not what Obsidian displays. Not what the eventual web app displays. The underlying information.
+
+### 1. The data layer should be boring
+
+That's a compliment.
+
+I'd want the core data to be:
+
+* human-readable;
+* inspectable;
+* editable without CC;
+* version-controllable;
+* portable;
+* deterministic;
+* understandable by future AI systems.
+
+That strongly favors **Markdown + structured metadata** as the initial representation.
+
+### 2. Markdown is the container, not the architecture
+
+This distinction is important.
+
+We don't want:
+
+> "CC is an Obsidian vault."
+
+We want:
+
+> **"CC has a portable data model that can initially be represented as Markdown files in an Obsidian-compatible structure."**
+
+Obsidian is then one interface to that data.
+
+A future application could read the same underlying records.
+
+### 3. A Project record could look conceptually like this
+
+```text id="7m4q2p"
+---
+type: project
+id: CC-001
+status: current
+created: 2026-07-18
+---
+
+# Command Center
+
+## Purpose
+
+Build a portable visual operational HQ for managing projects.
+
+## Description
+
+...
+
+## Focus
+
+Project architecture
+
+## Where Things Stand
+
+...
+
+## Sources
+
+- GitHub: Command_Center
+- Local: ~/Desktop/Projects_Folder/Command_Center
+
+## Next Action
+
+[[Task-042]]
+
+## Related
+
+- [[Decision-071]]
+- [[Thread-GPT55-WP13]]
+- [[Seed-Portable-CC-Core]]
+```
+
+The exact syntax isn't the point yet.
+
+The important thing is that **the record has stable identity and relationships**.
+
+### 4. IDs matter enormously
+
+Every important CC object should have a stable ID.
+
+For example:
+
+```text
+CC-001       Project
+TASK-042     Task
+DEC-071      Decision
+FLAG-014     Flag
+THREAD-023   Thread Reference
+SEED-006     Seed
+HAND-003     Handover
+```
+
+Names can change.
+
+Files can move.
+
+Repositories can be renamed.
+
+AI providers can change.
+
+**The ID remains the identity.**
+
+That's another reason CC won't be dependent on folder paths.
+
+### 5. Relationships should use IDs, not fragile paths
+
+Instead of:
+
+```text
+../../Projects/Command_Center/decisions/D-071.md
+```
+
+the data model should conceptually say:
+
+```text
+related_decision: DEC-071
+```
+
+The application resolves where that record currently lives.
+
+That is much more portable.
+
+### 6. Human-readable doesn't mean everything has to be plain Markdown
+
+Some data may eventually be better represented as structured files.
+
+For example:
+
+```text
+Project.md
+Decision.md
+Thread.md
+Seed.md
+```
+
+with YAML/frontmatter metadata.
+
+That's still perfectly compatible with the portability goal.
+
+We don't need to force everything into a giant database.
+
+### 7. Git becomes particularly valuable
+
+Because the data is text-based, Git can provide:
+
+* history;
+* versioning;
+* rollback;
+* comparison;
+* synchronization;
+* provenance.
+
+And that fits your existing workflow extremely well.
+
+It also gives us a powerful backup for CC's **own knowledge**, separate from backups of the actual project files.
+
+### 8. CC should survive without its application
+
+This is a major requirement.
+
+If the CC application disappears tomorrow, the data shouldn't become inaccessible.
+
+You should still be able to open the files and understand:
+
+> what projects exist, what was decided, what happened, what the sources are, and what the AI context is.
+
+That's **Honest Portability**.
+
+### Matrix additions
+
+| ID      | Requirement                                                                                                    | Status                                    |
+| ------- | -------------------------------------------------------------------------------------------------------------- | ----------------------------------------- |
+| P4-R670 | CC must have a platform-independent underlying data model.                                                     | **Established architectural requirement** |
+| P4-R671 | The initial data representation should be compatible with Markdown and structured metadata.                    | **Established direction**                 |
+| P4-R672 | Obsidian must function as an interface/implementation layer, not as the underlying CC architecture.            | **Established**                           |
+| P4-R673 | Core CC objects should have stable unique identifiers independent of names and physical locations.             | **Established architectural requirement** |
+| P4-R674 | Relationships should reference stable object identities rather than fragile physical paths wherever practical. | **Established**                           |
+| P4-R675 | CC data should remain human-readable and independently inspectable outside the CC application.                 | **Established architectural requirement** |
+| P4-R676 | Git should be capable of versioning the CC data layer.                                                         | **Established direction**                 |
+| P4-R677 | CC should remain recoverable/readable if its primary interface application becomes unavailable.                | **Established architectural requirement** |
+| P4-R678 | The data model should not require a proprietary database as its sole source of truth.                          | **Established architectural principle**   |
+
+### Category 52 verdict
+
+We're getting to the heart of the original seed.
+
+The stack becomes:
+
+```text
+          CC APPLICATION
+                │
+       ┌────────┴────────┐
+       │                 │
+    Obsidian          Future UI
+       │                 │
+       └────────┬────────┘
+                │
+         PORTABLE DATA MODEL
+                │
+        Markdown / Metadata
+                │
+              Git
+```
+
+**Obsidian is replaceable.**
+
+**The data is not.**
+
+And that means the Command Center we're building now can eventually become the **seed/kernel for the finished Command Center application**, rather than throwing this work away when we leave Obsidian.
+
+**Next: Category 53 — Synchronization, Conflicts & Multiple Interfaces.**
+
+- - - - - 
+
+## Step 4BJ — Category 53: Synchronization, Conflicts & Multiple Interfaces
+
+This follows directly from the portable data layer.
+
+If CC can eventually be viewed through:
+
+* Obsidian,
+* a standalone CC app,
+* perhaps a web interface,
+* perhaps an AI Agent,
+
+then eventually we have a new problem:
+
+> **What happens when two things change the same information?**
+
+We should design for that now, even if we don't implement synchronization yet.
+
+### 1. There should be one authoritative data layer
+
+The principle remains:
+
+> **Single Source of Truth.**
+
+The interfaces are not independent copies of the Project data.
+
+Conceptually:
+
+```text id="6m4q8p"
+              CC DATA
+                 │
+       ┌─────────┼─────────┐
+       │         │         │
+   Obsidian   CC App      AI
+       │         │         │
+       └─────────┼─────────┘
+                 │
+          Same underlying
+             records
+```
+
+### 2. Multiple interfaces shouldn't create multiple Projects
+
+If you open the Project in Obsidian and later in the standalone CC app, you should still have:
+
+> **CC-001**
+
+not:
+
+> CC-001 in Obsidian
+
+and:
+
+> CC-001-copy in CC App.
+
+Stable IDs solve much of this.
+
+### 3. What happens when two things edit the same record?
+
+Example:
+
+```text id="8p3n7m"
+Obsidian:
+Where Things Stand
+= "WP13 implementation underway"
+
+AI Agent:
+Where Things Stand
+= "WP13 implementation complete"
+```
+
+If both changes occur before synchronization, CC needs to recognize a conflict.
+
+It shouldn't silently choose one.
+
+### 4. Conflicts should be explicit
+
+Something like:
+
+```text id="r5q8m2"
+⚠ SYNC CONFLICT
+
+Project:
+Command Center
+
+Record:
+CC-001 / Where Things Stand
+
+Version A:
+Obsidian
+"WP13 implementation underway"
+
+Version B:
+Agent-02
+"WP13 implementation complete"
+
+[Keep A]
+[Keep B]
+[Review]
+```
+
+That fits your engineering principle:
+
+> **Honest failure over silent degradation.**
+
+### 5. History helps here
+
+Because each version has:
+
+* Actor;
+* Time;
+* Previous state;
+* New state;
+
+we have the information needed to resolve conflicts intelligently.
+
+An AI could even say:
+
+> "Version B appears to be based on commit `abc123`, which completed WP13."
+
+But it should **recommend**, not silently resolve a governance-level conflict.
+
+### 6. Some fields can potentially merge automatically
+
+Not every conflict is equally dangerous.
+
+Two independent Tasks being added might be mergeable.
+
+A Project Status change might not be.
+
+For example:
+
+```text id="m4q7n2"
+SAFE-ish automatic merge:
+Task A added
+Task B added
+
+REVIEW REQUIRED:
+Status changed
+Decision changed
+External Cutoff changed
+Project identity changed
+```
+
+We don't need to implement all of that now.
+
+But the data model should allow it.
+
+### 7. File conflicts are different
+
+If two applications edit the same Markdown file, Git already gives us mechanisms for detecting the conflict.
+
+CC shouldn't reinvent Git.
+
+It can report:
+
+> **CC data conflict detected.**
+
+and hand off to the appropriate tool when necessary.
+
+### 8. External project files remain external
+
+If:
+
+```text
+Command Center
+    └── references
+        └── GitHub repository
+```
+
+CC doesn't need to synchronize the repository's source code into its own data layer.
+
+It only needs to maintain the relationship.
+
+That's another reason our **Reference rather than Warehouse** principle is useful.
+
+### Matrix additions
+
+| ID      | Requirement                                                                                                                           | Status                                    |
+| ------- | ------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------- |
+| P4-R679 | Multiple CC interfaces must operate against a common authoritative data layer rather than independent Project copies.                 | **Established architectural requirement** |
+| P4-R680 | Stable object IDs must survive movement between interfaces and storage locations.                                                     | **Established**                           |
+| P4-R681 | CC must not silently overwrite conflicting changes to authoritative records.                                                          | **Established architectural principle**   |
+| P4-R682 | Synchronization conflicts should be explicitly surfaced with sufficient context to resolve them.                                      | **Established direction**                 |
+| P4-R683 | Conflict records should identify competing versions and their actors/sources where possible.                                          | **Established direction**                 |
+| P4-R684 | AI may assist with conflict analysis but should not silently resolve governance-sensitive conflicts.                                  | **Established**                           |
+| P4-R685 | Independent low-risk changes may eventually support automatic merging where safely determinable.                                      | **Future capability**                     |
+| P4-R686 | CC should rely on existing version-control mechanisms such as Git for file-level merge/conflict handling where appropriate.           | **Established direction**                 |
+| P4-R687 | CC should synchronize/reference external project resources without unnecessarily duplicating their contents into CC's own data layer. | **Established**                           |
+
+### Category 53 verdict
+
+The important thing is that we're **not building synchronization first**.
+
+We're making sure the architecture doesn't prevent it later.
+
+The rule is:
+
+> **One data reality. Multiple ways of looking at it. Explicit conflicts when realities diverge.**
+
+That keeps the eventual standalone CC app, Obsidian implementation, and AI/Agent interfaces from turning into competing versions of the same Project.
+
+**Next: Category 54 — Backup, Recovery & Disaster Recovery.**
+
+- - - - - 
+
+## Step 4BK — Category 54: Backup, Recovery & Disaster Recovery
+
+This one is especially important because CC is becoming the **memory and navigation layer for everything else**.
+
+If CC disappears, we don't just lose an app.
+
+We could lose the map showing us **where everything is and why it matters**.
+
+### 1. CC needs its own backup strategy
+
+The project files already have their own backup mechanisms.
+
+CC needs a backup of **CC itself**.
+
+Conceptually:
+
+```text
+CC Data
+   │
+   ├── Local working copy
+   │
+   ├── Git repository
+   │
+   └── Backup / secondary storage
+```
+
+That gives us multiple recovery paths.
+
+### 2. Git is part of recovery, but not the whole strategy
+
+Git gives us:
+
+* history;
+* previous versions;
+* rollback;
+* distributed copies.
+
+But Git isn't automatically a complete backup strategy.
+
+For example, if the local Git repository and its remote both become unavailable, Git doesn't magically save us.
+
+So CC should be capable of being backed up independently.
+
+### 3. The actual project files remain separate
+
+Remember our distinction:
+
+> **CC controls/reference information.**
+
+> **Projects own their working files.**
+
+Therefore:
+
+```text
+Command Center backup
+        ≠
+Teacher Toolbox backup
+        ≠
+Kurt Engine backup
+```
+
+Each project can have its own storage and backup strategy.
+
+CC merely needs enough information to reconnect to those resources after recovery.
+
+### 4. Recovery should preserve identity
+
+Suppose the entire CC vault gets restored from a backup.
+
+The restored Project must still be:
+
+> `CC-001`
+
+and its Decision must still be:
+
+> `DEC-071`
+
+and its Thread Reference:
+
+> `THREAD-023`
+
+We shouldn't generate new identities merely because the physical files were restored somewhere else.
+
+### 5. Recovery should preserve relationships
+
+This is why we moved away from fragile file paths.
+
+After restoration:
+
+```text
+DEC-071
+    ↓
+THREAD-023
+    ↓
+PROJECT CC-001
+```
+
+should still work even if the physical locations changed.
+
+### 6. CC should be able to detect missing resources
+
+This is particularly relevant to your earlier Downloads example.
+
+After a restore, CC might discover:
+
+```text
+⚠ RESOURCE UNAVAILABLE
+
+orientation-bar.ts
+
+Expected:
+Command_Center/src/...
+
+Current:
+Not found
+
+Repository:
+GitHub / Command_Center
+
+Last known:
+...
+```
+
+That's much better than silently presenting a broken link.
+
+### 7. Recovery should be honest
+
+If CC cannot find something, it should say:
+
+> **Missing**
+
+not:
+
+> **Everything is fine.**
+
+If GitHub isn't available:
+
+> **GitHub connection unavailable.**
+
+If a local file disappeared:
+
+> **File not found at last known location.**
+
+If a provider's Thread cannot be accessed:
+
+> **Thread reference preserved; provider content unavailable.**
+
+That is exactly the **Honest Failure** principle we've carried through the architecture.
+
+### 8. Recovery should be usable by another platform
+
+This is another reason for the portable data layer.
+
+Imagine the future:
+
+> Obsidian disappears.
+
+You install the finished CC application.
+
+You point it at the recovered CC data.
+
+It reconstructs:
+
+* Projects;
+* Decisions;
+* Threads;
+* Seeds;
+* History;
+* Sources;
+* relationships.
+
+The interface changed.
+
+**The Command Center didn't disappear.**
+
+### Matrix additions
+
+| ID      | Requirement                                                                                                                                     | Status                                    |
+| ------- | ----------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------- |
+| P4-R688 | CC must have an independent backup/recovery strategy for its own data layer.                                                                    | **Established architectural requirement** |
+| P4-R689 | Git version control should contribute to CC recovery but must not be treated as the sole backup mechanism.                                      | **Established**                           |
+| P4-R690 | CC and individual Project resources should retain distinct backup/recovery responsibilities.                                                    | **Established**                           |
+| P4-R691 | Recovery must preserve stable CC object identities.                                                                                             | **Established architectural requirement** |
+| P4-R692 | Recovery must preserve relationships between CC objects.                                                                                        | **Established**                           |
+| P4-R693 | CC must detect and clearly report missing or inaccessible resources after recovery.                                                             | **Established**                           |
+| P4-R694 | CC must distinguish missing resources from temporarily unavailable external providers.                                                          | **Established direction**                 |
+| P4-R695 | CC recovery must remain independent of the original presentation platform.                                                                      | **Established architectural requirement** |
+| P4-R696 | A recovered CC data layer should be usable by a replacement interface without requiring reconstruction of the original Obsidian implementation. | **Established**                           |
+
+### Category 54 verdict
+
+The real goal isn't merely:
+
+> **"Back up Command Center."**
+
+It's:
+
+> **"Make Command Center recoverable."**
+
+Those aren't quite the same thing.
+
+A backup gives you files.
+
+**Recovery gives you your operational understanding back.**
+
+And because we've built the system around stable IDs, relationships, provenance, History, Thread References, Seeds, and external Sources, recovery can eventually mean:
+
+> **Put the data somewhere else → point a compatible CC interface at it → keep working.**
+
+That is exactly the kind of portability we want.
+
+**Next: Category 55 — Security, Privacy & Trust Boundaries.**
+
+- - - - - 
+
+## Step 4BL — Category 55: Security, Privacy & Trust Boundaries
+
+This is the other side of the AI permissions discussion.
+
+We've defined **what AI is allowed to do**.
+
+Now we need to define:
+
+> **What information is AI allowed to see?**
+
+Those are separate questions.
+
+### 1. Access and authority are different
+
+An AI could have:
+
+> **Read access to a Project**
+
+without having:
+
+> **Permission to modify it.**
+
+Likewise, an Agent might have:
+
+> **Permission to update Tasks**
+
+without having access to unrelated Projects.
+
+So:
+
+```text id="6q4m8v"
+WHO?
+  ↓
+WHAT CAN THEY SEE?
+  ↓
+WHAT CAN THEY DO?
+  ↓
+WHAT CAN THEY CHANGE?
+```
+
+These should be separate permissions.
+
+### 2. Projects may contain sensitive information
+
+Future Projects could contain things like:
+
+* personal information;
+* financial information;
+* private correspondence;
+* credentials or tokens;
+* confidential business information;
+* private AI conversations;
+* documents that shouldn't be sent to an AI provider.
+
+CC shouldn't assume:
+
+> "If it's in the Project, every AI can see it."
+
+Instead, resources can eventually have an access classification.
+
+For example:
+
+```text id="8p3n7m"
+PUBLIC
+Internal
+Private
+Restricted
+```
+
+We don't need to over-engineer the categories yet.
+
+### 3. Credentials should never become ordinary Project data
+
+This deserves an explicit architectural rule.
+
+CC may know:
+
+> "This Project uses GitHub."
+
+It should **not** store:
+
+> GitHub password / personal access token
+
+inside an ordinary Markdown Project record.
+
+Credentials belong in the appropriate secure credential mechanism.
+
+The same applies to:
+
+* API keys;
+* OAuth tokens;
+* passwords;
+* private authentication material.
+
+### 4. AI providers are separate trust boundaries
+
+This becomes especially important with ChatGPT, Claude, Grok, Qwen, etc.
+
+A Thread Reference can exist in CC without CC necessarily having access to the full contents of that conversation.
+
+And an AI should not automatically receive every CC record just because it is helping with one Project.
+
+For example:
+
+```text id="r5n8q2"
+Project: Command Center
+
+GPT-5.6
+✓ Project architecture
+✓ CC documentation
+✓ WP13 records
+
+✗ unrelated personal records
+✗ credentials
+✗ restricted resources
+```
+
+### 5. Agents should have narrower boundaries by default
+
+This follows directly from our earlier Agent discussion.
+
+An Agent called:
+
+> **Repository Monitor**
+
+probably needs:
+
+```text id="m7q3v8"
+READ
+✓ Repository metadata
+✓ Commit information
+
+WRITE
+✓ Project Activity
+✓ Proposed Flags
+
+NO ACCESS
+✗ Private documents
+✗ Other Projects
+✗ Credentials
+✗ Governance Decisions
+```
+
+That's much safer than giving every Agent "Project access."
+
+### 6. External resources need their own permissions
+
+Remember that CC can reference:
+
+* local disk;
+* GitHub;
+* iCloud;
+* Google Drive;
+* other cloud providers.
+
+CC needs to respect the permissions of those systems.
+
+If a Google Drive document isn't accessible to the connected account, CC shouldn't try to bypass that boundary.
+
+### 7. Privacy should be visible
+
+Eventually, a Project could expose something like:
+
+```text id="v4n8p2"
+ACCESS
+
+Project:
+Command Center
+
+Kurt
+Owner
+
+GPT-5.6
+Read + Propose + Limited Update
+
+Claude
+Read + Propose
+
+Repo Monitor Agent
+Repository-only
+
+Restricted resources
+Not available to AI
+```
+
+That gives you a quick way to understand the trust boundary.
+
+### 8. CC shouldn't pretend security it doesn't actually provide
+
+This is another application of **Honest Failure**.
+
+If a platform can't guarantee something, CC shouldn't label it:
+
+> "Secure."
+
+It should say what it actually knows.
+
+For example:
+
+> **Provider-controlled privacy**
+
+rather than implying CC controls what an external AI provider does with a conversation.
+
+### Matrix additions
+
+| ID      | Requirement                                                                                                         | Status                                    |
+| ------- | ------------------------------------------------------------------------------------------------------------------- | ----------------------------------------- |
+| P4-R697 | AI visibility/access and AI modification authority must be modeled as separate concepts.                            | **Established architectural requirement** |
+| P4-R698 | CC should support resource/project access classifications.                                                          | **Established direction**                 |
+| P4-R699 | Sensitive resources must not automatically become visible to every AI or Agent associated with a Project.           | **Established**                           |
+| P4-R700 | Credentials, passwords, API keys, OAuth tokens, and similar secrets must not be stored as ordinary CC Project data. | **Established architectural requirement** |
+| P4-R701 | AI provider access must be treated as a separate trust boundary.                                                    | **Established**                           |
+| P4-R702 | Thread References may exist without CC possessing the underlying provider conversation.                             | **Established**                           |
+| P4-R703 | Agents should default to narrower access scopes than general Project-level AI participants.                         | **Established direction**                 |
+| P4-R704 | CC must respect access controls imposed by external resource providers.                                             | **Established**                           |
+| P4-R705 | Project/resource access permissions should eventually be visible and inspectable by the user.                       | **Established direction**                 |
+| P4-R706 | CC must not claim security, privacy, or access guarantees that are actually controlled by an external system.       | **Established architectural principle**   |
+
+### Category 55 verdict
+
+The rule I'd carry forward is:
+
+> **Knowing that a resource exists does not mean having permission to read it.**
+
+And:
+
+> **Being able to read something does not mean being allowed to change it.**
+
+That gives us three increasingly important boundaries:
+
+**Discovery** → *Does CC know this exists?*
+
+**Access** → *Can this actor read it?*
+
+**Authority** → *Can this actor change it?*
+
+That's a much better foundation for future AI Agents than simply giving an AI "access to the project."
+
+**Next: Category 56 — External Integrations & Connectors: GitHub, local disk, iCloud, Google, AI providers, and the other systems CC may eventually connect to.**
+
+- - - - - 
+
+## Step 4BM — Category 56: External Integrations & Connectors
+
+This is where CC's role as a **control/navigation layer** becomes especially important.
+
+We've already identified that Projects may involve:
+
+* local disk;
+* GitHub;
+* iCloud;
+* Google Drive;
+* Obsidian;
+* ChatGPT;
+* Claude;
+* Grok;
+* Qwen;
+* future AI providers;
+* future Agents.
+
+The mistake would be designing CC as if all of these were the same kind of thing.
+
+They aren't.
+
+### 1. CC should use a Connector model
+
+Conceptually:
+
+```text id="6q4m8v"
+COMMAND CENTER
+      │
+      ├── Local Disk Connector
+      ├── GitHub Connector
+      ├── iCloud Connector
+      ├── Google Drive Connector
+      ├── Obsidian Connector
+      ├── ChatGPT Connector
+      ├── Claude Connector
+      └── Agent Connector
+```
+
+Each connector has a specific job.
+
+### 2. A Connector is not a copy of the external system
+
+For example, the GitHub connector doesn't mean:
+
+> "CC now contains GitHub."
+
+It means:
+
+> "CC knows how to identify and interact with the relevant GitHub resource."
+
+Same with Google Drive.
+
+Same with an AI provider.
+
+That preserves the **Reference, Don't Warehouse** principle.
+
+### 3. Connectors should have capabilities
+
+A connector might support:
+
+```text id="8p3n7m"
+GITHUB
+
+Read:
+✓ Repository
+✓ Branches
+✓ Commits
+✓ Issues
+
+Write:
+✓ Create Issue
+✓ Create Branch
+
+Unavailable:
+✗ Organization administration
+```
+
+Another connector might only support:
+
+```text id="r5q8m2"
+GOOGLE DRIVE
+
+Read:
+✓ Files
+✓ Folders
+
+Write:
+✗ None
+```
+
+CC shouldn't assume every connector can do everything.
+
+### 4. Connector availability is dynamic
+
+A connector can be:
+
+**Connected**
+
+> Working normally.
+
+**Disconnected**
+
+> Credentials/account connection unavailable.
+
+**Partially available**
+
+> Some capabilities work; others don't.
+
+**Unavailable**
+
+> No connector exists or the provider isn't supported.
+
+That distinction is important for honest failure.
+
+### 5. A broken connector shouldn't destroy the CC record
+
+Suppose your Claude connector disappears.
+
+The Thread Reference should remain:
+
+```text id="m7q3v8"
+THREAD-023
+
+Provider:
+Claude
+
+Status:
+Provider unavailable
+
+Project:
+Command Center
+
+Reference:
+[stored reference]
+
+Context:
+[CC-owned metadata]
+```
+
+The conversation hasn't vanished from CC's model merely because CC temporarily can't reach Claude.
+
+### 6. Connectors should be replaceable
+
+This is particularly important for AI providers.
+
+You might eventually stop using one AI and replace it with another.
+
+The Project shouldn't fundamentally change.
+
+So:
+
+```text id="v4n8p2"
+AI ROLE
+"Architecture Reviewer"
+
+Current Provider:
+Claude
+
+Previous Provider:
+GPT-5.5
+```
+
+The **role** and the **provider** should be separable concepts.
+
+That also applies to Agents.
+
+### 7. Local storage is just another connector
+
+This may seem strange, but architecturally it's useful.
+
+Instead of hard-coding:
+
+> `/Users/Kurt/Desktop/...`
+
+CC can think:
+
+```text id="q3m8p1"
+Connector:
+Local Disk
+
+Resource:
+Command_Center
+
+Location:
+[resolved path]
+```
+
+That allows the same Project model to reference something on:
+
+* the Mac;
+* an external drive;
+* iCloud;
+* another machine;
+
+without changing the fundamental object.
+
+### 8. Connector configuration should be user-owned
+
+The Project can say:
+
+> "This Project uses GitHub repository X."
+
+But the credentials/configuration for accessing GitHub should belong to the **Connector**, not be embedded in every Project.
+
+That avoids duplication and reduces security problems.
+
+### 9. Connectors should expose their status
+
+Eventually:
+
+```text id="n5q7m2"
+CONNECTIONS
+
+Local Disk       ● Connected
+GitHub           ● Connected
+iCloud           ● Connected
+Google Drive     ● Connected
+ChatGPT          ● Connected
+Claude           ○ Not connected
+Grok             ○ Not connected
+```
+
+That becomes useful when something unexpectedly stops working.
+
+### Matrix additions
+
+| ID      | Requirement                                                                                                                                                               | Status                                    |
+| ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------- |
+| P4-R707 | CC should use a Connector abstraction for external systems.                                                                                                               | **Established architectural direction**   |
+| P4-R708 | Connectors should reference/interact with external resources rather than automatically copying entire external systems into CC.                                           | **Established**                           |
+| P4-R709 | Connectors should expose their supported capabilities explicitly.                                                                                                         | **Established direction**                 |
+| P4-R710 | Connector availability should distinguish connected, disconnected, partially available, and unavailable states where useful.                                              | **Established direction**                 |
+| P4-R711 | Loss of connector availability must not destroy CC-owned resource references or metadata.                                                                                 | **Established architectural requirement** |
+| P4-R712 | Connector credentials/configuration should be separated from individual Project records.                                                                                  | **Established**                           |
+| P4-R713 | AI roles should be separable from the particular AI provider implementing that role.                                                                                      | **Established direction**                 |
+| P4-R714 | Local disk, cloud storage, repositories, and AI providers should all be representable through the connector model without forcing them into one identical capability set. | **Established direction**                 |
+| P4-R715 | Connector status should eventually be visible to the user.                                                                                                                | **Future capability**                     |
+| P4-R716 | Connector architecture must remain replaceable so provider/platform changes do not require restructuring the Project data model.                                          | **Established architectural requirement** |
+
+### Category 56 verdict
+
+This gives us another useful separation:
+
+> **Project → Resource → Connector → External System**
+
+rather than:
+
+> **Project → Giant copy of external system**
+
+And it reinforces the larger architecture:
+
+**CC owns the relationships and operational context.**
+
+**The specialized systems own their specialized resources.**
+
+That means if GitHub changes, Google changes, Claude changes, or the eventual CC interface changes, the underlying Project model doesn't have to be rebuilt.
+
+**Next: Category 57 — Platform Independence & the eventual transition from the Obsidian seed to a standalone Command Center.**
+
+- - - - - 
+
+## Step 4BN — Category 57: Platform Independence & the Eventual Standalone Command Center
+
+This is the point where we explicitly protect the **seed we are building right now**.
+
+The current Command Center is being built **on Obsidian**, but the architecture is intended to survive Obsidian.
+
+That distinction should become an actual requirement, not just an aspiration.
+
+### 1. Obsidian is the first host
+
+For the current implementation:
+
+```text id="6m4q8p"
+Command Center
+      │
+      └── Obsidian
+            │
+            ├── Markdown
+            ├── Canvas
+            ├── Kanban
+            └── Plugins / UI
+```
+
+That's perfectly fine.
+
+We're using the tools that make sense **now**.
+
+But we don't want:
+
+```text
+Command Center = Obsidian
+```
+
+We want:
+
+```text
+Command Center
+     │
+     ├── Obsidian implementation
+     ├── Future standalone application
+     ├── Future web interface
+     └── Other compatible interfaces
+```
+
+### 2. The portable kernel is the real long-term asset
+
+This is why your earlier "seed/kernel" observation matters.
+
+The current project should produce a reusable **Command Center Core/Kernal** containing the things that aren't inherently Obsidian:
+
+* Project model;
+* object identities;
+* relationships;
+* state;
+* Tasks;
+* Decisions;
+* Flags;
+* History;
+* Thread References;
+* Handovers;
+* Seeds;
+* AI/Agent concepts;
+* permissions;
+* external-resource references.
+
+The Obsidian UI is an implementation of that model.
+
+### 3. Obsidian-specific things belong at the edge
+
+For example:
+
+**Core:**
+
+> Project has a collection of Tasks.
+
+**Obsidian implementation:**
+
+> Tasks happen to be represented through Markdown files and Obsidian links.
+
+The core shouldn't know what an Obsidian wikilink is.
+
+Likewise:
+
+**Core:**
+
+> Project Dashboard displays current state.
+
+**Obsidian implementation:**
+
+> Dashboard happens to be an Obsidian Canvas or Markdown view.
+
+That separation is what makes migration possible.
+
+### 4. Don't prematurely build the standalone app
+
+This is important.
+
+We shouldn't now say:
+
+> "Since we're eventually leaving Obsidian, let's build a web app."
+
+That would undermine the current project.
+
+The current job is:
+
+> **Build the architecture and seed correctly.**
+
+The eventual standalone application can come later.
+
+### 5. Migration should be an export/import problem
+
+Ideally, moving away from Obsidian eventually looks something like:
+
+```text id="8p3n7m"
+OBSIDIAN CC
+     │
+     │ export / read
+     ▼
+PORTABLE CC DATA
+     │
+     │ import / consume
+     ▼
+STANDALONE CC
+```
+
+Not:
+
+```text
+Obsidian CC
+     │
+     │ massive rewrite
+     ▼
+?????
+```
+
+### 6. The portable data should be testable independently
+
+This is a major architectural opportunity.
+
+We should eventually be able to validate the CC data without opening Obsidian.
+
+For example:
+
+```text
+CC Validator
+
+✓ Every Project has a stable ID
+✓ No duplicate IDs
+✓ All referenced Decisions exist
+✓ All Thread References are valid
+✓ No broken internal relationships
+✓ Required metadata valid
+✓ No secret credentials in Project records
+```
+
+That makes the **data layer itself testable**.
+
+### 7. The UI becomes replaceable
+
+Eventually:
+
+```text id="r5q8m2"
+                    CC CORE
+                       │
+        ┌──────────────┼──────────────┐
+        │              │              │
+     Obsidian       Standalone       Web
+        │              │              │
+        └──────────────┼──────────────┘
+                       │
+                    AI / Agents
+```
+
+Any compatible interface can consume the same conceptual Core.
+
+### 8. Portability should include more than the UI
+
+We shouldn't only protect against:
+
+> "What if we stop using Obsidian?"
+
+We should also protect against:
+
+* changing Macs;
+* changing storage providers;
+* changing Git hosting;
+* changing AI providers;
+* changing the CC application;
+* changing folder structures;
+* changing project organization.
+
+That's why stable IDs, connectors, references, and portable records have been so important.
+
+### 9. The eventual standalone app should be a consumer of the seed
+
+This is the key mental model:
+
+> **We are not building a disposable Obsidian dashboard.**
+
+We're building:
+
+> **Version 0 of the Command Center data model and operational architecture, using Obsidian as its first implementation environment.**
+
+The eventual application can then grow from that seed.
+
+### Matrix additions
+
+| ID      | Requirement                                                                                                                                          | Status                                    |
+| ------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------- |
+| P4-R717 | Command Center architecture must remain independent of Obsidian-specific implementation details.                                                     | **Established architectural requirement** |
+| P4-R718 | Obsidian is the initial implementation/host, not the definition of Command Center itself.                                                            | **Established**                           |
+| P4-R719 | A platform-independent CC Core/Kernel should contain the fundamental object, relationship, identity, provenance, and governance model.               | **Established architectural direction**   |
+| P4-R720 | Obsidian-specific presentation and storage mechanisms should remain at the implementation boundary.                                                  | **Established**                           |
+| P4-R721 | CC should not require immediate development of a standalone application merely to preserve portability.                                              | **Established**                           |
+| P4-R722 | Migration to another interface should ultimately be achievable through portable data export/import or direct consumption of the portable data layer. | **Established architectural requirement** |
+| P4-R723 | The portable CC data layer should eventually be independently validatable without requiring the Obsidian UI.                                         | **Established direction**                 |
+| P4-R724 | Interfaces should be replaceable without changing the underlying Project/object model.                                                               | **Established architectural requirement** |
+| P4-R725 | Portability should include storage, repository, AI-provider, and filesystem changes in addition to UI/platform changes.                              | **Established**                           |
+| P4-R726 | The current Command Center implementation should be treated as a potential reusable Seed/Kernel for a future standalone Command Center application.  | **Established architectural requirement** |
+
+### Category 57 verdict
+
+This is the line I would put in the Project Bible:
+
+> **Obsidian is the current host of Command Center, not the boundary of Command Center.**
+
+And underneath that:
+
+> **The portable data model and operational architecture are the long-term asset. The interface is replaceable.**
+
+That protects exactly what you were concerned about earlier: **the work we're doing now becomes the seed for the finished system rather than something we throw away later.**
+
+**Next: Category 58 — Versioning & Evolution of the CC Core.**
+
+- - - - - 
+
+## Step 4BO — Category 58: Versioning & Evolution of the CC Core
+
+Once we say the **CC Core/Kernel is the long-term asset**, we need one more protection:
+
+> **The Core itself will evolve.**
+
+We shouldn't design it as though today's model will be perfect forever.
+
+### 1. The Core needs a version
+
+Conceptually:
+
+```text id="7m4q2p"
+CC Core
+Version 0.1
+```
+
+Later:
+
+```text id="8n5r3q"
+CC Core
+Version 0.2
+```
+
+And eventually:
+
+```text id="p6m9q4"
+CC Core
+Version 1.0
+```
+
+The version applies to the **data model/contract**, not simply the application UI.
+
+### 2. Don't confuse Core version with Project version
+
+A Project might have:
+
+> Project version: 14
+
+while the data it uses conforms to:
+
+> CC Core: 0.3
+
+Those are different things.
+
+```text id="r8q3m5"
+CC Core v0.3
+      │
+      ├── Project A
+      ├── Project B
+      └── Project C
+```
+
+### 3. Evolution should be backward-aware
+
+Suppose v0.3 introduces:
+
+> `external_cutoff`
+
+but an older Project doesn't have that field.
+
+That shouldn't make the Project unreadable.
+
+The system should distinguish:
+
+> **field doesn't exist**
+
+from:
+
+> **field exists and is empty**
+
+That sounds minor, but it becomes important as the system grows.
+
+### 4. Migration should be explicit
+
+If a structural change really requires transformation:
+
+```text id="m5q8p2"
+CC Data v0.2
+     ↓
+Migration
+     ↓
+CC Data v0.3
+```
+
+The migration should be:
+
+* deterministic;
+* inspectable;
+* reversible where practical;
+* recorded in History.
+
+We shouldn't have mysterious background transformations.
+
+### 5. Old records shouldn't be silently rewritten
+
+This fits the Project Bible perfectly.
+
+If a migration changes a record, there should be a trace of that transformation.
+
+For example:
+
+> `MIGRATION-004`
+
+rather than quietly rewriting hundreds of files with no explanation.
+
+### 6. Core evolution needs the same architectural discipline
+
+We already established:
+
+> **Frozen architectural decisions are not casually reopened.**
+
+So Core evolution should follow that principle.
+
+If we discover:
+
+> "The Project model needs to change."
+
+that should be an explicit architectural change—not something an AI casually modifies while "cleaning things up."
+
+### 7. ACP remains the escape hatch
+
+The Project Bible's **Architectural Change Process** becomes important here.
+
+Conceptually:
+
+```text id="q7n3m8"
+Proposed Core Change
+        ↓
+Architectural Review
+        ↓
+ACP
+        ↓
+Decision
+        ↓
+Core Version Change
+        ↓
+Migration if necessary
+```
+
+That prevents architecture drift.
+
+### 8. Compatibility should be intentional
+
+Eventually we might have:
+
+```text id="v4m8q2"
+CC Core v1
+      │
+      ├── Obsidian UI
+      ├── CC Desktop
+      └── CC Web
+
+CC Core v2
+      │
+      ├── CC Desktop
+      └── CC Web
+```
+
+The old implementation doesn't necessarily need to support every future Core version.
+
+But compatibility should be **known**, not accidental.
+
+### Matrix additions
+
+| ID      | Requirement                                                                                                                                          | Status                                    |
+| ------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------- |
+| P4-R727 | The CC Core/Data Model must have an explicit version identity.                                                                                       | **Established architectural requirement** |
+| P4-R728 | CC Core version must remain distinct from individual Project versions and application versions.                                                      | **Established**                           |
+| P4-R729 | Core evolution must support older records that lack subsequently introduced fields or structures.                                                    | **Established direction**                 |
+| P4-R730 | Structural data migrations must be explicit, deterministic, and inspectable.                                                                         | **Established architectural requirement** |
+| P4-R731 | Significant migrations should preserve a record of what was changed and why.                                                                         | **Established**                           |
+| P4-R732 | AI must not silently alter the CC Core/Data Model under the guise of cleanup or maintenance.                                                         | **Established architectural principle**   |
+| P4-R733 | Changes to the Core architecture should follow the established Architectural Change Process.                                                         | **Established**                           |
+| P4-R734 | Compatibility between Core versions and interfaces should be explicit rather than assumed.                                                           | **Established direction**                 |
+| P4-R735 | Core evolution must preserve the Project Bible principles of determinism, single source of truth, honest failure, and human architectural authority. | **Established**                           |
+
+### Category 58 verdict
+
+This gives us a healthy evolutionary model:
+
+> **The Core is permanent, but not frozen.**
+
+It can change.
+
+But when it changes, we know:
+
+**what changed → why it changed → which version introduced it → what happens to existing data.**
+
+That will matter enormously if this really does become the foundation for a standalone Command Center later.
+
+**Next: Category 59 — The "Kurt as Final Authority" boundary: how human decisions, AI recommendations, Agents, and automated actions fit together.**
+
+- - - - - 
+
+## Step 4BP — Category 59: Human Authority, AI Advice & Agent Action
+
+This is the natural next piece, because we've now defined **what CC knows** and **how it evolves**.
+
+Now we need to define **who gets to decide what happens**.
+
+The central principle is simple:
+
+> **AI can assist the architect. AI does not become the architect.**
+
+### 1. There are three fundamentally different things
+
+We should distinguish:
+
+```text
+HUMAN DECISION
+      ↓
+AI RECOMMENDATION
+      ↓
+AGENT ACTION
+```
+
+They are not interchangeable.
+
+A recommendation isn't a decision.
+
+An action isn't automatically an authorization.
+
+### 2. Kurt is the final architectural authority
+
+For CC itself, the ultimate authority remains **Kurt**.
+
+That means an AI can say:
+
+> "I recommend changing the Project object model."
+
+But that doesn't make it a change.
+
+Likewise an Agent can say:
+
+> "I detected that this Project appears complete."
+
+That doesn't make the Project Completed.
+
+The authoritative transition requires the appropriate human authority.
+
+### 3. AI recommendations should remain identifiable
+
+An AI-generated proposal should retain provenance:
+
+```text
+RECOMMENDATION
+
+Source:
+GPT-5.6
+
+Proposal:
+Add an External Cutoff object.
+
+Reason:
+Several projects may have hard submission deadlines.
+
+Status:
+Pending human decision
+```
+
+Once accepted:
+
+```text
+DECISION
+DEC-083
+
+Decision:
+External Cutoff is a first-class Project object.
+
+Decided By:
+Kurt
+
+Based On:
+AI recommendation + architecture discussion
+```
+
+The distinction is preserved.
+
+### 4. Agents can be more autonomous—but only within scope
+
+This is where Agents become genuinely useful.
+
+For example:
+
+**Repository Monitor Agent**
+
+Could be authorized to:
+
+* inspect commits;
+* detect changes;
+* update activity information;
+* propose Flags;
+* report failures.
+
+But it shouldn't automatically:
+
+* change architecture;
+* close a Project;
+* alter Decisions;
+* delete resources;
+* modify permissions.
+
+Its authority is scoped.
+
+### 5. We should think in terms of action classes
+
+Something like:
+
+```text
+READ
+Observe information.
+
+PROPOSE
+Suggest a change.
+
+UPDATE
+Modify an authorized operational field.
+
+EXECUTE
+Perform an external action.
+
+GOVERN
+Change authoritative Project/CC decisions.
+```
+
+The last category should be especially restricted.
+
+### 6. Not every update requires human approval
+
+We don't want to make CC unusably bureaucratic.
+
+An Agent could reasonably update:
+
+> Last repository activity: Aug 17, 14:32
+
+if that's explicitly within its authority.
+
+But:
+
+> Project Status → Completed
+
+is a fundamentally different kind of change.
+
+The distinction is **semantic authority**, not merely technical capability.
+
+### 7. External actions deserve extra caution
+
+Consider:
+
+> "Create a GitHub issue."
+
+That's an external side effect.
+
+Even if an Agent is technically capable of doing it, CC should know that this isn't merely an internal metadata update.
+
+Likewise:
+
+* send an email;
+* create a repository;
+* delete a file;
+* move a resource;
+* publish something;
+* modify permissions.
+
+These should be classified as **external actions**.
+
+### 8. The system should make authority visible
+
+Eventually, a Project's AI area might show:
+
+```text
+AI / AGENTS
+
+GPT-5.6
+Role: Architecture Assistant
+Read: Project
+Propose: Yes
+Update: No
+External Actions: No
+
+Claude
+Role: Implementation Assistant
+Read: Project + Workspace
+Propose: Yes
+Update: Limited
+External Actions: Limited
+
+Repository Monitor
+Role: Monitoring Agent
+Read: Repository
+Update: Activity + Signals
+External Actions: No
+```
+
+That makes the system understandable at a glance.
+
+### 9. Every autonomous action should leave a trail
+
+If an Agent does something, History should know:
+
+```text
+AGENT ACTION
+
+Agent:
+Repository Monitor
+
+Action:
+Created Flag FLAG-027
+
+Reason:
+CI failure detected
+
+Time:
+...
+
+Source:
+GitHub Actions
+```
+
+And ideally:
+
+> **Why did the Agent have permission to do that?**
+
+The authorization scope should be discoverable.
+
+### 10. AI should never erase provenance
+
+This is especially important given how we use multiple AI systems and Threads.
+
+If:
+
+> GPT-5.5 recommended A
+
+and:
+
+> Claude recommended B
+
+and:
+
+> Kurt chose A
+
+CC should retain that chain.
+
+Not just:
+
+> "Decision = A"
+
+but:
+
+```text
+GPT-5.5 ──┐
+          ├──> Discussion ──> Kurt ──> DEC-083
+Claude ───┘
+```
+
+That gives us a real architectural history.
+
+### Matrix additions
+
+| ID      | Requirement                                                                                                                     | Status                                    |
+| ------- | ------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------- |
+| P4-R736 | Human authority must remain distinct from AI recommendation and Agent action.                                                   | **Established architectural principle**   |
+| P4-R737 | Kurt remains the final authority for CC architecture and authoritative architectural decisions.                                 | **Established**                           |
+| P4-R738 | AI-generated recommendations must remain distinguishable from accepted Decisions.                                               | **Established**                           |
+| P4-R739 | Accepted AI recommendations become authoritative only through the appropriate human decision process.                           | **Established**                           |
+| P4-R740 | Agents may operate autonomously within explicitly defined scopes.                                                               | **Established**                           |
+| P4-R741 | Agent authority should distinguish Read, Propose, Update, Execute, and Governance capabilities.                                 | **Established direction**                 |
+| P4-R742 | Routine authorized operational updates may occur without individual human approval when explicitly permitted.                   | **Established direction**                 |
+| P4-R743 | Governance-sensitive changes require stronger authority than routine operational updates.                                       | **Established**                           |
+| P4-R744 | External side-effect actions must be distinguishable from internal CC metadata updates.                                         | **Established**                           |
+| P4-R745 | Agent actions must be recorded in History with actor, action, reason/source, and relevant authorization context where possible. | **Established architectural requirement** |
+| P4-R746 | CC must preserve provenance linking AI recommendations, discussions, human decisions, and resulting actions.                    | **Established**                           |
+
+### Category 59 verdict
+
+This gives us the authority hierarchy:
+
+```text
+                    KURT
+                     │
+              AUTHORITATIVE DECISION
+                     │
+          ┌──────────┴──────────┐
+          │                     │
+     AI RECOMMENDATION      AGENT ACTION
+          │                     │
+      "Consider X"          "I did Y"
+```
+
+And the important rule is:
+
+> **"I did Y" does not mean "I was authorized to decide Y."**
+
+That's what keeps Agents useful without allowing them to quietly take over the system.
+
+It also fits the way you've actually been working with GPT-5.5, GPT-5.6, Claude, Qwen, etc.: **multiple AI participants can contribute to the architectural conversation, while the human architect remains the final authority.**
+
+**Next: Category 60 — Audit Trail & Provenance: how CC remembers not just what happened, but who/what caused it.**
+
+- - - - - 
+
+## Step 4BQ — Category 60: Audit Trail & Provenance
+
+This follows directly from the authority model.
+
+We've established that CC may have:
+
+* Kurt making decisions;
+* multiple AI participants making recommendations;
+* Agents performing authorized actions;
+* external systems generating information.
+
+So CC needs to answer a deceptively simple question:
+
+> **"Why is this here?"**
+
+### 1. History isn't just a timestamp log
+
+A useful History record should answer:
+
+```text id="6m4q8p"
+WHAT happened?
+WHO/WHAT caused it?
+WHEN?
+WHY?
+WHAT changed?
+WHAT was it based on?
+```
+
+For example:
+
+```text id="8p3n7m"
+HISTORY EVENT
+
+Event:
+Project status changed
+
+Project:
+CC-001
+
+From:
+Planning
+
+To:
+Active
+
+Actor:
+Kurt
+
+Reason:
+Implementation beginning
+
+Related:
+DEC-083
+THREAD-023
+```
+
+### 2. Different kinds of provenance
+
+We actually have several sources of truth:
+
+```text id="r5q8m2"
+HUMAN
+  └── Kurt
+
+AI
+  ├── GPT-5.5
+  ├── GPT-5.6
+  ├── Claude
+  ├── Grok
+  └── Qwen
+
+AGENT
+  ├── Repository Monitor
+  └── ...
+
+EXTERNAL SYSTEM
+  ├── GitHub
+  ├── Local filesystem
+  ├── Google Drive
+  └── iCloud
+```
+
+An event should identify the appropriate source.
+
+### 3. AI conversations need provenance too
+
+Suppose a Decision came out of several conversations.
+
+CC shouldn't have to remember only:
+
+> "Decision made."
+
+It should be possible to trace:
+
+```text id="m7q3v8"
+DEC-083
+   │
+   ├── Thread-023 — GPT-5.5
+   ├── Thread-041 — GPT-5.6
+   └── Thread-018 — Claude
+```
+
+And perhaps:
+
+```text
+Accepted by:
+Kurt
+```
+
+That becomes incredibly valuable months later.
+
+### 4. Your handovers are part of this
+
+This is where something we've discussed earlier becomes especially important.
+
+A **Handover** is not merely another note.
+
+It represents:
+
+> **Context transferred from one AI participant/thread to another.**
+
+For example:
+
+```text id="v4n8p2"
+HANDOVER-003
+
+From:
+GPT-5.5
+
+To:
+GPT-5.6
+
+Project:
+Command Center
+
+Purpose:
+Transfer architectural context
+
+Source Thread:
+...
+
+Target Thread:
+...
+
+Created:
+...
+
+Status:
+Accepted
+```
+
+The actual handover prompt/document can remain attached to the record.
+
+That means the system can eventually answer:
+
+> "How did GPT-5.6 get this context?"
+
+That's a real provenance question.
+
+### 5. "How to work with Kurt" is also provenance/context
+
+The separate handover you had GPT-5.5 produce wasn't really a Project Decision.
+
+It was **operational context about the human collaborator**.
+
+That deserves its own category of AI context, rather than being mixed into architectural Decisions.
+
+Something like:
+
+```text id="q8n3m5"
+AI CONTEXT
+
+How to Work With Kurt
+```
+
+and:
+
+```text
+AI Handover
+```
+
+are related but distinct artifacts.
+
+### 6. Provenance should survive migrations
+
+If CC Core v0.3 becomes v0.4, the history shouldn't disappear.
+
+Likewise, if:
+
+> Obsidian → standalone CC
+
+the provenance remains.
+
+The interface changes.
+
+The historical chain doesn't.
+
+### 7. Provenance should distinguish fact from inference
+
+This is particularly important with AI and Agents.
+
+For example:
+
+```text id="p6m4q8"
+FACT
+GitHub reports commit abc123.
+
+INFERENCE
+Agent believes this completes WP13.
+
+RECOMMENDATION
+Agent recommends marking Project Complete.
+
+DECISION
+Kurt marks Project Complete.
+```
+
+Those are **four different epistemic states**.
+
+CC shouldn't collapse them into one.
+
+### 8. This may become one of CC's most valuable features
+
+Imagine six months from now:
+
+> "Why did we decide to do it this way?"
+
+CC could show:
+
+```text id="k3m8q1"
+DEC-083
+
+Decision:
+Use ProjectRecordProvider injection.
+
+WHY?
+
+1. Phase 3 implementation exposed the issue.
+2. GPT-5.5 reviewed the architecture.
+3. GPT-5.6 reviewed the handover.
+4. Claude independently reviewed the implementation.
+5. Kurt accepted the final approach.
+
+Related:
+5 files
+3 AI threads
+2 reviews
+1 handover
+```
+
+That's much more useful than a static decision log.
+
+### Matrix additions
+
+| ID      | Requirement                                                                                                             | Status                                    |
+| ------- | ----------------------------------------------------------------------------------------------------------------------- | ----------------------------------------- |
+| P4-R747 | CC History must preserve meaningful changes and actions, not merely timestamps.                                         | **Established**                           |
+| P4-R748 | History events should identify what happened, actor/source, time, reason, and relevant relationships where available.   | **Established**                           |
+| P4-R749 | Provenance must distinguish Human, AI, Agent, and External System sources.                                              | **Established**                           |
+| P4-R750 | Decisions should be traceable to relevant discussions, Threads, Sources, and human approval where applicable.           | **Established**                           |
+| P4-R751 | Handover artifacts must be represented as first-class provenance/context records.                                       | **Established**                           |
+| P4-R752 | AI handovers and general "How to Work With Kurt" context should remain distinguishable from architectural Decisions.    | **Established**                           |
+| P4-R753 | Provenance must survive data migrations and interface/platform changes.                                                 | **Established architectural requirement** |
+| P4-R754 | CC should distinguish observed Facts, AI/Agent Inferences, Recommendations, and authoritative Decisions.                | **Established architectural direction**   |
+| P4-R755 | Provenance should make significant historical Decisions reconstructable rather than merely recording their final state. | **Established**                           |
+
+### Category 60 verdict
+
+We're getting something more sophisticated than a project manager.
+
+CC is becoming a **memory system with provenance**.
+
+The really powerful chain is:
+
+> **Fact → Interpretation → Recommendation → Human Decision → Action → Result**
+
+And separately:
+
+> **AI Thread → Handover → New AI Thread**
+
+That is exactly the kind of context that normally disappears into old chat threads.
+
+CC's job is to **keep the important parts from disappearing.**
+
+**Next: Category 61 — Notifications, Signals & Attention: how CC decides what deserves Kurt's attention without becoming noisy.**
+
+- - - - - 
+
+## Step 4BR — Category 61: Notifications, Signals & Attention
+
+This is an important distinction because we've already established that **Attention belongs in the same conceptual space as Where Things Stand**—not as a separate management system.
+
+The question now is:
+
+> **How does CC decide that something deserves Kurt's attention?**
+
+### 1. A Signal is not an Alert
+
+CC may notice something without interrupting you.
+
+For example:
+
+```text id="6m4q8p"
+GitHub activity detected
+```
+
+That's a **Signal**.
+
+It becomes an **Attention item** only if CC determines that it matters.
+
+An **Alert/Notification** is the stronger form:
+
+> "Kurt should probably see this now."
+
+### 2. Attention should be contextual
+
+On the Project Dashboard:
+
+```text
+WHERE THINGS STAND
+
+Current state:
+WP13 Phase 4 implementation
+
+Attention:
+⚠ Architectural question unresolved
+⚠ External cutoff approaching
+✓ Phase 3 verification complete
+```
+
+This is much more useful than a giant notification inbox.
+
+### 3. Not everything deserves attention
+
+CC should have a bias toward **quiet**.
+
+Examples:
+
+**No Attention**
+
+> Repository received another normal commit.
+
+**Attention**
+
+> Repository has been inactive for an unusual period while an external cutoff is approaching.
+
+**Urgent Attention**
+
+> External cutoff is tomorrow and required work remains incomplete.
+
+The significance comes from **context**, not simply from an event occurring.
+
+### 4. Signals can come from anywhere
+
+Potential sources:
+
+```text id="8p3n7m"
+SIGNALS
+
+Local filesystem
+GitHub
+Google Drive
+iCloud
+AI Threads
+Agents
+Tasks
+Deadlines
+Project state
+External services
+```
+
+CC can collect these without automatically surfacing all of them.
+
+### 5. AI can help interpret signals
+
+This is a particularly good Agent use case.
+
+A monitoring Agent might observe:
+
+> GitHub commit activity stopped.
+
+But instead of declaring:
+
+> "Project stalled."
+
+it could produce:
+
+> **Possible inactivity detected.**
+
+Then CC can consider:
+
+* current Project Status;
+* last activity;
+* Next Action;
+* External Cutoff;
+* whether the Project is intentionally Paused.
+
+Only then does it decide whether this belongs in **Attention**.
+
+### 6. External Cutoffs deserve special treatment
+
+We previously established the distinction between:
+
+> **hard external cutoff**
+
+and:
+
+> **arbitrary personal goal**.
+
+That distinction belongs here.
+
+A hard cutoff can generate progressively stronger attention:
+
+```text id="m7q3v8"
+30 days away
+   ↓
+Informational
+
+14 days away
+   ↓
+Attention
+
+7 days away
+   ↓
+Priority Attention
+
+48 hours away
+   ↓
+Urgent
+
+Past cutoff
+   ↓
+Critical / Missed
+```
+
+But the exact thresholds should probably be configurable.
+
+### 7. Attention should explain itself
+
+This is important.
+
+Instead of:
+
+> 🔴 URGENT
+
+CC should ideally tell you:
+
+> **External cutoff: August 28**
+> Required deliverable not yet marked complete.
+
+That's actionable.
+
+### 8. AI-generated Attention should be marked as such
+
+For example:
+
+```text id="q4n8m2"
+⚠ POSSIBLE ISSUE
+
+Source:
+Repository Monitor Agent
+
+Observation:
+No repository activity for 12 days.
+
+Interpretation:
+Project may be inactive.
+
+Confidence:
+Medium
+
+[Review]
+```
+
+That's much better than allowing an Agent to turn an inference into an apparent fact.
+
+### 9. Kurt should control the noise level
+
+Eventually, CC could learn or be configured around:
+
+* what is worth interrupting for;
+* what can wait;
+* which Projects matter most;
+* which Agents can generate Attention;
+* which signals are merely logged.
+
+But we shouldn't build a complicated notification-preference system prematurely.
+
+The initial rule can simply be:
+
+> **Surface things that materially affect the Project or require a decision/action.**
+
+### Matrix additions
+
+| ID      | Requirement                                                                                                                               | Status                                  |
+| ------- | ----------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------- |
+| P4-R756 | CC should distinguish raw Signals from surfaced Attention and stronger Notifications/Alerts.                                              | **Established**                         |
+| P4-R757 | Attention should remain contextual to the Project and its current state.                                                                  | **Established**                         |
+| P4-R758 | CC should favor signal-to-noise reduction rather than surfacing every detected event.                                                     | **Established architectural principle** |
+| P4-R759 | Signals may originate from local filesystems, repositories, cloud resources, AI Threads, Agents, Tasks, deadlines, and external services. | **Established direction**               |
+| P4-R760 | AI/Agents may interpret Signals and propose Attention items without automatically converting inference into fact or authoritative state.  | **Established**                         |
+| P4-R761 | Hard External Cutoffs should be capable of generating escalating Attention based on proximity and Project state.                          | **Established direction**               |
+| P4-R762 | Attention items should explain the underlying reason rather than merely presenting severity indicators.                                   | **Established**                         |
+| P4-R763 | AI/Agent-generated Attention should preserve source and confidence/provenance where appropriate.                                          | **Established direction**               |
+| P4-R764 | User-configurable Attention/Notification sensitivity may eventually be supported, but should not overcomplicate the initial system.       | **Future capability**                   |
+
+### Category 61 verdict
+
+The important hierarchy is:
+
+```text
+EVENT
+  ↓
+SIGNAL
+  ↓
+INTERPRETATION
+  ↓
+ATTENTION
+  ↓
+NOTIFICATION
+```
+
+Not every event reaches the bottom.
+
+And critically:
+
+> **CC should interrupt Kurt because something matters—not merely because something happened.**
+
+That fits the larger philosophy we've been establishing: **See first. Read second. Act when necessary.**
+
+- - - - - 
+
+## Step 4BS — Category 62: Project Re-entry & Context Recovery
+
+This one deserves its own category because it ties together **Threads, Handovers, Decisions, Files, History, Attention, and Where Things Stand**.
+
+The original requirement was very specific:
+
+> After being away from a Project for an extended period, Kurt should be able to come back and understand what was happening without reconstructing the entire history.
+
+### 1. Re-entry is a first-class CC function
+
+When you open a Project, CC should answer:
+
+> **Where was I?**
+
+> **How was I doing this?**
+
+> **What changed while I was away?**
+
+> **What do I do next?**
+
+That is different from simply showing a Project's current status.
+
+### 2. The Dashboard becomes the re-entry point
+
+A Project Dashboard might therefore have:
+
+```text id="6m4q8p"
+PROJECT: Command Center
+
+WHERE THINGS STAND
+WP13 Phase 4 — Project Dashboard
+
+ATTENTION
+One architectural question remains unresolved.
+
+RECENTLY CHANGED
+• Phase 3 verification accepted
+• New Agent model discussed
+• Thread handover added
+
+DECISIONS
+• DEC-083 — External Cutoffs are first-class objects
+
+NEXT ACTION
+Review Phase 4 Project Dashboard implementation
+
+AI CONTEXT
+GPT-5.6 — current architecture thread
+Claude — implementation review
+GPT-5.5 — historical handover
+```
+
+That's enough to orient you without reading twenty old conversations.
+
+### 3. Re-entry should be layered
+
+We shouldn't dump everything onto the Dashboard.
+
+Instead:
+
+```text id="8p3n7m"
+LEVEL 1
+Where Things Stand
+Attention
+Next Action
+
+        ↓
+
+LEVEL 2
+Recent Changes
+Recent Decisions
+Current AI Context
+
+        ↓
+
+LEVEL 3
+Threads
+Files
+History
+Sources
+Repositories
+
+        ↓
+
+LEVEL 4
+Complete historical record
+```
+
+That follows your:
+
+> **See first. Read second.**
+
+principle very nicely.
+
+### 4. Re-entry should recognize elapsed time
+
+If you return after:
+
+**2 hours**
+
+you probably don't need much.
+
+If you return after:
+
+**3 weeks**
+
+CC should probably provide a more substantial orientation.
+
+That could eventually be automatic.
+
+```text id="r5q8m2"
+LAST VISIT
+August 1
+
+CURRENT VISIT
+August 17
+
+RE-ENTRY SUMMARY
+14 days of activity detected
+```
+
+### 5. AI can generate a re-entry briefing
+
+This is probably one of the best uses of AI in the entire system.
+
+Instead of asking an AI:
+
+> "What was I doing with this project?"
+
+CC can provide the relevant structured context and ask:
+
+> **Generate a concise re-entry briefing.**
+
+The AI isn't inventing the Project state.
+
+It's synthesizing CC's recorded state.
+
+### 6. The briefing should distinguish known information from interpretation
+
+For example:
+
+```text id="m7q3v8"
+RE-ENTRY BRIEFING
+
+KNOWN
+WP13 Phase 3 was completed and accepted.
+
+CHANGED SINCE LAST VISIT
+Phase 4 implementation discussion began.
+
+OPEN
+ProjectRecordProvider access pattern remains under review.
+
+AI CONTEXT
+Claude reviewed the current implementation.
+
+NEXT
+Resolve the Phase 4 injection decision.
+```
+
+That's much safer than an AI-generated essay about "what it thinks you've been doing."
+
+### 7. Thread References become extremely valuable here
+
+This is where your observation about bouncing among several chat threads pays off.
+
+The re-entry briefing could say:
+
+> **Most relevant recent threads**
+
+```text id="q4n8m2"
+GPT-5.6 — WP13 Phase 4
+Claude — Independent architectural review
+GPT-5.5 — Historical handover
+```
+
+Clicking one takes you to the actual Thread Reference.
+
+CC doesn't need to pretend that it contains the conversation.
+
+It needs to help you **find the right conversation**.
+
+### 8. Handover chains should be visible
+
+For example:
+
+```text id="v6n3p8"
+GPT-5.5
+   │
+   │ Handover
+   ▼
+GPT-5.6
+   │
+   │ Handover
+   ▼
+Claude
+```
+
+That could eventually answer:
+
+> "How did this AI get up to speed?"
+
+without you having to remember which conversation contained which handover prompt.
+
+### Matrix additions
+
+| ID      | Requirement                                                                                                                              | Status                                    |
+| ------- | ---------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------- |
+| P4-R765 | Project Re-entry must be treated as a first-class CC capability.                                                                         | **Established architectural requirement** |
+| P4-R766 | Project Dashboard must provide sufficient context to answer Where was I, How was I doing this, What changed, and What do I do next?      | **Established**                           |
+| P4-R767 | Re-entry information should be layered from immediate orientation to detailed historical records.                                        | **Established direction**                 |
+| P4-R768 | CC should adapt the depth of re-entry information to the elapsed time since meaningful Project activity/last visit where practical.      | **Established direction**                 |
+| P4-R769 | AI may synthesize re-entry briefings from authoritative CC records.                                                                      | **Established**                           |
+| P4-R770 | Re-entry briefings should distinguish known recorded facts from AI interpretation.                                                       | **Established**                           |
+| P4-R771 | Re-entry should surface the most relevant Thread References rather than requiring the user to search manually through old conversations. | **Established**                           |
+| P4-R772 | Handover chains should be discoverable as part of AI context recovery.                                                                   | **Established direction**                 |
+| P4-R773 | Re-entry must not require reconstructing Project context from raw chat history.                                                          | **Established architectural requirement** |
+
+### Category 62 verdict
+
+This may actually be one of the defining features of CC.
+
+Not:
+
+> **"Here's your project management dashboard."**
+
+But:
+
+> **"Welcome back. Here's where you were, what happened, what matters, and where to pick up."**
+
+And the combination of **Thread References + Handovers + Decisions + History + Attention + Next Action** gives us the raw material to make that genuinely useful.
+
+**Next: Category 63 — Project Workspace vs. Project Dashboard: exactly what belongs on each side of that boundary.**
+
+ - - - - - 
+
+## Step 4BT — Category 63: Project Dashboard vs. Project Workspace
+
+This boundary is worth defining carefully because the two screens serve **different cognitive jobs**.
+
+The simplest distinction is:
+
+> **Dashboard = orient me.**
+> **Workspace = let me work.**
+
+### 1. The Dashboard should answer questions
+
+When you enter a Project Dashboard, you shouldn't immediately be confronted with a pile of files, Tasks, Threads, and controls.
+
+It should answer:
+
+```text id="6m4q8p"
+Where Things Stand
+Attention
+Next Action
+What Changed
+Key Decisions
+Current AI Context
+```
+
+That's the **re-entry/orientation layer**.
+
+### 2. The Workspace is where the work happens
+
+Once oriented, you move into the Workspace.
+
+That might contain:
+
+```text id="8p3n7m"
+WORKSPACE
+
+Files
+Sources
+Tasks
+Notes
+Threads
+Repositories
+AI Tools
+Agents
+Scratch Space
+Project-specific tools
+```
+
+This is where density becomes acceptable.
+
+You're there because you're ready to **do something**.
+
+### 3. Dashboard should be relatively stable
+
+The Dashboard shouldn't constantly change its structure depending on what happens in the Project.
+
+Its major regions should remain recognizable:
+
+```text id="r5q8m2"
+WHERE THINGS STAND
+ATTENTION
+NEXT ACTION
+RECENT CHANGES
+KEY CONTEXT
+```
+
+That makes re-entry fast.
+
+### 4. Workspace can be highly project-specific
+
+A coding project might need:
+
+```text id="m7q3v8"
+GitHub
+Issues
+Branches
+Files
+CI
+AI coding threads
+```
+
+A video project might instead need:
+
+```text id="q4n8m2"
+Video files
+Scripts
+Assets
+CapCut
+iMovie
+YouTube
+```
+
+A research project might need:
+
+```text id="v6n3p8"
+Sources
+PDFs
+Notes
+Citations
+AI research threads
+```
+
+The Dashboard doesn't need to understand all of those specialized tools.
+
+### 5. This is where "Edit Using" belongs
+
+We discussed the possibility of an:
+
+> **Edit Using**
+
+button.
+
+That's a Workspace function.
+
+For example:
+
+```text id="x8m4q2"
+orientation-bar.ts
+
+[ Open ] [ Edit Using ▾ ]
+
+Edit Using:
+  VS Code
+  Zed
+  BBEdit
+  Other...
+```
+
+And, as you correctly pointed out, CC shouldn't make dumb assumptions about file extensions.
+
+A `.ts` file on a Mac could theoretically be interpreted by an application in a way that has nothing to do with TypeScript.
+
+So CC should use:
+
+> **File type + available applications + Project context**
+
+rather than merely:
+
+> `.ts → developer editor`
+
+### 6. Workspace can contain temporary material
+
+This is also where the **New Project canvas** idea fits nicely.
+
+A Project Workspace can have a temporary area for:
+
+* spitballing;
+* rough notes;
+* experimental files;
+* candidate ideas;
+* AI-generated material;
+* scratch work.
+
+Not everything needs to immediately become a formal Project record.
+
+### 7. Dashboard shouldn't become a second Workspace
+
+This is the danger.
+
+We don't want:
+
+```text
+Dashboard
+├── Dashboard stuff
+├── Files
+├── Files again
+├── Tasks
+├── Tasks again
+├── Threads
+├── Threads again
+├── AI
+├── AI again
+└── Everything
+```
+
+That would destroy the distinction.
+
+### 8. Workspace shouldn't become a second Dashboard
+
+Likewise, we don't need:
+
+> Where Things Stand
+
+> Attention
+
+> Next Action
+
+repeated everywhere.
+
+The Workspace can have contextual indicators, but the Dashboard remains the **primary orientation surface**.
+
+### 9. Navigation between them should be effortless
+
+The basic flow becomes:
+
+```text id="p8m3q7"
+Project List
+     ↓
+Project Dashboard
+     │
+     ├── "I understand where I am."
+     │
+     ▼
+Project Workspace
+     │
+     ├── "I am doing the work."
+     │
+     ▼
+Project Dashboard
+     │
+     └── "I can see what changed."
+```
+
+That's a useful loop.
+
+### Matrix additions
+
+| ID      | Requirement                                                                                                                                                               | Status                                    |
+| ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------- |
+| P4-R774 | Project Dashboard and Project Workspace must have distinct cognitive purposes.                                                                                            | **Established architectural requirement** |
+| P4-R775 | Dashboard is primarily an orientation/re-entry surface.                                                                                                                   | **Established**                           |
+| P4-R776 | Workspace is primarily an execution/work surface.                                                                                                                         | **Established**                           |
+| P4-R777 | Dashboard should provide stable, recognizable orientation regions.                                                                                                        | **Established direction**                 |
+| P4-R778 | Workspace may vary significantly according to Project type and tools.                                                                                                     | **Established**                           |
+| P4-R779 | Project-specific tools and dense operational resources belong primarily in Workspace rather than Dashboard.                                                               | **Established direction**                 |
+| P4-R780 | Temporary/scratch/spitballing material should have a legitimate place within the Project workflow without necessarily becoming formal Project data immediately.           | **Established direction**                 |
+| P4-R781 | "Edit Using" belongs primarily in the Workspace/resource interaction layer.                                                                                               | **Established direction**                 |
+| P4-R782 | Application suggestions for files should consider file type, available Mac applications, and Project context rather than assuming a single application from an extension. | **Established**                           |
+| P4-R783 | Dashboard and Workspace should not duplicate each other's responsibilities.                                                                                               | **Established architectural requirement** |
+| P4-R784 | Navigation between Dashboard and Workspace should be lightweight and reversible.                                                                                          | **Established direction**                 |
+
+### Category 63 verdict
+
+We've now got a clean two-level model:
+
+**Dashboard**
+
+> *"Where am I, what's happening, and what matters?"*
+
+**Workspace**
+
+> *"Give me the tools and resources to do the work."*
+
+That also gives us a very useful design rule:
+
+> **The Dashboard should make you want to work. The Workspace should let you work.**
+
+**Next: Category 64 — The Project List itself: what information it should show before you ever open a Project Dashboard.**
+
+- - - - - 
+
+## Step 4BU — Category 64: The Project List
+
+We've now defined the flow:
+
+**Category → Project List → Project Dashboard → Workspace**
+
+So the Project List has a very specific job:
+
+> **Help Kurt choose which Project to enter.**
+
+It should not try to become a miniature Dashboard.
+
+### 1. The Project List is a scanning surface
+
+The user should be able to look at it and quickly recognize:
+
+* What Projects exist?
+* Which ones are active?
+* Which need attention?
+* Which have an approaching hard cutoff?
+* Which one should I open?
+
+This is another application of:
+
+> **See first. Read second.**
+
+### 2. A Project card should contain only high-value information
+
+Something like:
+
+```text id="6m4q8p"
+┌─────────────────────────────────────┐
+│ COMMAND CENTER                      │
+│                                     │
+│ Active                              │
+│                                     │
+│ WP13 Phase 4 — Project Dashboard    │
+│                                     │
+│ ● Current                            │
+│ ⚠ 1 Attention                       │
+│ ⏱ Cutoff: Aug 28                    │
+│                                     │
+│ Next: Resolve injection decision    │
+│                                     │
+│ Last activity: Today                │
+└─────────────────────────────────────┘
+```
+
+That's enough to decide whether to open it.
+
+### 3. Don't show every Project field
+
+A Project might have dozens of metadata fields.
+
+The List shouldn't expose them.
+
+For example, probably **not**:
+
+* complete Description;
+* every Decision;
+* every Thread;
+* every File;
+* every Agent;
+* full History;
+* every Task.
+
+Those belong deeper in the system.
+
+### 4. Attention should be visible
+
+But Attention **does** belong here in compressed form.
+
+For example:
+
+> ⚠ 2
+
+rather than:
+
+> ⚠ Project has unresolved architecture issue concerning...
+
+The card gives you the signal.
+
+The Dashboard gives you the explanation.
+
+### 5. Hard External Cutoffs should be especially visible
+
+Because we've established that these are materially different from arbitrary goals.
+
+A Project with:
+
+> **External cutoff: Aug 28**
+
+should be distinguishable from one with:
+
+> Personal target: Aug 28
+
+The Project List might simply show:
+
+> ⏱ Aug 28 — External cutoff
+
+while the Dashboard provides details.
+
+### 6. Project state should be glanceable
+
+We already have states like:
+
+* Current;
+* Planning;
+* Idea;
+* Paused;
+* Completed;
+* Archived.
+
+The Project List should make that state visually obvious without requiring the user to open the Project.
+
+### 7. Sorting should reflect usefulness
+
+Eventually, Projects could be sorted by:
+
+* current relevance;
+* attention;
+* cutoff proximity;
+* recent activity;
+* manual order.
+
+But **manual order may be particularly important** for a visual operational system.
+
+You may simply want:
+
+> "Put Teacher Toolbox at the top."
+
+without CC deciding that some algorithm says otherwise.
+
+### 8. Search shouldn't replace the Project List
+
+Search answers:
+
+> "Find me something."
+
+Project List answers:
+
+> "Show me my Projects."
+
+They are different.
+
+### 9. New Project should remain accessible
+
+The Project List should probably have a clear:
+
+> **+ New Project**
+
+entry point.
+
+But that shouldn't be the only way to create one.
+
+The Ideas area can also contain a **New Project template/canvas**, as we established earlier.
+
+So:
+
+```text id="r5q8m2"
+Ideas
+   ↓
+New Project canvas
+   ↓
+Project Candidate
+   ↓
+Project List
+```
+
+is valid.
+
+### 10. The List should support "dead" Projects without making them disappear
+
+A Project that is:
+
+> Paused
+
+shouldn't necessarily vanish.
+
+Likewise:
+
+> Waiting for someone else.
+
+should remain discoverable.
+
+That means Project State and Project Visibility are separate concepts.
+
+### Matrix additions
+
+| ID      | Requirement                                                                                                                   | Status                                  |
+| ------- | ----------------------------------------------------------------------------------------------------------------------------- | --------------------------------------- |
+| P4-R785 | Project List should function primarily as a scanning/selection surface.                                                       | **Established**                         |
+| P4-R786 | Project cards should expose only high-value orientation information.                                                          | **Established**                         |
+| P4-R787 | Project List should not duplicate full Dashboard or Workspace content.                                                        | **Established**                         |
+| P4-R788 | Project Attention should be visible in compact form on Project List cards.                                                    | **Established direction**               |
+| P4-R789 | Hard External Cutoffs should be visibly distinguishable from ordinary targets/goals.                                          | **Established**                         |
+| P4-R790 | Project State should be glanceable from the Project List.                                                                     | **Established**                         |
+| P4-R791 | Manual Project ordering should remain possible even if automatic sorting is eventually supported.                             | **Established direction**               |
+| P4-R792 | Search and Project List must remain distinct functions.                                                                       | **Established**                         |
+| P4-R793 | New Project should remain accessible from Project List while Ideas/New Project workflows remain valid alternate entry points. | **Established**                         |
+| P4-R794 | Paused/waiting Projects should remain discoverable rather than being treated as nonexistent.                                  | **Established**                         |
+| P4-R795 | Project State and Project Visibility should remain separate concepts.                                                         | **Established architectural direction** |
+
+### Category 64 verdict
+
+The hierarchy now feels increasingly coherent:
+
+```text id="7q3m8p"
+PROJECT LIST
+"Which one?"
+
+       ↓
+
+PROJECT DASHBOARD
+"What's going on?"
+
+       ↓
+
+PROJECT WORKSPACE
+"Let's work."
+```
+
+That's a good three-level progression.
+
+And it prevents the common dashboard mistake of trying to make **every screen show everything**.
+
+**Next: Category 65 — Project State vs. Project Visibility: the distinction we just uncovered with Paused, Waiting, Archived, Ideas, and hidden/discoverable Projects.**
+
+- - - - - 
+
+* * * End Day 2 Pt.3 - Step 4BA thru Step 4U * * *
+
