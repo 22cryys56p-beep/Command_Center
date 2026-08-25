@@ -1,0 +1,42 @@
+
+- - - - -
+
+Reusable Chunk Prompt Template
+
+- - - - -
+
+
+CC Matrix Revision — Chunk: Categories [X–Y]
+
+1) RAW SOURCE (Categories X–Y):
+[paste raw text from Day 1 / Day 2 Pt.N, per Grok's line map]
+
+2) AUDIT VERDICTS (Categories X–Y):
+[paste the corresponding "Steps X–Y" audit document]
+
+3) KNOWN CORRECTIONS TO APPLY (if applicable to this range):
+- Step 1 status model (Possible/Planned/Current/Ongoing/Archived): confirmed legitimate KEEP
+- Step 49: REMOVE (not REVISE) — silently contradicted the frozen Step 1 status model
+- Current naming collision (Category 16): log as new OPEN item, not in original audit
+[add/remove as relevant to this chunk]
+
+4) OUTPUT REQUIRED — produce all four, using ONLY the format below:
+
+### Document A — Clean Matrix (KEEP only)
+### Category N — [Name]
+- P4-R### — [requirement, verbatim or lightly trimmed] — [KEEP-Phase4 / KEEP-Foundation]
+
+### Document B — Deferred Items
+### Category N — [Name]
+- P4-R### — [requirement] — DEFER
+
+### Document C — Revised / Removed, with rationale
+### Category N — [Name]
+- P4-R### — [requirement] — REVISE / REMOVE — [1-2 sentence reason]
+
+### Document D — Open Items
+### Category N — [Name]
+- P4-R### — [requirement] — OPEN — [1-2 sentence reason it's undecided]
+
+No summaries. No prose paragraphs outside these four blocks. No commentary between categories.
+
