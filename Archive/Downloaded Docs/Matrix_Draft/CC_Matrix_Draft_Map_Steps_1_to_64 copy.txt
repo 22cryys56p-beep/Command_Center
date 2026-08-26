@@ -1,0 +1,251 @@
+
+- - - - - 
+
+Breakdown of the Command Center Matrix Architecture Draft . . . 
+Preparatory Work 
+Step 1 thru Step 64 of Matrix Architecture 
+
+- - - - - 
+
+Documents:
+* command_center_matrix_draft_Day1_GPT5.6.txt
+* command_center_matrix_draft_Day2_Pt.1_GPT5.6.txt
+* command_center_matrix_draft_Day2_Pt.2_GPT5.6.txt
+* command_center_matrix_draft_Day2_Pt.3_GPT5.6.txt
+
+- - - - - 
+
+Setup: 
+The Day 1 file (command_center_matrix_draft_Day1_GPT5.6.txt) contains the preparatory work:
+
+The original Steps 1 → 4C
+Establishing Phase 4 scope, requirements, Dashboard behavioral contract, editable metadata boundary, status presentation, etc.
+
+That material sets the foundation.
+The actual 64 major steps (the Category 1 through Category 64 sequence that you asked me to map) begin in Day 2 Pt.1 with:
+Step 1 / Category 1 at line 1666
+→ ## Step 4L — Gap Pass, Category 1: Project Status
+So Day 1 is the setup / scaffolding that leads into the systematic Category-by-Category matrix construction that forms the 64 steps.
+
+- - - - - 
+
+**Complete clean list of the 64 major steps**
+
+**File key**  
+- **Pt1** = `command_center_matrix_draft_Day2_Pt.1_GPT5.6.txt`  
+- **Pt2** = `command_center_matrix_draft_Day2_Pt.2_GPT5.6.txt`  
+- **Pt3** = `command_center_matrix_draft_Day2_Pt.3_GPT5.6.txt`
+
+---
+
+**Step 1** begins at line **1666** of Pt1  
+→ `## Step 4L — Gap Pass, Category 1: Project Status`
+
+**Step 2** begins at line **1960** of Pt1  
+→ `## Step 4L — Category 2: Project Categorization`
+
+**Step 3** begins at line **2099** of Pt1  
+→ `## Step 4M — Category 3: Project Identity & Purpose`
+
+**Step 4** begins at line **2295** of Pt1  
+→ `## Step 4N — Category 4: Operational State`
+
+**Step 5** begins at line **2699** of Pt1  
+→ `### Category 5 — Project Technical & Working Environment`
+
+**Step 6** begins at line **2802** of Pt1  
+→ `## Step 4O — Category 6: Project Ecosystem / "Tentacles"`
+
+**Step 7** begins at line **3200** of Pt1  
+→ `## Step 4P — Category 7: Documents, Files, Source Code & Search`
+
+**Step 8** begins at line **3378** of Pt1  
+→ `## Step 4Q — Category 8: Project Workspace / What You See When You Open a Project`
+
+**Step 9** begins at line **3700** of Pt1  
+→ `## Step 4R — Category 9: Project Selection & Navigation`
+
+**Step 10** begins at line **3859** of Pt1  
+→ `## Step 4S — Category 10: Project Creation, Templates & Status Changes`
+
+**Step 11** begins at line **4062** of Pt1  
+→ `## Step 4T — Category 11: Project Notes, Decisions, History & Re-entry Context`
+
+**Step 12** begins at line **4524** of Pt1  
+→ `## Step 4U — Category 12: Ongoing / Archived Projects & Long-Term Retrieval`
+
+**Step 13** begins at line **4879** of Pt1  
+→ `### Step 4V — Category 13: AI Access & Governance`
+
+**Step 14** begins at line **5163** of Pt1  
+→ `## Step 4W — Category 14: Command Center as Its Own Project`
+
+**Step 15** begins at line **5317** of Pt1  
+→ `## Step 4X — Category 15: Dashboard / Home Screen & Visual Hierarchy`
+
+**Step 16** begins at line **5644** of Pt1  
+→ `### Step 4Y — Home Screen Functions` (Category 16)
+
+**Step 17** begins at line **5730** of Pt1  
+→ `## Step 4Z — Category 17: Ideas & Planning`
+
+**Step 18** begins at line **6** of Pt2  
+→ `## Step 4AA — Category 18: Project Workspace Editing & Permissions`
+
+**Step 19** begins at line **180** of Pt2  
+→ `## Step 4AB — Category 19: Flags, Blockers & Attention Management`
+
+**Step 20** begins at line **343** of Pt2  
+→ `## Step 4AC — Category 20: Search & Knowledge Retrieval`
+
+**Step 21** begins at line **833** of Pt2  
+→ `### Step 4AD — Templates & Project Seeds` (Category 21)
+
+**Step 22** begins at line **1017** of Pt2  
+→ `## Step 4AE — Category 22: Project Relationships / The "Tentacles"`
+
+**Step 23** begins at line **1235** of Pt2  
+→ `## Step 4AF — Category 23: Project Data Model`
+
+**Step 24** begins at line **1431** of Pt2  
+→ `## Step 4AG — Category 24: Project Workspace`
+
+**Step 25** begins at line **1752** of Pt2  
+→ `## Step 4AH — Category 25: Project Files & Read-Only Access`
+
+**Step 26** begins at line **2183** of Pt2  
+→ `## Step 4AI — Category 26: Repository Integration`
+
+**Step 27** begins at line **2484** of Pt2  
+→ `## Step 4AJ — Category 27: AI Access & AI Participation`
+
+**Step 28** begins at line **3089** of Pt2  
+→ `### Step 4AK — AI Session Handoff & Re-entry` (Category 28)
+
+**Step 29** begins at line **4337** of Pt2  
+→ `### Step 4AL — Decisions & Architectural Memory` (Category 29)
+
+**Step 30** begins at line **4508** of Pt2  
+→ `## Step 4AM — Category 30: Project History / Audit Trail`
+
+**Step 31** begins at line **4703** of Pt2  
+→ `## Step 4AN — Category 31: Project Relationships & "Tentacles"`
+
+**Step 32** begins at line **4892** of Pt2  
+→ `## Step 4AO — Category 32: Seeds & Project Lineage`
+
+**Step 33** begins at line **5077** of Pt2  
+→ `## Step 4AP — Category 33: Project Templates & the "New Project" Canvas`
+
+**Step 34** begins at line **5337** of Pt2  
+→ `## Step 4AQ — Category 34: Tasks, Actions & Next Actions`
+
+**Step 35** begins at line **5572** of Pt2  
+→ `## Step 4AR — Category 35: Reviews, Checkpoints & Project Health`
+
+**Step 36** begins at line **6070** of Pt2  
+→ `### Step 4AS — Attention & Escalation` (Category 36)
+
+**Step 37** begins at line **6192** of Pt2  
+→ `## Step 4AT — Category 37: Files, Sources & External Locations`
+
+**Step 38** begins at line **6452** of Pt2  
+→ `## Step 4AU — Category 38: What Belongs Inside CC vs. What Gets Referenced`
+
+**Step 39** begins at line **6634** of Pt2  
+→ `## Step 4AV — Category 39: AI Access, Authority & Permissions`
+
+**Step 40** begins at line **6866** of Pt2  
+→ `## Step 4AW — Category 40: Automation & Triggers`
+
+**Step 41** begins at line **7067** of Pt2  
+→ `## Step 4AX — Category 41: Notifications & Signals`
+
+**Step 42** begins at line **7246** of Pt2  
+→ `## Step 4AY — Category 42: Search & Discovery`
+
+**Step 43** begins at line **7445** of Pt2  
+→ `## Step 4AZ — Category 43: The Project Dashboard`
+
+**Step 44** begins at line **5** of Pt3  
+→ `## Step 4BA — Category 44: Project Workspace / Drill-Down`
+
+**Step 45** begins at line **224** of Pt3  
+→ `## Step 4BB — Category 45: History, Audit Trail & "What Happened?"`
+
+**Step 46** begins at line **486** of Pt3  
+→ `## Step 4BC — Category 46: Project Seeds, Lineage & Reuse`
+
+**Step 47** begins at line **766** of Pt3  
+→ `## Step 4BD — Category 47: Templates, Kernels & Seed vs. Template`
+
+**Step 48** begins at line **1009** of Pt3  
+→ `## Step 4BE — Category 48: Project Creation & the New Project Workflow`
+
+**Step 49** begins at line **1265** of Pt3  
+→ `## Step 4BF — Category 49: Project Lifecycle & State Transitions`
+
+**Step 50** begins at line **1466** of Pt3  
+→ `## Step 4BG — Category 50: The Overall CC Navigation Model`
+
+**Step 51** begins at line **1700** of Pt3  
+→ `## Step 4BH — Category 51: The Core Object Model`
+
+**Step 52** begins at line **2034** of Pt3  
+→ `## Step 4BI — Category 52: The Portable Data Layer`
+
+**Step 53** begins at line **2262** of Pt3  
+→ `## Step 4BJ — Category 53: Synchronization, Conflicts & Multiple Interfaces`
+
+**Step 54** begins at line **2467** of Pt3  
+→ `## Step 4BK — Category 54: Backup, Recovery & Disaster Recovery`
+
+**Step 55** begins at line **2682** of Pt3  
+→ `## Step 4BL — Category 55: Security, Privacy & Trust Boundaries`
+
+**Step 56** begins at line **2924** of Pt3  
+→ `## Step 4BM — Category 56: External Integrations & Connectors`
+
+**Step 57** begins at line **3186** of Pt3  
+→ `## Step 4BN — Category 57: Platform Independence & the Eventual Standalone Command Center`
+
+**Step 58** begins at line **3422** of Pt3  
+→ `## Step 4BO — Category 58: Versioning & Evolution of the CC Core`
+
+**Step 59** begins at line **3617** of Pt3  
+→ `## Step 4BP — Category 59: Human Authority, AI Advice & Agent Action`
+
+**Step 60** begins at line **3924** of Pt3  
+→ `## Step 4BQ — Category 60: Audit Trail & Provenance`
+
+**Step 61** begins at line **4212** of Pt3  
+→ `## Step 4BR — Category 61: Notifications, Signals & Attention`
+
+**Step 62** begins at line **4456** of Pt3  
+→ `## Step 4BS — Category 62: Project Re-entry & Context Recovery`
+
+**Step 63** begins at line **4692** of Pt3  
+→ `## Step 4BT — Category 63: Project Dashboard vs. Project Workspace`
+
+**Step 64** begins at line **4942** of Pt3  
+→ `## Step 4BU — Category 64: The Project List`
+
+---
+
+This is the complete sequential mapping of the 64 major steps.
+
+- - - - - 
+
+Current Task: 
+Step 1: Audit the existing Steps 1–64 against the actual Phase 4 objective, using the actual Matrix files in the GitHub Command_Center repository as the authoritative source.
+
+For each substantive decision, classify it as exactly one of:
+
+KEEP — Phase 4
+KEEP — Architectural foundation
+DEFER — To Do Later
+OPEN — Decision required
+REVISE — Needs correction
+REMOVE — Superseded/redundant
+
+- - - - - 
