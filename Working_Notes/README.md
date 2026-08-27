@@ -1,3 +1,3 @@
-# Archive
+# Working_Notes
 
-Store obsolete portfolio-level notes and superseded material here. Preserve links where practical.
+Store obsolete portfolio-level notes, rough drafts, and superseded material here. Preserve links where practical.
