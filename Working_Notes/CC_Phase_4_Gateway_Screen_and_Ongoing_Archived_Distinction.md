@@ -60,3 +60,25 @@ This document is a **draft capturing Kurt's direct statement**, not yet merged i
 - Add the Ongoing/Archived distinction as an explicit addition to Category 12, since it clarifies but does not contradict P4-R186–192.
 
 No existing P4-R item is revised or removed by this document — it only makes explicit what was previously implicit or absent.
+
+---
+
+## Addendum — AI Progress Estimate: Dashboard placement and proactive display
+
+### The gap
+
+Two related points were never made explicit anywhere in the audited matrix:
+
+1. **AI Progress Estimate is named for the Workspace, not the Dashboard.** P4-R323 (Category 24 — Project Workspace) explicitly lists "AI Progress Estimate" as a component of that screen's "Where Things Stand" section. Category 43 — The Project Dashboard — also has a "Where Things Stand" section (P4-R581), and P4-R586 says the Dashboard "should surface AI-maintained operational information," but nowhere does the matrix state that AI Progress Estimate specifically belongs there. Since the Dashboard is the actual opening screen a project is entered through (per Category 63's Dashboard/Workspace split — Dashboard for orientation/re-entry, Workspace for execution), this is the screen where Kurt expects to see it, and it was not explicitly specified.
+
+2. **Proactive display was never stated outright.** Both P4-R323 ("should support") and P4-R586 ("should surface") are worded in a way that's compatible with either the estimate appearing automatically on load, or only being available if separately requested. Kurt's expectation, confirmed directly: it must appear on the project's opening screen without any additional action — no extra clicks, no asking for it.
+
+### Resolution
+
+> **The AI Progress Estimate is a required component of the Project Dashboard's "Where Things Stand" section (Category 43) and must be displayed automatically when the Dashboard is opened — not gated behind further navigation or an explicit request.** This is consistent with, and a direct application of, the Dashboard's existing "See first. Read second." principle (P4-R579).
+
+The Workspace's own "Where Things Stand" (P4-R323) is unaffected — the Dashboard version described here is the summary-level instance encountered first; the Workspace version remains the deeper, execution-context instance.
+
+### Status
+
+Pending Kurt's confirmation, recommended integration: add as an explicit item under Category 43 (next available ID continuing from wherever the main Gateway addition lands, e.g. **P4-R797**), clarifying P4-R581/P4-R586 rather than revising them.
