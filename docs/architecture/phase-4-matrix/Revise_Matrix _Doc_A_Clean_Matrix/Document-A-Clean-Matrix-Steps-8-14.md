@@ -70,6 +70,7 @@
 - P4-R190 — Search should be capable of finding relevant information in Ongoing and Archived projects — KEEP-Phase4
 - P4-R191 — Authorized AI systems should be able to access relevant Ongoing/Archived project context when needed — KEEP-Phase4
 - P4-R192 — Archiving a project is a status/view operation, not a destructive archival process — KEEP-Foundation
+- P4-R799 — Ongoing projects are essentially complete but retain active side-branches requiring occasional attention; Archived projects are genuinely finished with no remaining active concerns — KEEP-Foundation
 - CC has a distinct Foundational Seed containing the platform-independent Project Model, architecture, requirements, principles, and portability concepts — KEEP-Foundation
 - Obsidian is the initial implementation platform, not the fundamental definition of CC — KEEP-Foundation
 - Platform-specific implementation details must remain separable from the underlying model — KEEP-Foundation

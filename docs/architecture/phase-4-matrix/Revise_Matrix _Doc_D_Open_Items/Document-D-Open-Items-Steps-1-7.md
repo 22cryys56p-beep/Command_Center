@@ -4,10 +4,6 @@
 
 ---
 
-### Category 1 — Project Status
-
-- Exact status transition rules. Sequential vs. non-sequential transitions have not been formally defined. Re-entry from Ongoing → Current appears reasonable but remains undecided.
-
 ### Category 2 — Project Categorization
 
 - P4-R97 — Exact category vocabulary. Deliberately not frozen.

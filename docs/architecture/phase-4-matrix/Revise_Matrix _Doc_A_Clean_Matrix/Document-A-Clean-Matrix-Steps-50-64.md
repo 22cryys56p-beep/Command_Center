@@ -15,6 +15,7 @@
 - P4-R655 — Project Dashboard is the primary project-level orientation surface — KEEP-Foundation
 - P4-R656 — Project Workspace provides deeper operational access without overloading the Dashboard — KEEP-Foundation
 - P4-R657 — Navigation, Search, Project data, Resources, and AI capabilities remain distinct architectural concerns — KEEP-Foundation
+- P4-R800 — Command Center's Gateway presents six primary navigation destinations: Current, Planning, Ideas, Ongoing, New Project, and Archive — KEEP-Foundation
 
 ### Category 51 — Core Object Model
 
@@ -188,7 +189,9 @@
 - P4-R792 — Search and Project List must remain distinct functions — KEEP-Foundation
 - P4-R793 — New Project should remain accessible from Project List while Ideas/New Project workflows remain valid alternate entry points — KEEP-Foundation
 - P4-R794 — Paused/waiting Projects should remain discoverable rather than being treated as nonexistent — KEEP-Foundation
-- P4-R795 — Project State and Project Visibility should remain separate concepts as a general principle (the *complete* model of this distinction is OPEN — see Document D) — KEEP-Foundation
+- P4-R795 — Project State and Project Visibility are separate concepts. `ProjectRecord.status` is authoritative for project state; visibility is derived from status and the current CC view/navigation context and is not a separate persisted ProjectRecord property — KEEP-Foundation
+
+---
 
 *(Note: Category 64's "Project State" examples in the source material — Current, Planning, Idea, Paused, Completed, Archived — list several values that overlap with or reintroduce the rejected Category 49 taxonomy. Only the single-tier `ProjectRecord.status` field plus the Category 1 five-value vocabulary is authoritative; "Paused" and "Completed" as formal states remain rejected per the Category 49 correction in the prior chunk.)*
 

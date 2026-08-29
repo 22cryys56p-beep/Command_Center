@@ -4,4 +4,5 @@
 
 ---
 
-No items in this range were classified OPEN — Decision Required. Categories 43–48 resolved entirely into KEEP or DEFER. Category 49 resolved into a KEEP/REMOVE split (see Document A and Document C) rather than leaving anything genuinely undecided — the corrected classification treats the status-tier question as settled (single-tier, no second taxonomy), not open.
+- P4-R797 — The Dashboard's exact presentation of a missing ProjectRecord remains OPEN
+- P4-R798 — The Dashboard's exact presentation of an invalid ProjectRecord remains OPEN

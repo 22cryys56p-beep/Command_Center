@@ -1,6 +1,6 @@
 # CC Phase 4 Matrix — Document A: Clean Matrix (KEEP Only)
 
-**Scope covered:** Categories 43–49
+**Scope covered:** Categories 43–49  
 **Classification included:** KEEP — Phase 4, KEEP — Architectural foundation
 
 **Important note on this chunk:** Category 49 contains the confirmed architectural drift point. Only the portion of Category 49 verified as sound (navigation ≠ status, as a general principle) is included below. The invented status taxonomy (Active/Paused/Completed/Cancelled/Failed) is classified REMOVE, not REVISE — see Document C for the full rationale, which supersedes the original audit's REVISE classification for this category.
@@ -13,11 +13,13 @@
 - P4-R579 — Dashboard design must prioritize "See first. Read second." — KEEP-Phase4
 - P4-R580 — Dashboard must distinguish Purpose, Description, and Focus — KEEP-Phase4
 - P4-R581 — "Where Things Stand" must be the central operational section — KEEP-Phase4
+- P4-R802 — The Dashboard must automatically display the AI Progress Estimate within its Where Things Stand section when the Dashboard is opened — KEEP-Phase4
 - P4-R582 — Attention must be part of the overall "Where Things Stand" area rather than a subordinate subsection — KEEP-Phase4
 - P4-R583 — Dashboard information should reference underlying CC records rather than duplicate their content — KEEP-Phase4
 - P4-R584 — Dashboard presentation should adapt to relevant project characteristics without changing the underlying common Project model — KEEP-Phase4
 - P4-R585 — Empty/non-applicable information should not create unnecessary Dashboard clutter — KEEP-Phase4
 - P4-R586 — Dashboard should surface both AI-maintained operational information and Kurt-controlled governance information — KEEP-Phase4
+- P4-R796 — Missing or invalid ProjectRecord data must fail honestly rather than silently degrade or manufacture project information — KEEP-Phase4
 - P4-R587 — Dashboard should provide direct navigation to relevant Sources, Threads, Decisions, Tasks, Flags, Blockers, Handovers, and History — KEEP-Phase4
 - P4-R588 — Dashboard must remain a view of the underlying Project data rather than becoming a second source of truth — KEEP-Phase4
 

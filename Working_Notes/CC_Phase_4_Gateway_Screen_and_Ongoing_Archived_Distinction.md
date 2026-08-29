@@ -1,11 +1,34 @@
 ---
 type: architectural-addendum
-status: draft — pending Kurt's review before merge into Document A / Category 50
+status: INCORPORATED — content below has been merged into the authoritative Phase 4 matrix (Documents A and D). This file is retained as historical working material only; it is no longer an active draft and should not be re-derived or re-proposed.
 date: 2026-08-27
+incorporated: 2026-08-29
 source: Kurt, stated directly in conversation with Claude
 ---
 
 # Gateway Screen and the Ongoing / Archived Distinction
+
+## Incorporation record
+
+Everything in this document has been merged into the authoritative matrix as part of the Step 65 completeness review. Final disposition:
+
+| This document's content | Landed as | Category |
+|---|---|---|
+| Gateway six-destination layout | **P4-R800** | Category 50 |
+| Ongoing vs. Archived functional distinction | **P4-R799** | Category 12 |
+| Honest-failure principle (missing/invalid ProjectRecord) | **P4-R796** | Category 43 |
+| Missing-record presentation (OPEN) | **P4-R797** | Category 43 (Document D) |
+| Invalid-record presentation (OPEN) | **P4-R798** | Category 43 (Document D) |
+| Dashboard AI Progress Estimate, proactive display | **P4-R802** | Category 43 |
+
+Two related items from the same Step 65 review, not originally part of this document, are recorded here for completeness:
+
+- **P4-R801** (Category 1) — Archived/Ongoing project reactivation without requiring a New Project; Project Owner determines resulting status. Closed Document D's Category 1 open item, in combination with the already-existing P4-R171 (Category 10).
+- **Old Day-1 P4-R27** ("Dashboard editing/writing of ProjectRecords") — examined during Step 65H and found already resolved by existing architecture: Category 18 (P4-R251–256, CC-owned metadata vs. externally-owned artifacts) and Category 59 (P4-R741–746, authority levels and external-action distinguishability). **No new P4-R ID was assigned** — adding one would have duplicated architecture that already exists. This closes out the old Day-1 P4-R13/25/26/27 set in full; all four have now been either restored (13, 25, 26 → 796, 797, 798) or explicitly resolved without a new ID (27).
+
+The wording below is preserved as-written for historical reference; it may differ slightly from the final matrix phrasing, which is authoritative.
+
+---
 
 ## Why this document exists
 
@@ -54,12 +77,7 @@ The practical test: **if any part of the project still needs occasional live att
 
 ## Status
 
-This document is a **draft capturing Kurt's direct statement**, not yet merged into the authoritative matrix. Pending Kurt's confirmation, the recommended integration is:
-
-- Fold the Gateway Screen description into Category 50 as new KEEP-Phase4/KEEP-Foundation items (next available IDs: **P4-R796** onward).
-- Add the Ongoing/Archived distinction as an explicit addition to Category 12, since it clarifies but does not contradict P4-R186–192.
-
-No existing P4-R item is revised or removed by this document — it only makes explicit what was previously implicit or absent.
+**INCORPORATED.** The Gateway Screen description is now P4-R800 in Category 50; the Ongoing/Archived distinction is now P4-R799 in Category 12. See the Incorporation record at the top of this document.
 
 ---
 
@@ -81,4 +99,4 @@ The Workspace's own "Where Things Stand" (P4-R323) is unaffected — the Dashboa
 
 ### Status
 
-Pending Kurt's confirmation, recommended integration: add as an explicit item under Category 43 (next available ID continuing from wherever the main Gateway addition lands, e.g. **P4-R797**), clarifying P4-R581/P4-R586 rather than revising them.
+**INCORPORATED.** Now P4-R802 in Category 43, placed alongside P4-R581 ("Where Things Stand"). Clarifies P4-R581/P4-R586 rather than revising them, as originally proposed.

@@ -17,6 +17,7 @@
 - Kurt is the sole authority for project status — KEEP-Foundation
 - Status is metadata, not physical location — KEEP-Foundation
 - Project identity remains stable when status changes — KEEP-Foundation
+- P4-R801 — An Archived or Ongoing project may be reactivated into an active status without requiring creation of a New Project; the project retains its existing Project ID, history, and identity, and the Project Owner determines the resulting status — KEEP-Foundation
 
 ### Category 2 — Project Categorization
 
