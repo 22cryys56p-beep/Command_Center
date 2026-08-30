@@ -28,7 +28,7 @@ Five screens, each answering exactly one question, each a strict narrowing of th
 ```
 Entry Screen           "What is Command Center?"
       ↓
-Category Screen        "Which group of projects am I looking at?"
+Gateway                "Which group of projects am I looking at?"
       ↓
 Project List Screen    "Which project am I going into?"
       ↓
@@ -37,9 +37,9 @@ Project Dashboard      "What's the state of this one project?"
 Project Workspace      "Let me actually work in it."
 ```
 
-**Entry Screen** exists to establish "you are in Command Center" and offer one action: enter.
+**Entry Screen** exists to establish "you are in Command Center" and offer one action: enter. Entry remains a separate lifecycle screen in front of the Gateway — one button, tapping it opens the six-destination menu. This is Kurt's explicit decision, confirmed during the Matrix reconciliation, not merely an AI recommendation.
 
-**Category Screen** is the three-way fork — Current / Planned / Possible — and the first point where the portfolio's shape becomes visible.
+**Category Screen is superseded by the Gateway (P4-R800)** — a six-destination fork reached through Entry: Current, Planning, Ideas, Ongoing, New Project, Archive. New Project is a creation workflow, not a status destination. Ideas may contain pre-formal content that is not yet a ProjectRecord (per Category 17). This is the first point where the portfolio's shape becomes visible.
 
 **Project List Screen** shows the projects within a chosen category. It must scale gracefully from a single item today to dozens later without ever needing structural redesign.
 
@@ -51,7 +51,7 @@ Every step down the hierarchy is optional except reaching the Dashboard — the 
 
 **Interaction Principles**
 
-Entry and returning-to-Category (see Section 2, "Top") are different concepts and must not be conflated. **Entry is a lifecycle event** — it exists once per session, the way opening an application does. **Returning to Category is an in-session navigation action**, available at any depth. A user should never need to "restart" Command Center just to see the category fork again; that action is Top, not Entry.
+Entry and returning-to-Gateway (see Section 2, "Top") are different concepts and must not be conflated. **Entry is a lifecycle event** — it exists once per session, the way opening an application does. **Returning to the Gateway is an in-session navigation action**, available at any depth. A user should never need to "restart" Command Center just to see the Gateway again; that action is Top, not Entry.
 
 ---
 
@@ -68,8 +68,9 @@ Persistent orientation element  (present from here on, every screen)
 [<<]   [Command Center: Projects]   [>>]        [Top]
         ↓
 
-Category Selection
-[Current]   [Planned]   [Possible]
+Gateway
+[Current]     [Planning]      [Ideas]
+[Ongoing]     [New Project]   [Archive]
         ↓
 
 Project List
@@ -81,9 +82,9 @@ Individual Project Dashboard
 Project Workspace
 ```
 
-**`<<` / `>>`** page between siblings at the current level only — project ↔ project within a category, or category ↔ category. They never function as generic browser-style back/forward; their meaning must stay fixed regardless of navigation history.
+**`<<` / `>>`** page between siblings at the current level only — project ↔ project within a category. They never function as generic browser-style back/forward; their meaning must stay fixed regardless of navigation history. The Gateway's six destinations are not paged between — all six are directly visible and tappable at once; `<<`/`>>` do not apply at the Gateway level.
 
-**`Top`** has exactly one meaning everywhere it appears: return to the Category Screen. It is not "go back one step" — that would make its result depend on how the user arrived, violating deterministic behavior. It is also distinct from Entry (see Section 1).
+**`Top`** has exactly one meaning everywhere it appears: return to the Gateway. It is not "go back one step" — that would make its result depend on how the user arrived, violating deterministic behavior. It is also distinct from Entry (see Section 1).
 
 **The center label** updates contextually as the user descends (e.g., `Command Center: Projects` → `Command Center: Current: Teacher Toolbox`), so orientation is communicated by the one persistent element rather than a separate breadcrumb.
 
@@ -105,11 +106,11 @@ Today's realization of the persistent orientation element is a header positioned
 
 **Architecture**
 
-**Persistent** (visible from the Category Screen onward): the orientation element only (`<<`, center label, `>>`, `Top`). Nothing else is persistent. Every additional persistent element is something the user must mentally filter out on every screen, forever — a direct, ongoing cognitive cost that must be justified, not assumed.
+**Persistent** (visible from the Gateway onward): the orientation element only (`<<`, center label, `>>`, `Top`). Nothing else is persistent. Every additional persistent element is something the user must mentally filter out on every screen, forever — a direct, ongoing cognitive cost that must be justified, not assumed.
 
-**Dynamic** (appears only where relevant): category choices (Category Screen only), project summaries (Project List Screen only), dashboard fields (Dashboard only), workspace navigation (Workspace only, scoped to the currently open project).
+**Dynamic** (appears only where relevant): Gateway destination choices (Gateway only), project summaries (Project List Screen only), dashboard fields (Dashboard only), workspace navigation (Workspace only, scoped to the currently open project).
 
-**Explicitly excluded**, even though each might seem convenient: a global project switcher visible everywhere would bypass the Category → List → Dashboard funnel and the "which group" question it's designed to force. A global status bar showing everything, always, works against the funnel's purpose of letting the user choose scope before being shown detail. If a fast-lookup mechanism is ever added, it must be an explicit, deliberately-invoked feature — something like a search or command mechanism the user opens on purpose — never a default-visible element competing with the calm hierarchy for attention.
+**Explicitly excluded**, even though each might seem convenient: a global project switcher visible everywhere would bypass the Gateway → List → Dashboard funnel and the "which group" question it's designed to force. A global status bar showing everything, always, works against the funnel's purpose of letting the user choose scope before being shown detail. If a fast-lookup mechanism is ever added, it must be an explicit, deliberately-invoked feature — something like a search or command mechanism the user opens on purpose — never a default-visible element competing with the calm hierarchy for attention.
 
 ---
 
@@ -123,7 +124,9 @@ The interface must separate **data** from **presentation** cleanly enough that e
 
 Today, this separation maps as follows:
 
-*Stays as the data layer (largely untouched):* the folder structure, Markdown files as content, Markdown frontmatter as the current metadata store, `Portfolio Map.canvas` as a legitimate, directly-readable data source, Git as version history underneath everything.
+*Stays as the data layer (largely untouched):* the folder structure, Markdown files as content, Markdown frontmatter as the current metadata store, Git as version history underneath everything.
+
+*Retired:* `Portfolio Map.canvas` is superseded by the Gateway and is no longer part of the data or navigation layer. A future visual/spatial secondary representation of the portfolio remains a deferred candidate idea (see `Working_Notes/Visual_Portfolio_Representation_Candidate.md`) but is not part of this architecture and would be new work, not a continuation of the Canvas file.
 
 *Becomes presentation (replaced or wrapped, not exposed):* wikilink-based browsing as a primary navigation method, the Kanban plugin's specific rendering (the underlying data can stay; the plugin's visual board is Obsidian-dependent and swappable), manually maintained dashboard tables (becomes a generated view over the metadata layer rather than hand-typed prose).
 
@@ -140,8 +143,14 @@ The eventual UI should read the vault the way a client reads a data source — s
 | **Possible** | Idea only | No active work yet |
 | **Planned** | Active architectural/structural work | Defining what it is, how it'll be built |
 | **Current** | Active implementation | Code is actually being written |
+| **Ongoing** | Core work substantially complete | Active dependent "tentacles" (marketing, maintenance, etc.) still require occasional attention |
+| **Archived** | Genuinely finished, no remaining active concerns (P4-R799) | Retained as a potential source of reusable seed/kernel material (P4-R193, P4-R610) |
 
-Status is metadata describing a project's state, never its physical storage location. The Category Screen is a filtered view over the status attribute, not a browse of separate folders. Changing a project's category is a single attribute change — not a file move, link update, or canvas edit — and that one change must propagate to every view that depends on it (Category Screen, Dashboard summaries, Canvas representation) simultaneously, so the user is never required to record the same decision more than once.
+This table describes the working vocabulary established in Category 1 of the Phase 4 Matrix. It is distinct from the `ProjectRecord.status` code enum, which remains a separate, unresolved implementation-alignment question (see ACP-001) and is not addressed by this document.
+
+Status is metadata describing a project's state, never its physical storage location. The Gateway is a filtered view over the status attribute, not a browse of separate folders. Changing a project's status is a single attribute change — not a file move or link update — and that one change must propagate to every view that depends on it (Gateway, Project List, Dashboard summaries) simultaneously, so the user is never required to record the same decision more than once.
+
+**Where this document and the Phase 4 Matrix conflict, the Matrix governs.** This document is being brought into alignment with the Matrix, not negotiated with it as an equal authority — stated explicitly here because this file's own "governing baseline" self-description predates the Matrix's later authority.
 
 **Interaction Principles**
 
@@ -179,11 +188,11 @@ Information the interface must have access to, organized by when it becomes requ
 
 **Architecture**
 
-At **5-10 active projects** (the near-term target), the model above holds without modification — the Project List Screen shows a scannable list of project summaries, Category selection stays meaningful, no screen requires restructuring.
+At **5-10 active projects** (the near-term target), the model above holds without modification — the Project List Screen shows a scannable list of project summaries, Gateway selection stays meaningful, no screen requires restructuring.
 
-At **dozens of Planned projects**, a flat list becomes a cognitive load problem in its own right, independent of any folder complexity. The provision to make now, without building it now: the Project List Screen must be able to support secondary organization within a category — grouping, sorting, or lightweight filtering — as an evolution of the same screen, not a new one. Because status is already a queryable attribute (Section 5) and every project already carries consistent metadata (Section 6), this is a rendering change over existing data, not a new information architecture.
+At **dozens of Planned projects**, a flat list becomes a cognitive load problem in its own right, independent of any folder complexity. The provision to make now, without building it now: the Project List Screen must be able to support secondary organization within a status — grouping, sorting, or lightweight filtering — as an evolution of the same screen, not a new one. Because status is already a queryable attribute (Section 5) and every project already carries consistent metadata (Section 6), this is a rendering change over existing data, not a new information architecture.
 
-At **hundreds of Completed projects**, browsing stops being the right interaction model. The Completed category should architecturally diverge from Current/Planned/Possible's model at this scale — search or lookup becomes the primary interaction, browsing secondary. This is named now specifically so Completed is never forced into the same list pattern used elsewhere purely for consistency's sake; preserving good work means not forcing uniformity where the actual need has diverged.
+At **hundreds of Archived projects**, browsing stops being the right interaction model. The Archived destination should architecturally diverge from Current/Planning/Ideas's model at this scale — search or lookup becomes the primary interaction, browsing secondary. This is named now specifically so Archived is never forced into the same list pattern used elsewhere purely for consistency's sake; preserving good work means not forcing uniformity where the actual need has diverged.
 
 The same underlying architecture must support a portfolio of 2 projects and a portfolio of 200, differing only in which optional layer (grouping, search) is currently active — never in the base screen hierarchy itself.
 
@@ -208,5 +217,7 @@ These four boundaries exist so that CSS, HTML, JavaScript, plugins, or any futur
 ## Summary
 
 Five screens, one persistent orientation element, deterministic navigation (`<<`/`>>`/`Top` each fixed to exactly one meaning), status fully decoupled from physical location, and a clean data/presentation split that already extends today's metadata pattern rather than replacing it. Continuity and Interaction Independence govern how transitions and inputs must feel, without prescribing how either is built. AI's role is bounded to surfacing observations, never deciding. Empty and stale states are treated as first-class design requirements, not gaps. The architecture is confirmed valid for desktop and iPad, and structurally holds from today's single project through the stated long-term scale of hundreds.
+
+*Reconciled 2026-08-30 against the Phase 4 Matrix (Categories 1–64, Step 65 incorporations P4-R796–P4-R802): Gateway replaces the three-way Category fork, status vocabulary extended to five values, `Portfolio Map.canvas` retired from the data layer. Reviewed by Claude and GPT; Entry-vs-Gateway relationship confirmed as Kurt's explicit decision.*
 
 This is Version 1.0. It is the blueprint any future implementation — by any collaborator, on any timeline — is checked against.
