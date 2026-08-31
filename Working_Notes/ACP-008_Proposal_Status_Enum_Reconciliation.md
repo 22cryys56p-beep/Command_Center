@@ -51,25 +51,23 @@ This is the minimal-diff choice: it makes the code's authoritative status values
 
 **This decision belongs to Kurt alone**, consistent with the repeatedly-established rule that the Project Owner is sole authority over Project Status (Category 1; P4-R117, P4-R252, P4-R501, P4-R737) — AI must not silently resolve it, even as a "reasonable default."
 
-Two honest options to put in front of Kurt, not a recommendation between them:
-1. **Manual reclassification** — review each existing `completed` record individually and assign Ongoing or Archived deliberately.
-2. **Default-then-correct** — bulk-map `completed` → one default value (most likely Archived, since "genuinely finished" is closer to the old meaning of Completed than "still has active tentacles" is), with the explicit expectation that any that actually belong in Ongoing get corrected afterward.
+**Existing `completed` records must be explicitly reclassified by the Project Owner before or as part of the migration. No automatic semantic mapping from `completed` to `ongoing` or `archived` is authorized by this ACP.** A bulk default-then-correct approach was considered and rejected: even framed as "correctable later," it would mean the system asserts a status determination it doesn't actually have grounds for — the same failure this project has already committed to avoiding via the honest-failure principle (P4-R796, "must fail honestly rather than silently degrade or manufacture project information"). Presenting a bulk default as a normal migration path risks normalizing exactly that.
 
-If there are currently zero or very few `completed` records in practice, this decision may be low-stakes; if there are many, it's worth deciding deliberately before the enum change ships.
+If there are currently zero or very few `completed` records in practice, manual reclassification is low-cost; if there are many, that's still the correct path — just one requiring more of Kurt's time, not a reason to substitute an automatic default.
 
 ## Downstream impact, for awareness (not decisions made here)
 
-- `orientation.ts`'s fixed category enumeration (governed by ACP-001, "must be stable and deterministic") needs its ordering re-established for five values. WP12's own implementation notes record the frozen order as `possible → planned → current → completed`; this would need to become something like `possible → planned → current → ongoing → archived`, as its own explicit architectural decision, not an incidental side effect.
-- Existing WP11/WP12 test suites reference the four-value enum and will need updating.
-- No implementation currently depends on the enum beyond tests and the orientation/paging logic — Gateway, Dashboard, and Workspace are all not-yet-started per the Codex roadmap audit. **This is good timing**: resolving this now costs strictly less than resolving it after Gateway/Dashboard code is built against the old four-value model.
+- `orientation.ts` currently encodes the Phase 3 four-value `CATEGORY_ORDER` and implements category-to-category sibling paging (`getCategorySiblings()`) using it directly. The enum change will require this code to be revisited, but **ACP-008 does not decide whether five-status category paging remains valid after the Gateway supersedes the Category Screen.** The Gateway is a fixed six-destination grid, not a sequence users page through — whether `<<`/`>>` sibling paging between statuses still makes sense at all in that model is a separate Gateway/navigation-implementation question, to be resolved as part of Gateway alignment, not folded into this ACP.
+- Exhaustive repository search confirms the enum/`completed` value is referenced in exactly six files, no others: `src/data/project-record.ts`, `src/navigation/orientation.ts`, `src/navigation/navigation-controller.ts`, and their three corresponding test files (`tests/data/project-record.test.ts`, `tests/navigation/orientation.test.ts`, `tests/navigation/navigation-controller.test.ts`). All six need updating as part of this ACP's implementation.
+- No implementation-facing surface beyond these six files depends on the enum — Gateway, Dashboard, and Workspace are all not-yet-started per the Codex roadmap audit, so this is confirmed via direct repository search, not inferred from that audit alone. **This is good timing**: resolving this now costs strictly less than resolving it after Gateway/Dashboard code is built against the old four-value model.
 
 ## Recommendation on sequencing
 
-Resolve this ACP **before** Gateway implementation begins, not after — the Gateway's six destinations (P4-R800) are defined in terms of the Matrix's status vocabulary, so building it against a still-four-value enum would mean rebuilding part of it once this ACP eventually resolves anyway.
+Resolve this ACP **before** Gateway implementation begins, not after — the Gateway's six destinations depend on the Phase 4 status vocabulary and its associated project/data distinctions (Current, Planning, Ongoing, and Archive map directly to statuses; Ideas may hold pre-formal, non-`ProjectRecord` content per Category 17; New Project is a creation workflow, not a status), so building it against a still-four-value enum would mean rebuilding part of it once this ACP eventually resolves anyway.
 
 ## What this proposal asks of Kurt
 
-1. Accept, revise, or reject the five-value enum change itself (the part with a clear, well-evidenced correct answer).
-2. Decide the migration policy for existing `completed` records (the part that is a genuine open decision, not a technical question).
+1. Accept, revise, or reject the five-value enum change itself (the part for which the proposed resolution is strongly supported by the frozen Phase 4 Matrix, but which remains this ACP's decision to make, not a foregone conclusion).
+2. Accept, revise, or reject the manual-reclassification requirement for existing `completed` records — the genuine open decision this ACP does not resolve unilaterally, consistent with Kurt's sole authority over project status.
 
 Pending review by GPT and confirmation by Kurt, consistent with how ACP-001 through 007 and every other architectural decision in this project have been resolved.
