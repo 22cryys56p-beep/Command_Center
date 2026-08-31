@@ -1,15 +1,17 @@
 ---
-type: acp-proposal
-status: PROPOSED — not yet adopted. Requires Kurt's decision, ideally after GPT and Claude cross-review, per the codebase's own governing instruction that adding `archived` requires a new ACP.
+type: acp
+status: ACCEPTED by Kurt (2026-08-30). The enum change, removal of `completed`, and manual-reclassification requirement are adopted. Not yet implemented in code. One follow-on question surfaced during implementation prep — the metadata-tier requirements for `ongoing`/`archived` — remains open and is tracked separately (see the "Status" section below); it does not affect what this ACP itself decided.
 date: 2026-08-30
-source: Drafted by Claude, following the UI Architecture Specification reconciliation and direct verification of the Phase 3 Architecture Record's ACP registry and `src/data/project-record.ts`.
+source: Drafted by Claude, following the UI Architecture Specification reconciliation and direct verification of the Phase 3 Architecture Record's ACP registry and `src/data/project-record.ts`. Reviewed and revised across four rounds with GPT before acceptance.
 ---
 
 # ACP-008 — ProjectRecord.status: Reconcile Phase 3's Frozen Enum with the Phase 4 Matrix's Five-Value Vocabulary
 
 ## Status
 
-**Proposed.** Not resolved. Not implemented. This document exists to be reviewed and either accepted, revised, or rejected — the same process every prior ACP (001–007) went through, per the Phase 3 Architecture Record's own governance model.
+**Accepted** by Kurt on 2026-08-30, following four rounds of review and revision with GPT and direct code verification by Claude. Not yet implemented — no code has been changed. This ACP now governs the same way ACP-001 through 007 do.
+
+**One follow-on question surfaced while preparing implementation, not resolved by this ACP:** the validation-tier metadata requirements for `ongoing` and `archived` (whether they require the same milestone/progress/next_action/blockers fields as `planned`/`current`, per the tier logic in `project-record.ts`'s `VALID_STATUSES` validator). This does not reopen or change what this ACP decided — the enum change stands as accepted — but implementation should not proceed on the validator until that separate question is resolved. Tracked as a pending small extension to `CC_UI Architecture Specification v1.0.md` Section 6, not as an amendment to this document.
 
 ## The problem, precisely stated
 
@@ -65,9 +67,9 @@ If there are currently zero or very few `completed` records in practice, manual 
 
 Resolve this ACP **before** Gateway implementation begins, not after — the Gateway's six destinations depend on the Phase 4 status vocabulary and its associated project/data distinctions (Current, Planning, Ongoing, and Archive map directly to statuses; Ideas may hold pre-formal, non-`ProjectRecord` content per Category 17; New Project is a creation workflow, not a status), so building it against a still-four-value enum would mean rebuilding part of it once this ACP eventually resolves anyway.
 
-## What this proposal asks of Kurt
+## Decision record
 
-1. Accept, revise, or reject the five-value enum change itself (the part for which the proposed resolution is strongly supported by the frozen Phase 4 Matrix, but which remains this ACP's decision to make, not a foregone conclusion).
-2. Accept, revise, or reject the manual-reclassification requirement for existing `completed` records — the genuine open decision this ACP does not resolve unilaterally, consistent with Kurt's sole authority over project status.
+1. **The five-value enum change: accepted.** `ProjectStatus` moves from `possible | planned | current | completed` to `possible | planned | current | ongoing | archived`, matching the Phase 4 Matrix's frozen vocabulary.
+2. **The manual-reclassification requirement: accepted.** No automatic mapping of existing `completed` records is authorized; any that exist must be individually reclassified by Kurt. (Confirmed via direct repository search: zero existing records currently carry `status: completed`, so no migration work is actually pending at present — this requirement exists as policy for if/when it matters.)
 
-Pending review by GPT and confirmation by Kurt, consistent with how ACP-001 through 007 and every other architectural decision in this project have been resolved.
+Decided by Kurt on 2026-08-30, after four rounds of review and revision with GPT and direct code verification by Claude — the same process ACP-001 through 007 went through. Implementation (updating the six affected files) has not yet begun, pending resolution of the separate metadata-tier question noted above.
