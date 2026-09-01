@@ -176,6 +176,20 @@ Information the interface must have access to, organized by when it becomes requ
 
 *Once Current:* a reference to where the actual code lives (external — code itself never lives in this system), and a freshness signal (last updated).
 
+*Once Ongoing or Archived:* none of the four operational fields — current milestone, progress signal, next action, or blockers — is required. The status value determines the project's state; it does not, by itself, determine whether operational metadata is currently applicable. Ongoing means the core project is substantially complete with any remaining work concentrated in specific dependent "tentacles" rather than the project as a whole; Archived means genuinely finished with no remaining active concerns (Category 1, Category 12). Requiring these fields at either tier would misrepresent that state. Where active work exists within an Ongoing project, it is better represented as its own scoped dependent item — with its own applicable progress and next-action — than as a mandatory field on the parent project record.
+
+| Status | `milestone` | `progress` | `next_action` | `blockers` |
+|---|---|---|---|---|
+| Possible | Optional | Optional | Optional | Optional |
+| Planned | Required | Required | Required | Required/present |
+| Current | Required | Required | Required | Required/present |
+| Ongoing | Optional | Optional | Optional | Optional, may be genuinely absent |
+| Archived | Optional | Optional | Optional | Optional, may be genuinely absent |
+
+`blockers` carries a distinction the other three fields don't: at the Planned/Current tier it must be explicitly present as `null` ("no blockers," a deliberate state) or an array — it cannot simply be missing. For Ongoing and Archived, `blockers` may be genuinely absent (`undefined`); it does not need to be explicitly set to `null` the way the earlier tier requires.
+
+This is a validity rule, not a data-removal rule. Changing a project to Ongoing or Archived must never clear, delete, or relocate values already present in these fields (P4-R186) — a project that was Current with a filled-in milestone and progress value retains that historical information after archiving; it simply stops being required going forward. Whether and how the Dashboard or Workspace surfaces that preserved historical data for an Ongoing or Archived project is a separate presentation decision, not addressed here.
+
 *Explicitly excluded from Dashboard/List views, reserved for the Workspace layer:* full architecture documents, decision logs, meeting notes, research. Surfacing this material earlier than the Workspace layer would force a scan through content that only matters once the user has deliberately gone deeper, directly undermining the "at a glance" requirement.
 
 **Interaction Principles**
@@ -218,6 +232,6 @@ These four boundaries exist so that CSS, HTML, JavaScript, plugins, or any futur
 
 Five screens, one persistent orientation element, deterministic navigation (`<<`/`>>`/`Top` each fixed to exactly one meaning), status fully decoupled from physical location, and a clean data/presentation split that already extends today's metadata pattern rather than replacing it. Continuity and Interaction Independence govern how transitions and inputs must feel, without prescribing how either is built. AI's role is bounded to surfacing observations, never deciding. Empty and stale states are treated as first-class design requirements, not gaps. The architecture is confirmed valid for desktop and iPad, and structurally holds from today's single project through the stated long-term scale of hundreds.
 
-*Reconciled 2026-08-30 against the Phase 4 Matrix (Categories 1–64, Step 65 incorporations P4-R796–P4-R802): Gateway replaces the three-way Category fork, status vocabulary extended to five values, `Portfolio Map.canvas` retired from the data layer. Reviewed by Claude and GPT; Entry-vs-Gateway relationship confirmed as Kurt's explicit decision.*
+*Reconciled 2026-08-30 against the Phase 4 Matrix (Categories 1–64, Step 65 incorporations P4-R796–P4-R802): Gateway replaces the three-way Category fork, status vocabulary extended to five values, `Portfolio Map.canvas` retired from the data layer. Reviewed by Claude and GPT; Entry-vs-Gateway relationship confirmed as Kurt's explicit decision. Section 6 amended 2026-08-30 (same day, following ACP-008's acceptance) to specify Ongoing/Archived metadata-tier validation rules and the P4-R186 preservation guarantee; independently drafted and reviewed by both Claude and GPT before synthesis.*
 
 This is Version 1.0. It is the blueprint any future implementation — by any collaborator, on any timeline — is checked against.
