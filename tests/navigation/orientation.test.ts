@@ -61,7 +61,7 @@ describe("getCategorySiblings", () => {
   });
 
   it("does not wrap from the last category back to the first", () => {
-    const result = getCategorySiblings("completed");
+    const result = getCategorySiblings("current");
     expect(result.next).not.toBe(CATEGORY_ORDER[0]);
   });
 

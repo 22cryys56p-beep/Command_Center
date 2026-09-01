@@ -261,7 +261,7 @@ describe("NavigationController — getAvailability", () => {
 
   it("reports canPageNext false at the last category", () => {
     const controller = makeController();
-    controller.selectCategory("completed");
+    controller.selectCategory("current");
     expect(controller.getAvailability().canPageNext).toBe(false);
   });
 
