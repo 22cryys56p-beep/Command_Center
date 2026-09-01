@@ -152,7 +152,7 @@ describe("NavigationController — pageNext/pagePrevious", () => {
 
   it("no-ops (state unchanged) when there is no next sibling", () => {
     const controller = makeController();
-    controller.selectCategory("completed"); // last category, no next
+    controller.selectCategory("current"); // last category, no next
     const before = controller.getState();
     controller.pageNext();
     expect(controller.getState()).toEqual(before);

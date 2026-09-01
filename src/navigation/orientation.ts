@@ -44,16 +44,17 @@ import type { ProjectRecord, ProjectStatus } from "../data/project-record";
  * The fixed category enumeration, per ACP-001. This order is architectural
  * in the sense that it must be stable and deterministic (Section C requires
  * `<<`/`>>` to behave identically every time), but the specific sequence
- * chosen here — possible → planned → current → completed — is an
- * implementation detail, not a decision Phase 3 itself made. If this order
- * ever needs to change, that is a WP12-level implementation adjustment, not
- * a Phase 3 reopening, since Phase 3 only requires *a* fixed order to exist.
+ * chosen here — possible → planned → current — is an implementation detail,
+ * not a decision Phase 3 itself made. Ongoing/archived status values exist
+ * in the ProjectStatus enum but do not participate in sibling paging (out of
+ * scope, pending Gateway review). If this order ever needs to change, that is
+ * a WP12-level implementation adjustment, not a Phase 3 reopening, since
+ * Phase 3 only requires *a* fixed order to exist.
  */
 export const CATEGORY_ORDER: readonly ProjectStatus[] = [
   "possible",
   "planned",
   "current",
-  "completed",
 ];
 
 export interface SiblingResolution<T> {

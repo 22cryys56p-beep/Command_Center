@@ -48,15 +48,15 @@ describe("getCategorySiblings", () => {
     expect(result.next).toBe("current");
   });
 
-  it("has both siblings for a middle category (current)", () => {
-    const result = getCategorySiblings("current");
-    expect(result.previous).toBe("planned");
-    expect(result.next).toBe("completed");
+  it("has both siblings for a middle category (planned)", () => {
+    const result = getCategorySiblings("planned");
+    expect(result.previous).toBe("possible");
+    expect(result.next).toBe("current");
   });
 
-  it("has no next sibling at the last category (completed)", () => {
-    const result = getCategorySiblings("completed");
-    expect(result.previous).toBe("current");
+  it("has no next sibling at the last category (current)", () => {
+    const result = getCategorySiblings("current");
+    expect(result.previous).toBe("planned");
     expect(result.next).toBeNull();
   });
 
@@ -72,7 +72,7 @@ describe("getCategorySiblings", () => {
 
   it("throws on an unrecognized category rather than silently guessing", () => {
     expect(() =>
-      getCategorySiblings("archived" as ProjectRecord["status"])
+      getCategorySiblings("not-a-category" as ProjectRecord["status"])
     ).toThrow();
   });
 
@@ -98,7 +98,7 @@ describe("getOrderedProjectIdsForCategory", () => {
   });
 
   it("returns an empty array for a category with zero matching projects", () => {
-    const result = getOrderedProjectIdsForCategory(mixedRecords, "completed");
+    const result = getOrderedProjectIdsForCategory(mixedRecords, "ongoing");
     expect(result).toEqual([]);
   });
 
@@ -151,7 +151,7 @@ describe("getProjectSiblings", () => {
   });
 
   it("degrades to both-null when the category has zero projects", () => {
-    const result = getProjectSiblings(mixedRecords, "completed", "anything");
+    const result = getProjectSiblings(mixedRecords, "ongoing", "anything");
     expect(result.previous).toBeNull();
     expect(result.next).toBeNull();
   });
@@ -186,10 +186,10 @@ describe("resolvePaging — category current object", () => {
   });
 
   it("reports a disabled (null) next at the last category", () => {
-    const current: CurrentObject = { kind: "category", category: "completed" };
+    const current: CurrentObject = { kind: "category", category: "current" };
     const result = resolvePaging(current, mixedRecords);
 
-    expect(result.previous).toEqual({ kind: "category", category: "current" });
+    expect(result.previous).toEqual({ kind: "category", category: "planned" });
     expect(result.next).toBeNull();
   });
 

@@ -13,9 +13,9 @@
  * dependency on the Obsidian runtime.
  */
 
-/** Final status enum per ACP-001. `archived` was raised but left undecided
- *  in Phase 3 — not included here; adding it later requires a new ACP. */
-export type ProjectStatus = "possible" | "planned" | "current" | "completed";
+/** Final status enum per ACP-001 extended in WP11. Statuses: possible → planned
+ *  → current → ongoing/archived per Phase 3 Section B and ACP-001. */
+export type ProjectStatus = "possible" | "planned" | "current" | "ongoing" | "archived";
 
 /**
  * Controlled vocabulary for `progress`, per Phase 3 Section B: "a small
@@ -83,7 +83,8 @@ const VALID_STATUSES: ProjectStatus[] = [
   "possible",
   "planned",
   "current",
-  "completed",
+  "ongoing",
+  "archived",
 ];
 
 const VALID_PROGRESS_VALUES: ProgressValue[] = [

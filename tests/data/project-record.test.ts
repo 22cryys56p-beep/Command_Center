@@ -65,7 +65,7 @@ describe("always-required fields", () => {
   it("flags an invalid status enum value", () => {
     const result = validateProjectRecord({
       ...minimalPossible,
-      status: "archived" as ProjectRecord["status"],
+      status: "not-a-real-status" as ProjectRecord["status"],
     });
     expect(result.issues).toContainEqual({
       field: "status",
@@ -73,12 +73,15 @@ describe("always-required fields", () => {
     });
   });
 
-  it("accepts each of the four valid status values with appropriate tier fields", () => {
+  it("accepts the valid status values with appropriate tier fields", () => {
     expect(validateProjectRecord(minimalPossible).valid).toBe(true);
     expect(validateProjectRecord(validPlanned).valid).toBe(true);
     expect(validateProjectRecord(validCurrent).valid).toBe(true);
     expect(
-      validateProjectRecord({ ...minimalPossible, status: "completed" }).valid
+      validateProjectRecord({ ...minimalPossible, status: "ongoing" }).valid
+    ).toBe(true);
+    expect(
+      validateProjectRecord({ ...minimalPossible, status: "archived" }).valid
     ).toBe(true);
   });
 
