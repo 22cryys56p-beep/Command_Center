@@ -84,8 +84,9 @@ WP12 is code-complete through Slice 8B but not yet closed — see its entry abov
 | ACP | Raised in | Status | Resolution |
 |---|---|---|---|
 | ACP-008 | WP10 | Resolved — Accepted | Obsidian's Metadata Cache treated as platform-level read mechanism, not an application-level cache; Phase 3's "never cached" rule governs Command Center's own behavior only. |
+| ACP-009 | WP11 | Resolved — Accepted and Implemented | `ProjectRecord.status` is aligned with the Phase 4 five-value project-status vocabulary: `possible \| planned \| current \| ongoing \| archived`. The Phase 3 `completed` value is retired. No automatic migration is required; no existing `completed` project records were found. Phase 3's historical Architecture Record remains unchanged. Ongoing/Archived do not create a new mandatory metadata tier, and existing project information is preserved across status transitions. |
 
-*(ACP-001 through ACP-007 belong to Phase 3 and are recorded in full in the Phase 3 Architecture Record's own registry — not duplicated here to avoid two sources of truth for the same resolutions. This table only tracks ACPs raised during Phase 4 implementation work.)*
+*(ACP-001 through ACP-007 belong to Phase 3 and are recorded in full in the Phase 3 Architecture Record's own registry — not duplicated here to avoid two sources of truth for the same resolutions. This table only tracks ACPs raised during Phase 4 implementation work. ACP-009's full permanent decision record is maintained separately as `docs/architecture/ACP-009_ProjectStatus_Enum_Reconciliation.md` — a deliberate documentation choice for this cross-phase reconciliation; it does not establish a requirement for future ACPs to use standalone files.)*
 
 ---
 
