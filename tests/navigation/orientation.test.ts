@@ -1,7 +1,5 @@
 import { describe, it, expect } from "vitest";
 import {
-  CATEGORY_ORDER,
-  getCategorySiblings,
   getOrderedProjectIdsForCategory,
   getProjectSiblings,
   resolvePaging,
@@ -32,56 +30,6 @@ const mixedRecords: ProjectRecord[] = [
   record("proj-d", "possible"),
   record("proj-e", "current"),
 ];
-
-// --- getCategorySiblings -----------------------------------------------------
-
-describe("getCategorySiblings", () => {
-  it("has no previous sibling at the first category (possible)", () => {
-    const result = getCategorySiblings("possible");
-    expect(result.previous).toBeNull();
-    expect(result.next).toBe("planned");
-  });
-
-  it("has both siblings for a middle category (planned)", () => {
-    const result = getCategorySiblings("planned");
-    expect(result.previous).toBe("possible");
-    expect(result.next).toBe("current");
-  });
-
-  it("has both siblings for a middle category (planned)", () => {
-    const result = getCategorySiblings("planned");
-    expect(result.previous).toBe("possible");
-    expect(result.next).toBe("current");
-  });
-
-  it("has no next sibling at the last category (current)", () => {
-    const result = getCategorySiblings("current");
-    expect(result.previous).toBe("planned");
-    expect(result.next).toBeNull();
-  });
-
-  it("does not wrap from the last category back to the first", () => {
-    const result = getCategorySiblings("current");
-    expect(result.next).not.toBe(CATEGORY_ORDER[0]);
-  });
-
-  it("does not wrap from the first category back to the last", () => {
-    const result = getCategorySiblings("possible");
-    expect(result.previous).not.toBe(CATEGORY_ORDER[CATEGORY_ORDER.length - 1]);
-  });
-
-  it("throws on an unrecognized category rather than silently guessing", () => {
-    expect(() =>
-      getCategorySiblings("not-a-category" as ProjectRecord["status"])
-    ).toThrow();
-  });
-
-  it("is stable: repeated calls with the same input produce the same result", () => {
-    const first = getCategorySiblings("current");
-    const second = getCategorySiblings("current");
-    expect(first).toEqual(second);
-  });
-});
 
 // --- getOrderedProjectIdsForCategory -----------------------------------------
 
@@ -169,31 +117,14 @@ describe("getProjectSiblings", () => {
 // --- resolvePaging (Step 2) ---------------------------------------------------
 
 describe("resolvePaging — category current object", () => {
-  it("delegates to getCategorySiblings and wraps results as CurrentObject", () => {
+  it("returns no sibling targets after category-level paging is retired", () => {
     const current: CurrentObject = { kind: "category", category: "planned" };
     const result = resolvePaging(current, mixedRecords);
 
-    expect(result.previous).toEqual({ kind: "category", category: "possible" });
-    expect(result.next).toEqual({ kind: "category", category: "current" });
+    expect(result).toEqual({ previous: null, next: null });
   });
 
-  it("reports a disabled (null) previous at the first category", () => {
-    const current: CurrentObject = { kind: "category", category: "possible" };
-    const result = resolvePaging(current, mixedRecords);
-
-    expect(result.previous).toBeNull();
-    expect(result.next).toEqual({ kind: "category", category: "planned" });
-  });
-
-  it("reports a disabled (null) next at the last category", () => {
-    const current: CurrentObject = { kind: "category", category: "current" };
-    const result = resolvePaging(current, mixedRecords);
-
-    expect(result.previous).toEqual({ kind: "category", category: "planned" });
-    expect(result.next).toBeNull();
-  });
-
-  it("does not consult records for category-object paging (category order is architectural, not data-derived)", () => {
+  it("does not consult records for category-object paging", () => {
     const current: CurrentObject = { kind: "category", category: "planned" };
     const withRecords = resolvePaging(current, mixedRecords);
     const withoutRecords = resolvePaging(current, []);

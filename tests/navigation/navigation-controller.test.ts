@@ -126,15 +126,12 @@ describe("NavigationController — pageNext/pagePrevious", () => {
     expect(controller.getState()).toEqual(before);
   });
 
-  it("pages to the next category sibling", () => {
+  it("does not page to a category sibling", () => {
     const controller = makeController();
     controller.selectCategory("planned");
+    const before = controller.getState();
     controller.pageNext();
-    expect(controller.getState().object).toEqual({
-      kind: "category",
-      category: "current",
-    });
-    expect(controller.getState().depth).toBe("list"); // depth unchanged by paging
+    expect(controller.getState()).toEqual(before);
   });
 
   it("pages to the previous project sibling within the active category", () => {
@@ -251,21 +248,21 @@ describe("NavigationController — getAvailability", () => {
     expect(() => controller.getAvailability()).not.toThrow();
   });
 
-  it("reports canPageNext/canPagePrevious correctly for a middle category", () => {
+  it("reports both paging directions disabled for a category object", () => {
     const controller = makeController();
-    controller.selectCategory("planned"); // possible < planned < current < completed
+    controller.selectCategory("planned");
     const availability = controller.getAvailability();
-    expect(availability.canPagePrevious).toBe(true);
-    expect(availability.canPageNext).toBe(true);
+    expect(availability.canPagePrevious).toBe(false);
+    expect(availability.canPageNext).toBe(false);
   });
 
-  it("reports canPageNext false at the last category", () => {
+  it("reports canPageNext false for a category object", () => {
     const controller = makeController();
     controller.selectCategory("current");
     expect(controller.getAvailability().canPageNext).toBe(false);
   });
 
-  it("reports canPagePrevious false at the first category", () => {
+  it("reports canPagePrevious false for a category object", () => {
     const controller = makeController();
     controller.selectCategory("possible");
     expect(controller.getAvailability().canPagePrevious).toBe(false);

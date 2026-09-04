@@ -71,27 +71,6 @@ export interface SiblingResolution<T> {
  * function itself only reports "no sibling exists," it does not decide
  * disabled rendering.
  */
-export function getCategorySiblings(
-  current: ProjectStatus
-): SiblingResolution<ProjectStatus> {
-  const index = CATEGORY_ORDER.indexOf(current);
-
-  if (index === -1) {
-    // Not a defined category. This should be unreachable if callers only
-    // ever pass a valid ProjectStatus, but we do not silently coerce or
-    // guess — an invalid input here indicates a bug upstream, not a
-    // condition this function should paper over.
-    throw new Error(
-      `getCategorySiblings: "${current}" is not a recognized category.`
-    );
-  }
-
-  return {
-    previous: index > 0 ? CATEGORY_ORDER[index - 1] : null,
-    next: index < CATEGORY_ORDER.length - 1 ? CATEGORY_ORDER[index + 1] : null,
-  };
-}
-
 /**
  * Produces the ordered list of project_ids belonging to a given category,
  * from a full set of Project Records. Per Phase 3 Section D (WP4), the
@@ -185,8 +164,8 @@ export interface PagingResolution {
  *   control, per Section C's disabled-state rule.
  *
  * Dispatch is purely on `currentObject.kind`:
- * - `"category"` delegates to `getCategorySiblings` (Step 1) and wraps
- *   each result back into a `CurrentObject` of kind `"category"`.
+ * - `"category"` has no sibling targets after category-level paging was
+ *   retired; it returns disabled targets for both directions.
  * - `"project"` delegates to `getProjectSiblings` (Step 1), scoped to
  *   `currentObject.category` — per Section C, project paging never
  *   crosses category boundaries — and wraps each result into a
@@ -198,17 +177,7 @@ export function resolvePaging(
   records: readonly ProjectRecord[]
 ): PagingResolution {
   if (currentObject.kind === "category") {
-    const siblings = getCategorySiblings(currentObject.category);
-    return {
-      previous:
-        siblings.previous !== null
-          ? { kind: "category", category: siblings.previous }
-          : null,
-      next:
-        siblings.next !== null
-          ? { kind: "category", category: siblings.next }
-          : null,
-    };
+    return { previous: null, next: null };
   }
 
   // currentObject.kind === "project"
@@ -353,7 +322,7 @@ export function resolveTop(): NavigationDestination {
  *   gracefully from — this function throws rather than returning a
  *   fallback label, matching the same "honest failure over silent
  *   degradation" precedent established at Step 1
- *   (`getCategorySiblings` throwing on an unrecognized category).
+ *   (the module's preference for explicit programmer-error handling).
  *
  * This function performs no mutation and no navigation transition; it
  * is a pure formatter, the same as every other resolver in this module.
