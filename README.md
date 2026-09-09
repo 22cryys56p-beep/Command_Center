@@ -1,11 +1,11 @@
 # Command Center
 
-An AI-agnostic, portable Obsidian vault for visual portfolio operations. Open this folder as an Obsidian vault, then begin at [[Dashboard/Executive Dashboard]].
+An AI-agnostic, portable project command center for visual portfolio operations. Open this folder as an Obsidian vault, then begin at the Command Center Gateway.
 
 ## Quick start
 
 1. Open this folder in Obsidian.
-2. Set **Dashboard/Executive Dashboard** as the startup note (optional).
+2. Set the Command Center Gateway as the startup note (optional).
 3. Open [[Portfolio Map.canvas]] for visual navigation.
 4. Update the frontmatter and `Current Focus` section whenever work changes.
 
