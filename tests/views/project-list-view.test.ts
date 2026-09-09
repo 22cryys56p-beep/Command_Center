@@ -107,7 +107,7 @@ describe("ProjectListView", () => {
     const controller = {
       getState: vi.fn().mockReturnValue({
         object: null,
-        depth: "category",
+        depth: "gateway",
       }),
       selectProject: vi.fn(),
     } as unknown as NavigationController;

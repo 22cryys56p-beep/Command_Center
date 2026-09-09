@@ -217,7 +217,7 @@ export function resolvePaging(
  * (`<<`, `>>`, `Up`, `Top`) ever targets or represents it. Entry is
  * therefore intentionally excluded here, not omitted by oversight.
  */
-export type Depth = "category" | "list" | "dashboard" | "workspace";
+export type Depth = "gateway" | "list" | "dashboard" | "workspace";
 
 /**
  * A navigation destination — where the user is going — as distinct from
@@ -231,15 +231,15 @@ export type Depth = "category" | "list" | "dashboard" | "workspace";
  * operations (`Up`, `Top`), which `CurrentObject` alone cannot represent —
  * most concretely, Category Screen has no current object at all (Section
  * D: "Inputs received: none"), a state only `NavigationDestination`'s
- * `{ depth: "category" }` variant can express.
+ * `{ depth: "gateway" }` variant can express.
  *
- * `{ depth: "category" }` intentionally carries no object field. This is
+ * `{ depth: "gateway" }` intentionally carries no object field. This is
  * not missing data — Category Screen has no active object until a
  * selection is made, and no object field should ever be added to this
  * variant.
  */
 export type NavigationDestination =
-  | { depth: "category" }
+  | { depth: "gateway" }
   | { depth: "list"; object: Extract<CurrentObject, { kind: "category" }> }
   | { depth: "dashboard"; object: Extract<CurrentObject, { kind: "project" }> }
   | { depth: "workspace"; object: Extract<CurrentObject, { kind: "project" }> };
@@ -294,7 +294,7 @@ export function resolveUp(
  * destination a future caller (not implemented here) may act on.
  */
 export function resolveTop(): NavigationDestination {
-  return { depth: "category" };
+  return { depth: "gateway" };
 }
 
 // ---------------------------------------------------------------------------
@@ -313,7 +313,7 @@ export function resolveTop(): NavigationDestination {
  * dependency on the data layer beyond the types it already uses.
  *
  * Caller contract:
- * - For `{ depth: "category" }` and `{ depth: "list", ... }`
+ * - For `{ depth: "gateway" }` and `{ depth: "list", ... }`
  *   destinations, `projectName` is not required and is ignored if
  *   supplied.
  * - For `{ depth: "dashboard", ... }` and `{ depth: "workspace", ... }`
@@ -332,7 +332,7 @@ export function resolveLabel(
   projectName?: string
 ): string {
   switch (destination.depth) {
-    case "category":
+    case "gateway":
       return "Command Center: Projects";
 
     case "list":

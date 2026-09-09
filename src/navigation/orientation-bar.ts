@@ -186,7 +186,7 @@ export class OrientationBarComponent {
     const state = this.controller.getState();
 
     if (state.object === null) {
-      return resolveLabel({ depth: "category" });
+      return resolveLabel({ depth: "gateway" });
     }
 
     if (state.object.kind === "category") {

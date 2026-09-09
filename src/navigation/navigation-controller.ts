@@ -33,8 +33,8 @@
  * Section D (Category Screen: "Inputs received: none") and the WP12
  * specification's confirmation that Category Screen has no current
  * object until a selection is made: on construction, there is no
- * object and depth is "category". This mirrors NavigationDestination's
- * `{ depth: "category" }` shape from Step 3/4 — no object field, by
+ * object and depth is "gateway". This mirrors NavigationDestination's
+ * `{ depth: "gateway" }` shape from Step 3/4 — no object field, by
  * design, not missing data.
  *
  * Approved state-transition contracts (Slice 3):
@@ -119,7 +119,7 @@ export class NavigationController {
   constructor(getRecords: ProjectRecordProvider) {
     this.state = {
       object: null,
-      depth: "category",
+      depth: "gateway",
     };
     this.getRecords = getRecords;
   }
@@ -238,12 +238,12 @@ export class NavigationController {
     // resolveUp only ever produces a "dashboard" destination when
     // enabled (per Step 3's own implementation), but the return type
     // is the full NavigationDestination union, which includes the
-    // object-less "category" variant. Narrow explicitly rather than
+    // object-less "gateway" variant. Narrow explicitly rather than
     // asserting, consistent with this module's "no silent coercion"
     // precedent (Step 1's getCategorySiblings comment).
-    if (destination.depth === "category") {
+    if (destination.depth === "gateway") {
       throw new Error(
-        "NavigationController.goUp: resolveUp returned an unexpected \"category\" destination. This should be unreachable given goUp's null-object guard above."
+        "NavigationController.goUp: resolveUp returned an unexpected \"gateway\" destination. This should be unreachable given goUp's null-object guard above."
       );
     }
 
