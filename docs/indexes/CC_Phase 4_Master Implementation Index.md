@@ -43,7 +43,7 @@ read_this_first: true
 - **Dependencies:** WP10 (environment/stack decisions). Depended on by: every future WP that reads or writes a Project Record (WP12 orientation element's data-driven paging, WP13–16 screens, and the AI observation surface).
 - **Status:** Closed. Verified — 26/26 tests passing, `tsc --noEmit --strict` clean, both confirmed by actual execution, not asserted.
 - **Integrated commit (human repository integration):** 48b6413
-- **Known gap, not yet resolved:** `docs/architecture/` exists as an empty directory in the repository. The Phase 1 Assessment, Phase 2 UI Architecture Specification (v1.0), and Phase 3 Architecture Record have not yet been placed inside the actual repo — they exist only as separate deliverables outside it. Until this is done, the repository does not yet satisfy WP10's own requirement that documentation live alongside implementation. Flagged here so it is not lost; not an ACP (no architectural conflict — it's a pending action, not a decision to make).
+- **Documentation status:** `docs/architecture/` now contains the Phase 1 Assessment, Phase 3 Architecture Record, and Phase 2 UI Architecture Specification (v1.0), along with Phase 4 ACP decision records (ACP-009 through ACP-012). WP10's requirement that documentation live alongside implementation is satisfied.
 
 ### WP12 — Persistent Orientation Element
 
@@ -60,7 +60,7 @@ read_this_first: true
   - Full per-step/per-slice breakdown, including individual commit hashes: `docs/implementation/CC_Phase 4_WP12 Implementation Notes.md`
 - **ACPs referenced:** ACP-004 (withdrawn — corrected by the object-based paging rule), ACP-007 (accepted — added the `Up` component).
 - **Dependencies:** WP10 (environment), WP11 (`ProjectRecord`/`ProjectStatus` types, read-only). Depended on by: Category and List screens (implemented), and Dashboard and Workspace screens (not yet started).
-- **Status:** Code-complete through Slice 8B. **Not yet closed** — Slice 9A (user verification) and Slice 9B (framework verification) have not been executed, and the Baseline Freeze declaration has not been made. Slice 9B carries one known, unresolved verification gap (`goUp()`'s enabled success path cannot be exercised by any means currently available — no controller action sets `depth` to `"workspace"`) requiring a disposition decision before the freeze can be honestly approved.
+- **Status:** Code-complete through Slice 8B. **Not yet closed** — Slice 9A (user verification) is complete and passing. Slice 9B (framework verification) and the Baseline Freeze declaration have not yet been executed. Slice 9B carries one known, unresolved verification gap (`goUp()`'s enabled success path cannot be exercised by any means currently available — no controller action sets `depth` to `"workspace"`) requiring a disposition decision before the freeze can be honestly approved.
 - **Integrated commits (human repository integration):** see `docs/implementation/CC_Phase 4_WP12 Implementation Notes.md` for the complete per-step/per-slice commit history (13 commits total, Step 1 through Slice 8B).
 
 ---
