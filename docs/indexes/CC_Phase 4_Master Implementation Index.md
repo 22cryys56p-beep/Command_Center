@@ -59,7 +59,7 @@ read_this_first: true
   - Corresponding test files: `tests/navigation/orientation.test.ts`, `tests/navigation/navigation-controller.test.ts`
   - Full per-step/per-slice breakdown, including individual commit hashes: `docs/implementation/CC_Phase 4_WP12 Implementation Notes.md`
 - **ACPs referenced:** ACP-004 (withdrawn — corrected by the object-based paging rule), ACP-007 (accepted — added the `Up` component).
-- **Dependencies:** WP10 (environment), WP11 (`ProjectRecord`/`ProjectStatus` types, read-only). Depended on by: every future screen work package (Category, List, Dashboard, Workspace), none of which are implemented yet.
+- **Dependencies:** WP10 (environment), WP11 (`ProjectRecord`/`ProjectStatus` types, read-only). Depended on by: Category and List screens (implemented), and Dashboard and Workspace screens (not yet started).
 - **Status:** Code-complete through Slice 8B. **Not yet closed** — Slice 9A (user verification) and Slice 9B (framework verification) have not been executed, and the Baseline Freeze declaration has not been made. Slice 9B carries one known, unresolved verification gap (`goUp()`'s enabled success path cannot be exercised by any means currently available — no controller action sets `depth` to `"workspace"`) requiring a disposition decision before the freeze can be honestly approved.
 - **Integrated commits (human repository integration):** see `docs/implementation/CC_Phase 4_WP12 Implementation Notes.md` for the complete per-step/per-slice commit history (13 commits total, Step 1 through Slice 8B).
 
@@ -71,7 +71,7 @@ read_this_first: true
 WP10 (environment)
   └── WP11 (data layer)
         └── WP12 (orientation element — code-complete, Slice 9A/9B and Baseline Freeze pending)
-              └── [not yet started] Category / List / Dashboard / Workspace screens
+              └── Category / List screens (implemented) / Dashboard / Workspace screens (not yet started)
                     └── [not yet started] AI observation surface
 ```
 
@@ -95,7 +95,7 @@ WP12 is code-complete through Slice 8B but not yet closed — see its entry abov
 
 ## Outstanding Items (not ACPs — pending actions)
 
-- **`docs/architecture/` is empty in the actual repository.** Phase 1–3 documents need to be added before the repo fully satisfies WP10's "documentation alongside implementation" requirement. (Raised at WP11.)
+(None currently identified.)
 
 ---
 

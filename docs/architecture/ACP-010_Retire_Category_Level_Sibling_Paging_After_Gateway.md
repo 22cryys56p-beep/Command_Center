@@ -1,6 +1,6 @@
 # ACP-010 — Retire Category-Level Sibling Paging After Gateway Introduction
 
-**Status:** proposed — decision required
+**Status:** accepted — implemented
 **Date:** 2026-09-02
 **Decision authority:** Kurt
 **Governs:** Category-level sibling paging in the navigation/orientation system

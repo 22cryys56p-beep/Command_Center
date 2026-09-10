@@ -6,7 +6,7 @@ An AI-agnostic, portable project command center for visual portfolio operations.
 
 1. Open this folder in Obsidian.
 2. Set the Command Center Gateway as the startup note (optional).
-3. Open [[Portfolio Map.canvas]] for visual navigation.
+3. Begin at the Command Center Gateway for project navigation.
 4. Update the frontmatter and `Current Focus` section whenever work changes.
 
 All notes are plain Markdown; Canvas is stored in Obsidian's portable JSON canvas format. Project repositories are referenced in each project's [[Operating Environment]], never stored here.

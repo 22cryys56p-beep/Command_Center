@@ -2,9 +2,9 @@
  * Project Record data layer.
  *
  * Implements: Phase 3 Architecture Record, Section B (Final Data Model).
- * Governing decisions: ACP-001 (status enum extension), ACP-002 (stable
- * identity via project_id), ACP-003 (last_updated scope extended to
- * `planned` and `current`).
+ * Governing decisions: ACP-002 (stable identity via project_id), ACP-003
+ * (last_updated scope extended to `planned` and `current`), ACP-009
+ * (ProjectStatus enum reconciliation).
  *
  * This module defines the record shape and its validation rules only.
  * It does not read or write files — that is the responsibility of a later
@@ -13,8 +13,9 @@
  * dependency on the Obsidian runtime.
  */
 
-/** Final status enum per ACP-001 extended in WP11. Statuses: possible → planned
- *  → current → ongoing/archived per Phase 3 Section B and ACP-001. */
+/** Final status enum per ACP-009. Statuses: possible → planned → current →
+ *  ongoing/archived per Phase 4 five-value vocabulary (Phase 3's `completed`
+ *  retired). */
 export type ProjectStatus = "possible" | "planned" | "current" | "ongoing" | "archived";
 
 /**
