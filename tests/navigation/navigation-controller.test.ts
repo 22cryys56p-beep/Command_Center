@@ -31,9 +31,9 @@ function makeController(records: readonly ProjectRecord[] = mixedRecords): Navig
 // --- Initial state -----------------------------------------------------------
 
 describe("NavigationController — initial state", () => {
-  it("starts with no object and depth 'category'", () => {
+  it("starts with no object and depth 'gateway'", () => {
     const controller = makeController();
-    expect(controller.getState()).toEqual({ object: null, depth: "category" });
+    expect(controller.getState()).toEqual({ object: null, depth: "gateway" });
   });
 });
 
@@ -201,12 +201,12 @@ describe("NavigationController — goUp", () => {
 // --- goTop -----------------------------------------------------------------------
 
 describe("NavigationController — goTop", () => {
-  it("resets to no object, depth 'category', from any prior state", () => {
+  it("resets to no object, depth 'gateway', from any prior state", () => {
     const controller = makeController();
     controller.selectCategory("current");
     controller.selectProject("proj-a");
     controller.goTop();
-    expect(controller.getState()).toEqual({ object: null, depth: "category" });
+    expect(controller.getState()).toEqual({ object: null, depth: "gateway" });
   });
 
   it("never throws, regardless of current state", () => {

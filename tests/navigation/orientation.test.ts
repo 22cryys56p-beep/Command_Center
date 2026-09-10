@@ -257,7 +257,7 @@ describe("resolvePaging — purity and non-mutation", () => {
 describe("resolveUp — disabled cases", () => {
   it("is disabled at Category Screen depth (category current object)", () => {
     const current: CurrentObject = { kind: "category", category: "current" };
-    expect(resolveUp(current, "category")).toBeNull();
+    expect(resolveUp(current, "gateway")).toBeNull();
   });
 
   it("is disabled at List depth (category current object)", () => {
@@ -355,10 +355,10 @@ describe("resolveUp — purity and non-mutation", () => {
 describe("resolveTop", () => {
   it("always returns the Category Screen destination", () => {
     const result = resolveTop();
-    expect(result).toEqual({ depth: "category" });
+    expect(result).toEqual({ depth: "gateway" });
   });
 
-  it("`{ depth: \"category\" }` contains no object field", () => {
+  it("`{ depth: \"gateway\" }` contains no object field", () => {
     const result = resolveTop();
     expect("object" in result).toBe(false);
   });
@@ -368,8 +368,8 @@ describe("resolveTop", () => {
     // "entry" is not a member of the Depth union at all — this asserts
     // the actual returned depth is the one legitimate value, not merely
     // that it isn't the string "entry".
-    expect(result.depth).toBe("category");
-    const validDepths: Depth[] = ["category", "list", "dashboard", "workspace"];
+    expect(result.depth).toBe("gateway");
+    const validDepths: Depth[] = ["gateway", "list", "dashboard", "workspace"];
     expect(validDepths).toContain(result.depth);
   });
 
@@ -391,7 +391,7 @@ describe("resolveTop", () => {
 
 describe("NavigationDestination — type shape discipline", () => {
   it("a category destination never carries an object field, even structurally", () => {
-    const destination: NavigationDestination = { depth: "category" };
+    const destination: NavigationDestination = { depth: "gateway" };
     expect(Object.keys(destination)).toEqual(["depth"]);
   });
 
@@ -413,7 +413,7 @@ describe("NavigationDestination — type shape discipline", () => {
 
 describe("resolveLabel — category and list destinations", () => {
   it("returns the fixed category label for a category destination", () => {
-    const destination: NavigationDestination = { depth: "category" };
+    const destination: NavigationDestination = { depth: "gateway" };
     expect(resolveLabel(destination)).toBe("Command Center: Projects");
   });
 
@@ -426,7 +426,7 @@ describe("resolveLabel — category and list destinations", () => {
   });
 
   it("ignores projectName if supplied for a category destination", () => {
-    const destination: NavigationDestination = { depth: "category" };
+    const destination: NavigationDestination = { depth: "gateway" };
     expect(resolveLabel(destination, "Should Be Ignored")).toBe(
       "Command Center: Projects"
     );
@@ -443,7 +443,7 @@ describe("resolveLabel — category and list destinations", () => {
   });
 
   it("does not throw when projectName is omitted for category/list destinations", () => {
-    const categoryDest: NavigationDestination = { depth: "category" };
+    const categoryDest: NavigationDestination = { depth: "gateway" };
     const listDest: NavigationDestination = {
       depth: "list",
       object: { kind: "category", category: "possible" },
