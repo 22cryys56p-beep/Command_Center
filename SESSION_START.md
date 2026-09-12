@@ -67,7 +67,7 @@ The repository should therefore preserve the **architectural boundary**, not mai
 
 The repository is the authoritative memory of the project.
 
-A working session, AI context window, sandbox environment, or conversation history is temporary.
+A working session, AI context window, sandbox environment, or conversation history is temporary. Sandbox environments have been observed to reset entirely between sessions with no warning — this is expected, not an emergency, and nothing of value should ever depend on sandbox state surviving.
 
 Do not trust previous session assumptions over the actual repository state.
 
@@ -96,6 +96,7 @@ Never:
 - report sandbox-local commits as repository commits
 - assume files exist because a previous session claimed they existed
 - modify files without knowing the current repository state
+- reconstruct an existing document's content from memory when the live file can simply be read — a real incident occurred where doing this silently overwrote an accepted architectural decision with fabricated content before it was caught
 
 If working in an environment without access to the actual repository:
 
@@ -104,6 +105,8 @@ If working in an environment without access to the actual repository:
 - do not provide authoritative commit information
 
 A disconnected environment may verify code internally, but only the actual repository can establish project history.
+
+A completion summary is not verification. Confirmed incidents exist of "no errors, all tests pass"-style reports later found false under direct, independent inspection of the actual pushed commit. Always verify the real artifact, not the report describing it.
 
 ---
 
@@ -129,6 +132,8 @@ If uncertain:
 
 Honest uncertainty is preferred over incorrect assumptions.
 
+Before proposing new architecture, check whether an existing category, ACP, or governing document already resolves the question. This has been missed multiple times — always check first, propose second.
+
 ---
 
 # 6. Project Status Authority
@@ -141,37 +146,27 @@ The authoritative status field is:
 ProjectRecord.status
 ```
 
-The frozen Phase 3 implementation defines its values as:
+As of **ACP-009**, the implementation enum and the working navigational vocabulary have been unified. The authoritative values are:
 
 ```text
 possible
 planned
 current
-completed
+ongoing
+archived
 ```
 
-This is the sole authoritative Project Status field.
+`completed` is **retired** and is not a valid value. It was removed, not deprecated — code should never emit or accept it. No automatic migration exists for any legacy `completed` value; if one is ever encountered, it requires the Project Owner's explicit manual reclassification (never an automatic or AI-inferred mapping).
 
-The working navigational vocabulary established in Category 1 is:
-
-```text
-Possible
-Planned
-Current
-Ongoing
-Archived
-```
-
-These concepts must not be reconstructed into a second lifecycle/status taxonomy.
-
-In particular, the following are **not** formal Project Status values:
+The following are **not**, and have never been, formal Project Status values:
 
 - Active
 - Paused
 - Cancelled
 - Failed
+- Completed (retired by ACP-009; formerly valid under the original Phase 3 four-value enum, no longer valid)
 
-`Completed`, `Active`, `Paused`, `Cancelled`, and `Failed` must not be introduced as an alternative or second Project Status taxonomy.
+These must not be introduced as an alternative or second Project Status taxonomy.
 
 A project circumstance that is not represented by the authoritative status field belongs in the appropriate Project information — such as Notes, Attention/Signals, Flags, Blockers, History, or other established records — rather than being converted into a new Status value.
 
@@ -191,6 +186,7 @@ AI collaborators must not:
 - assume a project should advance because of activity level
 - infer ownership decisions from file contents or repository activity
 - invent new Project Status values
+- automatically map a retired or legacy status value to a new one on the Project Owner's behalf
 
 A Project Status change represents a change in Command Center's recorded understanding and presentation of the project.
 
@@ -214,6 +210,8 @@ The physical repository location of a project is independent from its Command Ce
 
 Command Center provides a management and observation layer above projects. It does not control or restructure the internal organization of the projects it observes.
 
+**Metadata note:** for `ongoing` and `archived` statuses, the standard operational fields (`milestone`, `progress`, `next_action`, `blockers`) are optional — they do not carry forward the Planned/Current tier's requirements. `blockers` specifically may be genuinely absent at these two statuses, unlike Planned/Current where it must be explicit (`null` or an array, never simply missing). Existing metadata must never be cleared or relocated merely because a project transitions into `ongoing` or `archived`.
+
 ---
 
 # 7. Current Development Phase
@@ -224,11 +222,13 @@ Current project phase:
 
 Current governing documents:
 
-1. Phase 3 Architecture Record
+1. Phase 3 Architecture Record (frozen historical record)
 2. Phase 4 WP specifications
-3. Phase 4 Master Implementation Index
+3. Phase 4 Master Implementation Index (includes the Phase 4 ACP registry)
 4. Implementation Notes
-5. Clean revised Phase 4 Matrix, as applicable
+5. Clean revised Phase 4 Matrix, including Step 65 incorporations
+6. UI Architecture Specification (living document, actively reconciled against the Matrix)
+7. Accepted ACP standalone records (`docs/architecture/ACP-*.md`)
 
 Frozen architectural decisions are not changed during implementation.
 
@@ -496,14 +496,17 @@ An **OPEN** item remains undecided until an explicit architectural or project de
 
 The clean revised matrix is the authoritative Phase 4 requirements reference for the portions that have been completed and accepted.
 
-**Current matrix status:** Categories **1–64** have been audited and represented in the clean revised matrix. **Step 65 remains paused and unresolved.**
+**Current matrix status:** Categories **1–64** are audited and stable. **Step 65 has been resolved** — treated as a completeness review of the existing matrix rather than a new "Category 65." It confirmed no missing overarching architectural domain, and its concrete findings were incorporated directly into their proper existing categories as **P4-R796 through P4-R802** (Categories 1, 12, 43, and 50), rather than forming a standalone section. Two previously open items (Category 1's status-transition question, Category 64's State-vs-Visibility distinction) were resolved and closed as part of this incorporation.
+
+Step 65 was **not** the final step of the matrix, and no assumption should be made that the matrix is now complete — it is simply resolved through its current scope, with no defined "Step 66" currently pending. Do not treat any specific step number as an assumed endpoint.
+
+Since Step 65, further architectural work has proceeded through the **ACP (Architecture Change Proposal) process** rather than continued matrix numbering — see Section 16.
 
 Therefore:
 
-- the Phase 4 matrix is **not yet complete**
-- Categories 1–64 are the current completed audit/revision boundary
-- Step 65 and subsequent material must not be assumed to be finalized
-- unresolved material must not be treated as authoritative Phase 4 requirements
+- Categories 1–64, with Step 65's P4-R796–802 incorporated, form the current stable matrix foundation
+- unresolved (OPEN) material must not be treated as authoritative Phase 4 requirements
+- architectural questions arising after the matrix's current scope are resolved via ACP, not by extending the matrix further
 
 The separate Clean Matrix documents covering Categories 1–64 may be consolidated into a single clean matrix artifact when appropriate, but consolidation does not change their authority or status.
 
@@ -511,7 +514,7 @@ The separate Clean Matrix documents covering Categories 1–64 may be consolidat
 
 # 15. Phase 4 Architectural Principles Established by Audit
 
-The Steps 1–64 audit established the following architectural principles:
+The Steps 1–64 audit, Step 65, and the subsequent ACP process have established the following architectural principles:
 
 - **Command Center is an orchestration layer** — CC connects projects, sources, applications, AI Participants, Agents, Threads, and other resources rather than replacing them.
 
@@ -533,13 +536,17 @@ The Steps 1–64 audit established the following architectural principles:
 
 - **Persistent Project State is primary for re-entry** — Threads, Handovers, and other supporting artifacts provide provenance and additional context but do not replace Project State.
 
-- **The Project Status model remains single-tier** — Category 49's proposed second status taxonomy silently contradicted the frozen Category 1 / Phase 3 status model and was removed, not merely revised. The authoritative `ProjectRecord.status` field remains the sole formal Project Status field.
+- **The Project Status model remains single-tier** — a proposed second status taxonomy silently contradicted the frozen status model and was removed, not merely revised, during the original audit. The authoritative `ProjectRecord.status` field remains the sole formal Project Status field, now at five values per ACP-009.
 
-- **Status is not navigation** — top-level organizational/navigation categories and Project Status are separate concepts and must not be conflated.
+- **Status is not navigation** — top-level organizational/navigation categories and Project Status are separate concepts and must not be conflated. This extends to the navigation type system itself: `Depth` (a navigation-tree position, now including `"gateway"` per ACP-012) and `CurrentObject.kind` (an object identity, including `"category"` for status-scoped Project List views) are unrelated concepts that happen to have shared a literal string historically — they must never be conflated even where their names once overlapped.
 
-- **CC must not silently reconstruct frozen architecture from memory** — when an authoritative implementation or architecture record exists, it takes precedence over remembered discussions or earlier drafts.
+- **CC must not silently reconstruct frozen architecture from memory** — when an authoritative implementation or architecture record exists, it takes precedence over remembered discussions or earlier drafts. A real incident occurred where reconstructing a live document from memory instead of reading it silently fabricated content overwriting an accepted decision; it was caught only through independent verification before anything was committed.
 
 - **The human owner remains the final authority on governance decisions** — AI may analyze and recommend but must not silently establish authoritative Project governance.
+
+- **Command Center must not silently manufacture project truth** — this applies to both representation and authority. When required project data is missing or invalid, CC must fail honestly rather than substitute fabricated, stale, or misleading content; AI-generated estimates and recommendations must remain visibly distinguishable from authoritative data and must never be silently converted into it.
+
+- **Before adding new architecture, check whether an existing category or ACP already covers it** — this has been missed multiple times, each time only caught through direct verification against the existing matrix or registry, never through inspection alone. Checking first is cheaper than discovering the duplication later.
 
 ---
 
@@ -557,6 +564,16 @@ If a requirement, implementation detail, or newly discovered behavior appears to
 A new implementation preference is not automatically an architectural change.
 
 A new rendering, presentation, or implementation technique may be adopted when it remains consistent with the frozen architecture.
+
+**ACP Registry summary** (full records in `docs/architecture/`, index in the Master Implementation Index; Phase 3's own ACP-001–007 remain in the Phase 3 Architecture Record's registry, unedited, per the historical-record rule below):
+
+- **ACP-008** — Metadata Cache treated as a platform-level read mechanism, not an application-level cache.
+- **ACP-009** — `ProjectRecord.status` reconciled to five values (`possible | planned | current | ongoing | archived`); `completed` retired; no automatic migration authorized.
+- **ACP-010** — Category-level sibling paging retired (staged: `getCategorySiblings()` removed; `CATEGORY_ORDER` temporarily preserved pending Gateway UI); project-level sibling paging retained.
+- **ACP-011** — Gateway destination-to-view mapping; Category Screen retirement trigger defined (requires all four status-mapped views plus Ideas' `possible`-record exposure, not just the four views alone).
+- **ACP-012** — Root navigation `Depth` literal renamed from `"category"` to `"gateway"` (pure semantic rename; `CurrentObject.kind: "category"` unaffected and unrelated).
+
+The Phase 3 Architecture Record itself is **never edited** to reflect later ACPs — it remains the accurate historical record of what Phase 3 froze at the time. Later ACPs are the mechanism by which that frozen model is formally extended or reconciled; they do not rewrite history.
 
 ---
 
@@ -587,11 +604,11 @@ The fact that Command Center references external project files for testing or op
 >
 > The visual concept below describes the intended **presentation layer** and user experience metaphor. It does not override, replace, or modify anything in the frozen Phase 3 Architecture Record.
 >
-> Phase 3 defines the underlying application architecture: the object model, navigation relationships, the persistent orientation element, and the Category → List → Dashboard → Workspace depth hierarchy. That remains frozen and governs all implementation.
+> Phase 3 defines the underlying application architecture: the object model, navigation relationships, and the persistent orientation element. Phase 3's originally-frozen entry point into that hierarchy — the Category Screen — has since been formally superseded as the root navigation surface by the **Gateway** (a fixed six-destination grid: Current, Planning, Ideas, Ongoing, New Project, Archive) per ACP-011 and ACP-012. The deeper hierarchy — Project List → Dashboard → Workspace — remains as Phase 3 defined it. The Category Screen's underlying implementation currently remains live and functional as a staged, temporary component (per ACP-010/011's retirement trigger) until Gateway's actual UI exists; this does not change the architectural fact that Gateway, not Category Screen, is now the authoritative root.
 >
-> This section defines how those same objects, states, and relationships may eventually be *rendered* — sticky notes, connectors, flow paths, a visual workspace — as a rendering and interaction model, not a competing data or navigation model. A future visual board still represents the same underlying objects Phase 3 defines; it does not introduce a second architecture alongside it.
+> This section defines how those same objects, states, and relationships may eventually be *rendered* — sticky notes, connectors, flow paths, a visual workspace — as a rendering and interaction model, not a competing data or navigation model. A future visual board still represents the same underlying objects Phase 3 (as extended by later ACPs) defines; it does not introduce a second architecture alongside it.
 >
-> This distinction exists in the document explicitly so that this section is never read as silently superseding Phase 3 in a future session. If a future implementation step appears to require an actual architectural change (not just a new rendering) to accommodate this vision, that still requires an ACP — this note does not pre-authorize one.
+> This distinction exists in the document explicitly so that this section is never read as silently superseding Phase 3 or its ACP extensions in a future session. If a future implementation step appears to require an actual architectural change (not just a new rendering) to accommodate this vision, that still requires an ACP — this note does not pre-authorize one.
 
 The intended user experience for Command Center is a visual project command board.
 
@@ -666,5 +683,5 @@ Before changing anything:
 **Verify the repository.
 Verify the files.
 Verify the governing documents.
-Verify the authoritative architecture and current matrix boundary.
+Verify the authoritative architecture, the current matrix boundary, and the ACP registry.
 Then implement.**
