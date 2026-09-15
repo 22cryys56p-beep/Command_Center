@@ -569,7 +569,7 @@ A new rendering, presentation, or implementation technique may be adopted when i
 
 - **ACP-008** — Metadata Cache treated as a platform-level read mechanism, not an application-level cache.
 - **ACP-009** — `ProjectRecord.status` reconciled to five values (`possible | planned | current | ongoing | archived`); `completed` retired; no automatic migration authorized.
-- **ACP-010** — Category-level sibling paging retired (staged: `getCategorySiblings()` removed; `CATEGORY_ORDER` temporarily preserved pending Gateway UI); project-level sibling paging retained.
+- **ACP-010** — Category-level sibling paging retired (`getCategorySiblings()` and `CATEGORY_ORDER` both removed); project-level sibling paging retained.
 - **ACP-011** — Gateway destination-to-view mapping; Category Screen retirement trigger defined (requires all four status-mapped views plus Ideas' `possible`-record exposure, not just the four views alone).
 - **ACP-012** — Root navigation `Depth` literal renamed from `"category"` to `"gateway"` (pure semantic rename; `CurrentObject.kind: "category"` unaffected and unrelated).
 
@@ -604,7 +604,7 @@ The fact that Command Center references external project files for testing or op
 >
 > The visual concept below describes the intended **presentation layer** and user experience metaphor. It does not override, replace, or modify anything in the frozen Phase 3 Architecture Record.
 >
-> Phase 3 defines the underlying application architecture: the object model, navigation relationships, and the persistent orientation element. Phase 3's originally-frozen entry point into that hierarchy — the Category Screen — has since been formally superseded as the root navigation surface by the **Gateway** (a fixed six-destination grid: Current, Planning, Ideas, Ongoing, New Project, Archive) per ACP-011 and ACP-012. The deeper hierarchy — Project List → Dashboard → Workspace — remains as Phase 3 defined it. The Category Screen's underlying implementation remains in the repository as a staged, temporary component pending ACP-011's retirement trigger, which the current Gateway implementation has now satisfied; retirement itself remains a separate, explicit follow-on decision not yet made. Gateway is now the authoritative root navigation surface; the retained Category Screen implementation is not the root entry surface and must not be treated as a competing navigation root.
+> Phase 3 defines the underlying application architecture: the object model, navigation relationships, and the persistent orientation element. Phase 3's originally-frozen entry point into that hierarchy — the Category Screen — has since been formally superseded as the root navigation surface by the **Gateway** (a fixed six-destination grid: Current, Planning, Ideas, Ongoing, New Project, Archive) per ACP-011 and ACP-012. The deeper hierarchy — Project List → Dashboard → Workspace — remains as Phase 3 defined it. ACP-011's Category Screen retirement trigger has since been satisfied and the legacy Category Screen implementation has been explicitly retired and removed from the repository. Gateway is the authoritative root navigation surface.
 >
 > This section defines how those same objects, states, and relationships may eventually be *rendered* — sticky notes, connectors, flow paths, a visual workspace — as a rendering and interaction model, not a competing data or navigation model. A future visual board still represents the same underlying objects Phase 3 (as extended by later ACPs) defines; it does not introduce a second architecture alongside it.
 >
