@@ -40,37 +40,11 @@
 
 import type { ProjectRecord, ProjectStatus } from "../data/project-record";
 
-/**
- * The fixed category enumeration, per ACP-001. This order is architectural
- * in the sense that it must be stable and deterministic (Section C requires
- * `<<`/`>>` to behave identically every time), but the specific sequence
- * chosen here — possible → planned → current — is an implementation detail,
- * not a decision Phase 3 itself made. Ongoing/archived status values exist
- * in the ProjectStatus enum but do not participate in sibling paging (out of
- * scope, pending Gateway review). If this order ever needs to change, that is
- * a WP12-level implementation adjustment, not a Phase 3 reopening, since
- * Phase 3 only requires *a* fixed order to exist.
- */
-export const CATEGORY_ORDER: readonly ProjectStatus[] = [
-  "possible",
-  "planned",
-  "current",
-];
-
 export interface SiblingResolution<T> {
   previous: T | null;
   next: T | null;
 }
 
-/**
- * Resolves category siblings for `<<`/`>>` when the current object is a
- * category (Category Screen or Project List Screen, per Section C/D).
- * Wraps at neither end — reaching the first or last category yields `null`
- * for that direction. Step 2's `resolvePaging()` uses this result to
- * report a disabled state, per Section C's disabled-state rule; this
- * function itself only reports "no sibling exists," it does not decide
- * disabled rendering.
- */
 /**
  * Produces the ordered list of project_ids belonging to a given category,
  * from a full set of Project Records. Per Phase 3 Section D (WP4), the
