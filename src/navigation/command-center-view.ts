@@ -65,6 +65,7 @@ import { NavigationInspector } from "./navigation-inspector";
 import { EntryView } from "../views/entry-view";
 import { CategoryView } from "../views/category-view";
 import { ProjectListView } from "../views/project-list-view";
+import { GatewayView } from "../views/gateway-view";
 import { NewProjectView } from "../views/new-project-view";
 import type { ProjectRecord, ProjectStatus } from "../data/project-record";
 
@@ -76,12 +77,14 @@ export class CommandCenterView extends ItemView {
   private navigationInspector: NavigationInspector | null = null;
   private categoryView: CategoryView | null = null;
   private projectListView: ProjectListView | null = null;
+  private gatewayView: GatewayView | null = null;
   private entryView: EntryView | null = null;
 
   // Stored directly (not re-queried by CSS class) so New Project's view
   // swap can show/hide them without depending on DOM query support.
   private orientationBarContainer: HTMLElement | null = null;
   private categoryViewContainer: HTMLElement | null = null;
+  private gatewayViewContainer: HTMLElement | null = null;
   private projectListViewContainer: HTMLElement | null = null;
 
   private newProjectView: NewProjectView | null = null;
@@ -145,6 +148,9 @@ export class CommandCenterView extends ItemView {
     const inspectorContainer = root.createDiv({
       cls: "command-center-inspector-container",
     });
+    const gatewayViewContainer = root.createDiv({
+      cls: "command-center-gateway-view-container",
+    });
     const categoryViewContainer = root.createDiv({
       cls: "command-center-category-view-container",
     });
@@ -153,6 +159,7 @@ export class CommandCenterView extends ItemView {
     });
 
     this.orientationBarContainer = orientationBarContainer;
+    this.gatewayViewContainer = gatewayViewContainer;
     this.categoryViewContainer = categoryViewContainer;
     this.projectListViewContainer = projectListViewContainer;
 
@@ -163,7 +170,7 @@ export class CommandCenterView extends ItemView {
     const onStateChange = (): void => {
       this.orientationBar?.render();
       this.navigationInspector?.render();
-      this.categoryView?.render();
+      this.gatewayView?.render();
       this.projectListView?.render();
     };
 
@@ -176,21 +183,30 @@ export class CommandCenterView extends ItemView {
       inspectorContainer,
       this.controller
     );
-    this.categoryView = new CategoryView(categoryViewContainer, this.controller);
+    // Gateway replaces Category Screen as the root surface (ACP-011/012).
+    // CategoryView and CATEGORY_ORDER remain in the codebase untouched,
+    // retained pending ACP-011's separate retirement decision; they are
+    // simply no longer the post-Entry root.
+    this.gatewayView = new GatewayView(
+      gatewayViewContainer,
+      this.controller,
+      () => this.enterNewProject()
+    );
+    categoryViewContainer.style.display = "none";
     this.projectListView = new ProjectListView(
       projectListViewContainer,
       this.controller,
       stubProvider
     );
 
-    this.categoryView.setOnStateChange(onStateChange);
+    this.gatewayView.setOnStateChange(onStateChange);
     this.projectListView.setOnStateChange(onStateChange);
 
     // Initial render for all, so state is visible immediately upon
     // reaching Category depth, without waiting for a click.
     this.orientationBar.render();
     this.navigationInspector.render();
-    this.categoryView.render();
+    this.gatewayView.render();
     this.projectListView.render();
   }
 
@@ -206,6 +222,8 @@ export class CommandCenterView extends ItemView {
     this.navigationInspector = null;
     this.categoryView = null;
     this.projectListView = null;
+    this.gatewayView = null;
+    this.gatewayViewContainer = null;
     this.orientationBarContainer = null;
     this.categoryViewContainer = null;
     this.projectListViewContainer = null;
@@ -236,7 +254,7 @@ export class CommandCenterView extends ItemView {
     // the controller's existence would create exactly the dependency
     // that decision removed.
     this.suppressContainer(this.orientationBarContainer);
-    this.suppressContainer(this.categoryViewContainer);
+    this.suppressContainer(this.gatewayViewContainer);
     this.suppressContainer(this.projectListViewContainer);
 
     const root = this.containerEl.children[1] as HTMLElement;
@@ -289,7 +307,7 @@ export class CommandCenterView extends ItemView {
     this.newProjectContainer = null;
 
     if (this.orientationBarContainer) this.restoreContainer(this.orientationBarContainer);
-    if (this.categoryViewContainer) this.restoreContainer(this.categoryViewContainer);
+    if (this.gatewayViewContainer) this.restoreContainer(this.gatewayViewContainer);
     if (this.projectListViewContainer) this.restoreContainer(this.projectListViewContainer);
 
     this.isNewProjectActive = false;
