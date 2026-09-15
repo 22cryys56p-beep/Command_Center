@@ -65,7 +65,8 @@ import { NavigationInspector } from "./navigation-inspector";
 import { EntryView } from "../views/entry-view";
 import { CategoryView } from "../views/category-view";
 import { ProjectListView } from "../views/project-list-view";
-import type { ProjectRecord } from "../data/project-record";
+import { NewProjectView } from "../views/new-project-view";
+import type { ProjectRecord, ProjectStatus } from "../data/project-record";
 
 export const COMMAND_CENTER_VIEW_TYPE = "command-center-view";
 
@@ -76,6 +77,27 @@ export class CommandCenterView extends ItemView {
   private categoryView: CategoryView | null = null;
   private projectListView: ProjectListView | null = null;
   private entryView: EntryView | null = null;
+
+  // Stored directly (not re-queried by CSS class) so New Project's view
+  // swap can show/hide them without depending on DOM query support.
+  private orientationBarContainer: HTMLElement | null = null;
+  private categoryViewContainer: HTMLElement | null = null;
+  private projectListViewContainer: HTMLElement | null = null;
+
+  private newProjectView: NewProjectView | null = null;
+  private newProjectContainer: HTMLElement | null = null;
+  private isNewProjectActive = false;
+
+  // Records each suppressed container's display value so exitNewProject
+  // can restore it exactly, rather than assuming it was "".
+  private readonly priorDisplayValues = new Map<HTMLElement, string>();
+
+  // Always null today. This is the seam a future, separately scoped work
+  // package uses to attach real project-creation capability once a real
+  // ProjectRecordProvider exists — see NewProjectView's class comment.
+  // Nothing in enterNewProject/exitNewProject needs to change when that
+  // happens; only this field's assignment does.
+  private projectCreationHandler: ((status: ProjectStatus) => void) | null = null;
 
   constructor(leaf: WorkspaceLeaf) {
     super(leaf);
@@ -130,6 +152,10 @@ export class CommandCenterView extends ItemView {
       cls: "command-center-project-list-view-container",
     });
 
+    this.orientationBarContainer = orientationBarContainer;
+    this.categoryViewContainer = categoryViewContainer;
+    this.projectListViewContainer = projectListViewContainer;
+
     // The sole coordination mechanism (Slice 7, resolved): a single
     // callback, closing over all mounted component references, calling
     // each render() method in order. Not an event bus, not an observer
@@ -180,5 +206,92 @@ export class CommandCenterView extends ItemView {
     this.navigationInspector = null;
     this.categoryView = null;
     this.projectListView = null;
+    this.orientationBarContainer = null;
+    this.categoryViewContainer = null;
+    this.projectListViewContainer = null;
+    this.newProjectView = null;
+    this.newProjectContainer = null;
+    this.isNewProjectActive = false;
+    this.priorDisplayValues.clear();
+  }
+
+  /**
+   * Entry point for the New Project shell. Per ACP-013 and the approved
+   * New Project Entry-Point Work Package, this is a plain method call —
+   * not a NavigationController transition. It does not read, construct,
+   * or modify NavigationState. Gateway (once implemented, in its own
+   * work package) invokes this directly; this method itself performs no
+   * Gateway wiring.
+   *
+   * Integration contract only (Work Package Section 4): this exposes the
+   * entry point Gateway will call. It does not implement Gateway.
+   */
+  enterNewProject(): void {
+    if (this.isNewProjectActive) {
+      return;
+    }
+
+    // Deliberately no NavigationController check. New Project exists
+    // entirely outside NavigationState (ACP-013 §3.1); gating entry on
+    // the controller's existence would create exactly the dependency
+    // that decision removed.
+    this.suppressContainer(this.orientationBarContainer);
+    this.suppressContainer(this.categoryViewContainer);
+    this.suppressContainer(this.projectListViewContainer);
+
+    const root = this.containerEl.children[1] as HTMLElement;
+    this.newProjectContainer = root.createDiv({
+      cls: "command-center-new-project-view-container",
+    });
+
+    this.newProjectView = new NewProjectView(this.newProjectContainer, {
+      onCancel: () => this.exitNewProject(),
+      onSubmit: this.projectCreationHandler ?? undefined,
+    });
+    this.newProjectView.render();
+    this.isNewProjectActive = true;
+  }
+
+  /** Hides a container, recording its prior display value for exact restoration. */
+  private suppressContainer(container: HTMLElement | null): void {
+    if (!container) {
+      return;
+    }
+    this.priorDisplayValues.set(container, container.style.display);
+    container.style.display = "none";
+  }
+
+  /** Restores a container to the exact display value it had before suppression. */
+  private restoreContainer(container: HTMLElement | null): void {
+    if (!container) {
+      return;
+    }
+    const prior = this.priorDisplayValues.get(container);
+    if (prior !== undefined) {
+      container.style.display = prior;
+      this.priorDisplayValues.delete(container);
+    }
+  }
+
+  /**
+   * Reverses enterNewProject()'s view swap. NavigationState was never
+   * touched, so there is nothing to restore beyond visibility — the
+   * orientation bar and prior screen reappear exactly as they were.
+   */
+  private exitNewProject(): void {
+    if (!this.isNewProjectActive) {
+      return;
+    }
+
+    this.newProjectView?.clear();
+    this.newProjectView = null;
+    this.newProjectContainer?.remove();
+    this.newProjectContainer = null;
+
+    if (this.orientationBarContainer) this.restoreContainer(this.orientationBarContainer);
+    if (this.categoryViewContainer) this.restoreContainer(this.categoryViewContainer);
+    if (this.projectListViewContainer) this.restoreContainer(this.projectListViewContainer);
+
+    this.isNewProjectActive = false;
   }
 }
