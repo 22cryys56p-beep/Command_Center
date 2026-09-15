@@ -63,7 +63,6 @@ import { NavigationController } from "./navigation-controller";
 import { OrientationBarComponent } from "./orientation-bar";
 import { NavigationInspector } from "./navigation-inspector";
 import { EntryView } from "../views/entry-view";
-import { CategoryView } from "../views/category-view";
 import { ProjectListView } from "../views/project-list-view";
 import { GatewayView } from "../views/gateway-view";
 import { NewProjectView } from "../views/new-project-view";
@@ -75,7 +74,6 @@ export class CommandCenterView extends ItemView {
   private controller: NavigationController | null = null;
   private orientationBar: OrientationBarComponent | null = null;
   private navigationInspector: NavigationInspector | null = null;
-  private categoryView: CategoryView | null = null;
   private projectListView: ProjectListView | null = null;
   private gatewayView: GatewayView | null = null;
   private entryView: EntryView | null = null;
@@ -220,7 +218,6 @@ export class CommandCenterView extends ItemView {
     this.controller = null;
     this.orientationBar = null;
     this.navigationInspector = null;
-    this.categoryView = null;
     this.projectListView = null;
     this.gatewayView = null;
     this.gatewayViewContainer = null;
