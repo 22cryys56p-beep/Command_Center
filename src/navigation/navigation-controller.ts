@@ -31,7 +31,7 @@
  *
  * Frozen initial state contract, per Phase 3 Architecture Record
  * Section D (Category Screen: "Inputs received: none") and the WP12
- * specification's confirmation that Category Screen has no current
+ * specification's confirmation that the Gateway root has no current
  * object until a selection is made: on construction, there is no
  * object and depth is "gateway". This mirrors NavigationDestination's
  * `{ depth: "gateway" }` shape from Step 3/4 — no object field, by
@@ -134,8 +134,8 @@ export class NavigationController {
   }
 
   /**
-   * Constructs the transition produced by choosing a category from the
-   * Category Screen. Not resolver-owned — no Step 1–3 function models
+   * Constructs the transition produced by choosing a category from
+   * Gateway. Not resolver-owned — no Step 1–3 function models
    * this transition; it is constructed directly.
    */
   selectCategory(category: ProjectStatus): void {
@@ -251,7 +251,7 @@ export class NavigationController {
   }
 
   /**
-   * Resets to the Category Screen, per resolveTop (Step 3). Always
+   * Resets to Gateway, per resolveTop (Step 3). Always
    * succeeds; never throws; the destination never depends on prior
    * state.
    */

@@ -203,12 +203,12 @@ export type Depth = "gateway" | "list" | "dashboard" | "workspace";
  * used for object-based operations (Steps 1–2, sibling paging), which are
  * depth-invariant. `NavigationDestination` is used for depth-changing
  * operations (`Up`, `Top`), which `CurrentObject` alone cannot represent —
- * most concretely, Category Screen has no current object at all (Section
+ * most concretely, the Gateway root has no current object at all (Section
  * D: "Inputs received: none"), a state only `NavigationDestination`'s
  * `{ depth: "gateway" }` variant can express.
  *
  * `{ depth: "gateway" }` intentionally carries no object field. This is
- * not missing data — Category Screen has no active object until a
+ * not missing data — the Gateway root has no active object until a
  * selection is made, and no object field should ever be added to this
  * variant.
  */
@@ -260,7 +260,7 @@ export function resolveUp(
  * destination never depends on the current object or depth.
  *
  * Distinct from Entry (a once-per-session lifecycle event, never a `Top`
- * destination, per Section C) and distinct from `Up` (Category is an
+ * destination, per Section C) and distinct from `Up` (Gateway is an
  * absolute reset; `Up` is a same-object parent-depth step).
  *
  * This function takes no parameters, because the destination never

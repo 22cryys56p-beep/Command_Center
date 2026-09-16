@@ -3,7 +3,7 @@
  *
  * This view renders the first production experience the user sees when
  * Command Center opens: a single centered button that proceeds into the
- * existing Category-depth experience.
+ * Gateway root.
  */
 
 export class EntryView {
