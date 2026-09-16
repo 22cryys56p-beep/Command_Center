@@ -18,7 +18,7 @@
  *
  * Step 2 (below) answers a related but distinct question: "what are the
  * available navigation targets from this object?" — wrapping Step 1's
- * results as typed `CurrentObject` targets a future caller could act on.
+ * results as typed `CurrentObject` targets NavigationController acts on.
  * Per the approved Step 2 scope, `resolvePaging()` does not perform a
  * transition, does not mutate any state, and does not touch rendering —
  * it is a pure resolver, the same as everything in Step 1.
@@ -113,8 +113,8 @@ export type CurrentObject =
  * A navigation target `resolvePaging` reports as available in a given
  * direction. Intentionally the same shape as `CurrentObject` — a paging
  * target is simply "the object you would be at if you paged this way."
- * This module does not perform that transition; a target is a value a
- * future caller (not implemented in this step) may choose to act on.
+ * This module does not perform that transition; a target is a value
+ * NavigationController reads and acts on.
  */
 export type PagingTarget = CurrentObject;
 
@@ -133,9 +133,9 @@ export interface PagingResolution {
  * - does NOT mutate `currentObject`, `records`, or any other state —
  *   it is a pure function, same input always yields the same output;
  * - does NOT touch rendering, disabled-state styling, labels, or any
- *   Obsidian API — a `null` target is the sole signal a future rendering
- *   step (not implemented here) would use to represent a disabled
- *   control, per Section C's disabled-state rule.
+ *   Obsidian API — a `null` target is the sole signal
+ *   OrientationBarComponent uses to represent a disabled control, per
+ *   Section C's disabled-state rule.
  *
  * Dispatch is purely on `currentObject.kind`:
  * - `"category"` has no sibling targets after category-level paging was
@@ -230,8 +230,8 @@ export type NavigationDestination =
  *
  * This function does NOT perform a navigation transition, does NOT
  * mutate `currentObject`, and does NOT touch rendering or disabled-state
- * styling — a `null` return is the sole signal a future rendering step
- * (not implemented here) would use to represent a disabled control.
+ * styling — a `null` return is the sole signal OrientationBarComponent
+ * uses to represent a disabled control.
  */
 export function resolveUp(
   currentObject: CurrentObject,
@@ -265,7 +265,7 @@ export function resolveUp(
  *
  * This function takes no parameters, because the destination never
  * varies, and performs no navigation transition — it only reports the
- * destination a future caller (not implemented here) may act on.
+ * destination NavigationController acts on.
  */
 export function resolveTop(): NavigationDestination {
   return { depth: "gateway" };

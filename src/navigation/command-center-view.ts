@@ -4,8 +4,8 @@
  *
  * WP12 Step 5, Slice 7 — first integration slice. Owns creation,
  * mounting, render coordination, and destruction of
- * NavigationController, OrientationBarComponent, and
- * NavigationInspector. Registration (registerView) and activation
+ * NavigationController, OrientationBarComponent, NavigationInspector,
+ * GatewayView, and ProjectListView. Registration (registerView) and activation
  * (open command, leaf-reuse) remain deferred to Slices 8A/8B, per the
  * frozen roadmap — this file defines the view class only.
  *
