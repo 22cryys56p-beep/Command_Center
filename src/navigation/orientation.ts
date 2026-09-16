@@ -185,7 +185,7 @@ export function resolvePaging(
 // ---------------------------------------------------------------------------
 
 /**
- * The five screen depths the orientation element can be present at, minus
+ * The four screen depths the orientation element can be present at, minus
  * Entry. Per Phase 3 Section A, the orientation element is "present from
  * Category Screen onward" — it does not exist at Entry, and no component
  * (`<<`, `>>`, `Up`, `Top`) ever targets or represents it. Entry is
