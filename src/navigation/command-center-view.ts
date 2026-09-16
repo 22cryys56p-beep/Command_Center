@@ -122,12 +122,12 @@ export class CommandCenterView extends ItemView {
     root.addClass("command-center-view-root");
 
     this.entryView = new EntryView(root, () => {
-      this.proceedToCategoryDepth();
+      this.enterNavigationRoot();
     });
     this.entryView.render();
   }
 
-  private proceedToCategoryDepth(): void {
+  private enterNavigationRoot(): void {
     const root = this.containerEl.children[1] as HTMLElement;
     root.empty();
 
@@ -198,7 +198,7 @@ export class CommandCenterView extends ItemView {
     this.projectListView.setOnStateChange(onStateChange);
 
     // Initial render for all, so state is visible immediately upon
-    // reaching Category depth, without waiting for a click.
+    // reaching the Gateway root, without waiting for a click.
     this.orientationBar.render();
     this.navigationInspector.render();
     this.gatewayView.render();
