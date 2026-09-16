@@ -5,9 +5,10 @@
  * WP12 Step 5, Slice 7 — first integration slice. Owns creation,
  * mounting, render coordination, and destruction of
  * NavigationController, OrientationBarComponent, NavigationInspector,
- * GatewayView, and ProjectListView. Registration (registerView) and activation
- * (open command, leaf-reuse) remain deferred to Slices 8A/8B, per the
- * frozen roadmap — this file defines the view class only.
+ * GatewayView, and ProjectListView. Registration (registerView) and
+ * activation (open command, leaf-reuse) are implemented in main.ts
+ * (Slices 8A/8B) — this file defines the view class only and does not
+ * itself register or activate.
  *
  * IMPORTANT — this is not a routing layer. It owns no navigation
  * logic of its own: Gateway and Project List are constructed here,
