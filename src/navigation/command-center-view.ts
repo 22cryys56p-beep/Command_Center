@@ -9,15 +9,12 @@
  * (open command, leaf-reuse) remain deferred to Slices 8A/8B, per the
  * frozen roadmap — this file defines the view class only.
  *
- * IMPORTANT — this is NOT a screen implementation, and mounts none.
- * The persistent orientation bar and NavigationInspector's diagnostic
- * content are the only things mounted here. No Category/List/
- * Dashboard/Workspace screen, placeholder, or routing logic exists in
- * this file, consistent with the WP12 specification's boundary
- * ("does not build any of those screens itself, even minimally, even
- * as a placeholder") and the Slice 6 re-evaluation that established
- * NavigationInspector as a passive diagnostic view rather than screen
- * infrastructure.
+ * IMPORTANT — this is not a routing layer. It owns no navigation
+ * logic of its own: Gateway and Project List are constructed here,
+ * but each renders itself from NavigationController's state, and
+ * transitions happen through NavigationController, not through this
+ * class. This file's job is construction, mounting, and render
+ * coordination — not deciding what screen the user sees next.
  *
  * Ownership model (frozen, per WP12 Step 5 architecture, implemented
  * here): NavigationController is owned by CommandCenterView, created
@@ -29,11 +26,12 @@
  *
  * Render coordination (RESOLVED at Slice 7): this class is the sole
  * coordinator. It supplies OrientationBarComponent's onStateChange
- * callback; that callback calls orientationBar.render() and
- * navigationInspector.render(), in that order, unconditionally, every
+ * callback; that callback calls orientationBar.render(),
+ * navigationInspector.render(), gatewayView.render(), and
+ * projectListView.render(), in that order, unconditionally, every
  * time. No event bus, observer pattern, subscriptions, or global state
  * — a single closure is the entire coordination mechanism, approved
- * specifically because there is one coordinator and two rendering
+ * specifically because there is one coordinator and several rendering
  * consumers.
  *
  * ProjectRecordProvider: this slice uses a minimal stub, () => [],
