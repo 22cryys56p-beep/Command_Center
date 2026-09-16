@@ -81,7 +81,6 @@ export class CommandCenterView extends ItemView {
   // Stored directly (not re-queried by CSS class) so New Project's view
   // swap can show/hide them without depending on DOM query support.
   private orientationBarContainer: HTMLElement | null = null;
-  private categoryViewContainer: HTMLElement | null = null;
   private gatewayViewContainer: HTMLElement | null = null;
   private projectListViewContainer: HTMLElement | null = null;
 
@@ -149,16 +148,12 @@ export class CommandCenterView extends ItemView {
     const gatewayViewContainer = root.createDiv({
       cls: "command-center-gateway-view-container",
     });
-    const categoryViewContainer = root.createDiv({
-      cls: "command-center-category-view-container",
-    });
     const projectListViewContainer = root.createDiv({
       cls: "command-center-project-list-view-container",
     });
 
     this.orientationBarContainer = orientationBarContainer;
     this.gatewayViewContainer = gatewayViewContainer;
-    this.categoryViewContainer = categoryViewContainer;
     this.projectListViewContainer = projectListViewContainer;
 
     // The sole coordination mechanism (Slice 7, resolved): a single
@@ -187,7 +182,6 @@ export class CommandCenterView extends ItemView {
       this.controller,
       () => this.enterNewProject()
     );
-    categoryViewContainer.style.display = "none";
     this.projectListView = new ProjectListView(
       projectListViewContainer,
       this.controller,
@@ -219,7 +213,6 @@ export class CommandCenterView extends ItemView {
     this.gatewayView = null;
     this.gatewayViewContainer = null;
     this.orientationBarContainer = null;
-    this.categoryViewContainer = null;
     this.projectListViewContainer = null;
     this.newProjectView = null;
     this.newProjectContainer = null;
