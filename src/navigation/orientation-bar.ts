@@ -43,15 +43,17 @@
  * - No event buses, observer patterns, subscriptions, or global state
  *   are introduced. A single injected callback is the sole
  *   coordination mechanism, approved specifically because there is one
- *   coordinator (CommandCenterView) and two rendering consumers
- *   (this component and NavigationInspector) — the minimal mechanism
+ *   coordinator (CommandCenterView) and several rendering consumers
+ *   (this component, NavigationInspector, GatewayView, and
+ *   ProjectListView) — the minimal mechanism
  *   sufficient for that shape, not general-purpose infrastructure.
  *
  * Re-render ownership (RESOLVED at Slice 7 — no longer interim):
  * OrientationBarComponent does NOT re-render itself after actions.
  * CommandCenterView owns re-render coordination centrally: it supplies
  * onStateChange, and its implementation calls this component's
- * render() (and NavigationInspector's render()) after every state
+ * render() (and NavigationInspector's, GatewayView's, and
+ * ProjectListView's render()) after every state
  * change. This was explicitly flagged as deferred at Slice 5 and is
  * now settled, not left open.
  *
