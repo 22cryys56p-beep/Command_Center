@@ -240,7 +240,7 @@ export class NavigationController {
     // is the full NavigationDestination union, which includes the
     // object-less "gateway" variant. Narrow explicitly rather than
     // asserting, consistent with this module's "no silent coercion"
-    // precedent (Step 1's getCategorySiblings comment).
+    // precedent.
     if (destination.depth === "gateway") {
       throw new Error(
         "NavigationController.goUp: resolveUp returned an unexpected \"gateway\" destination. This should be unreachable given goUp's null-object guard above."

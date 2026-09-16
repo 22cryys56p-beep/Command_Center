@@ -182,9 +182,6 @@ export class CommandCenterView extends ItemView {
       this.controller
     );
     // Gateway replaces Category Screen as the root surface (ACP-011/012).
-    // CategoryView and CATEGORY_ORDER remain in the codebase untouched,
-    // retained pending ACP-011's separate retirement decision; they are
-    // simply no longer the post-Entry root.
     this.gatewayView = new GatewayView(
       gatewayViewContainer,
       this.controller,
