@@ -35,11 +35,12 @@
  * specifically because there is one coordinator and several rendering
  * consumers.
  *
- * ProjectRecordProvider: this slice uses a minimal stub, () => [],
- * per the approved Slice 7 scope. Real Metadata Cache access,
- * frontmatter parsing, ProjectRecord generation, and validation are
- * explicitly NOT implemented here — they belong to a later, dedicated
- * integration step not yet slotted into the roadmap.
+ * ProjectRecordProvider: WP14 implements the real provider,
+ * ObsidianProjectRecordProvider (src/integration/), constructed here at
+ * the composition root and shared by reference with NavigationController
+ * and ProjectListView. Metadata Cache access, frontmatter mapping, and
+ * validation delegation live in that module, not in this file — see its
+ * own header for the full boundary.
  *
  * Obsidian coupling boundary: this is the first class in the project
  * to extend an Obsidian base class (ItemView) and implement its
@@ -65,7 +66,8 @@ import { EntryView } from "../views/entry-view";
 import { ProjectListView } from "../views/project-list-view";
 import { GatewayView } from "../views/gateway-view";
 import { NewProjectView } from "../views/new-project-view";
-import type { ProjectRecord, ProjectStatus } from "../data/project-record";
+import type { ProjectStatus } from "../data/project-record";
+import { ObsidianProjectRecordProvider } from "../integration/obsidian-project-record-provider";
 
 export const COMMAND_CENTER_VIEW_TYPE = "command-center-view";
 
@@ -131,12 +133,17 @@ export class CommandCenterView extends ItemView {
 
     this.entryView = null;
 
-    // Stub provider per the approved Slice 7 scope — deliberately not
-    // a real Metadata Cache-backed implementation. See class-level
-    // comment.
-    const stubProvider = (): readonly ProjectRecord[] => [];
+    // WP14: real Obsidian-backed provider, replacing the former stub.
+    // CommandCenterView remains the composition root (WP13 Architectural
+    // Decision Record, Option B) — one provider instance, the same
+    // reference shared by NavigationController and ProjectListView.
+    const provider = new ObsidianProjectRecordProvider(
+      this.app.vault,
+      this.app.metadataCache
+    );
+    const getProjectRecords = provider.getProjectRecords;
 
-    this.controller = new NavigationController(stubProvider);
+    this.controller = new NavigationController(getProjectRecords);
 
     const orientationBarContainer = root.createDiv({
       cls: "command-center-orientation-bar-container",
@@ -184,7 +191,7 @@ export class CommandCenterView extends ItemView {
     this.projectListView = new ProjectListView(
       projectListViewContainer,
       this.controller,
-      stubProvider
+      getProjectRecords
     );
 
     this.gatewayView.setOnStateChange(onStateChange);
