@@ -572,6 +572,7 @@ A new rendering, presentation, or implementation technique may be adopted when i
 - **ACP-010** — Category-level sibling paging retired (`getCategorySiblings()` and `CATEGORY_ORDER` both removed); project-level sibling paging retained.
 - **ACP-011** — Gateway destination-to-view mapping; Category Screen retirement trigger defined (requires all four status-mapped views plus Ideas' `possible`-record exposure, not just the four views alone).
 - **ACP-012** — Root navigation `Depth` literal renamed from `"category"` to `"gateway"` (pure semantic rename; `CurrentObject.kind: "category"` unaffected and unrelated).
+- **ACP-013** — New Project established as a distinct workflow entry point existing entirely outside `NavigationState` (no new `CurrentObject` kind or `Depth` value); the orientation bar hides while it is active; entry, Cancel, and exit require no navigation-state changes.
 
 The Phase 3 Architecture Record itself is **never edited** to reflect later ACPs — it remains the accurate historical record of what Phase 3 froze at the time. Later ACPs are the mechanism by which that frozen model is formally extended or reconciled; they do not rewrite history.
 
