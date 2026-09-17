@@ -5,6 +5,7 @@
   "main": "main.js",
   "scripts": {
     "build": "esbuild src/main.ts --bundle --outfile=main.js --external:obsidian --format=cjs --target=es2020",
+    "dev": "node scripts/dev.mjs",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:log": "bash ./scripts/run-tests-save-logs.sh"
