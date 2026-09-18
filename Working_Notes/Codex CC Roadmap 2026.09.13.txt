@@ -1,0 +1,51 @@
+
+- - - - - 
+
+Codex's Command Center Roadmap
+
+- - - - - 
+
+## Proposed roadmap
+
+At the `9109db4` baseline, Command Center has a sound plugin/navigation foundation, reconciled status and root-navigation contracts, and legacy Entry/Category/List components. The project is now ready to move from architectural reconciliation into implementation.
+
+The critical fact is that **Gateway is specified but not implemented**. The existing Category Screen remains intentionally functional until Gateway meets ACP-011’s retirement condition.
+
+| Milestone | Work | Dependencies | Completion criteria |
+|---|---|---|---|
+| 1. Gateway implementation specification | Convert ACP-011/012 into a bounded implementation contract: component boundary, six destination actions, render coordination, tests, and retention of Category Screen. | None; architecture is already settled. | Approved spec that introduces no new navigation depth/object type and preserves the ACP mapping. |
+| 2. Gateway implementation | Add the Gateway root surface and wire Current, Planning, Ideas, Ongoing, Archive, and New Project according to ACP-011. | Milestone 1. | Root opens at Gateway; status-mapped destinations enter existing List flow; no category-level paging; Category Screen remains available pending retirement criteria. |
+| 3. Real ProjectRecord provider | Replace the stub provider with Obsidian frontmatter/Metadata Cache integration, validating records through the existing data layer. | Existing WP10/WP11 contracts; can be specified in parallel with Gateway. | List views read actual records; invalid/missing data fails honestly; no second data store. |
+| 4. Gateway acceptance and Category retirement decision | Verify that Gateway provides all four status-mapped List paths and Ideas exposes possible-status records. Then determine whether ACP-011’s retirement trigger has been satisfied. | Milestones 2–3. | Explicit acceptance record; retire Category Screen only if the trigger is met. |
+| 5. Dashboard specification | Define the bounded Dashboard implementation contract against the real provider and resolve the Matrix’s open missing/invalid-record presentation items. | Milestone 3. | Approved specification; no Workspace or AI behavior invented. |
+| 6. Dashboard implementation | Build the project-level orientation surface, including required data-boundary and honest-failure behavior. | Milestone 5. | Project selection reaches a verified Dashboard without duplicating Workspace responsibilities. |
+| 7. Workspace specification and implementation | Add the deeper project work surface and Dashboard ↔ Workspace transition. | Dashboard implementation. | Workspace is distinct from Dashboard; `Up` path becomes real and can support WP12’s remaining verification. |
+| 8. Cross-cutting capability tracks | Incrementally add Project creation, Ideas/pre-formal content, Sources, Threads, Decisions, Tasks, History, Search, AI/provenance, and archive/ongoing workflows. | Real record model plus Dashboard/Workspace boundaries. | Each capability is separately specified, implemented, and accepted; no “mega-feature” combines unrelated domains. |
+
+### Sequential vs. parallel work
+
+Sequential:
+
+1. Gateway specification → Gateway implementation → Gateway acceptance/possible Category retirement.
+2. Real provider → Dashboard specification → Dashboard → Workspace.
+3. Workspace implementation → final enabled-path verification for WP12.
+
+Good parallel work:
+
+- Prepare the real ProjectRecord provider specification while Gateway is being implemented.
+- Resolve/document WP12 Slice 9B’s verification disposition; it should not block Gateway work.
+- Prepare Dashboard requirements only after the provider contract is clear; do not begin Dashboard implementation before its open presentation rules are settled.
+
+### Remaining prerequisite work
+
+No new architecture is needed for Gateway: ACP-009 through ACP-012 already freeze its relevant semantics.
+
+A **Gateway implementation specification** is still necessary because ACP-011 explicitly establishes the mapping and retirement boundary, not the implementation details or acceptance tests. Likewise, Dashboard needs a specification before coding because the current Matrix leaves its missing/invalid-record presentation open.
+
+### Immediate next step
+
+Create and approve the bounded **Gateway implementation specification/work package**. It should use ACP-011 and ACP-012 as binding inputs, preserve the existing `CurrentObject.kind === "category"` List identity, keep category paging disabled, and leave Category Screen in place until its accepted retirement trigger is demonstrably met.
+
+This is the smallest coherent step that turns the now-settled architecture into visible product progress without reopening any decisions.
+
+ - - - - - 
