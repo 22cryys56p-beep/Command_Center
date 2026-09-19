@@ -80,7 +80,8 @@ Before beginning work:
 5. Confirm the latest commit.
 6. Read this document.
 7. Read the Master Implementation Index.
-8. Verify that the repository state matches the documented state.
+8. Check `Working_Notes/` for any open architectural question relevant to the area you're about to touch. An open question recorded there is not resolved by inference, however reasonable the inference seems — it is resolved only by the process the note itself describes (typically a new ACP). This step exists because a genuinely open question has previously been silently re-derived, or nearly re-resolved by inference, more than once across different sessions and different AI collaborators.
+9. Verify that the repository state matches the documented state.
 
 Only then begin implementation work.
 

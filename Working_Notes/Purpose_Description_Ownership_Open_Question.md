@@ -28,6 +28,24 @@ Phase 4 (P4-R308/R318/R580) establishes Purpose and Description as real, require
 
 Therefore their authoritative ownership and source are currently unresolved.
 
+## Update (2026-09-17) — the two candidate resolution paths are not equally viable
+
+Further inspection found that Phase 3's Dashboard (WP5) "Forbidden" list is categorical, not illustrative: *"architecture documents, decision logs, research notes, development logs, AI Context, reference materials — **all document-body content, reserved for Workspace**."* Dashboard is explicitly forbidden from reading document-body content at all.
+
+P4-R580 simultaneously requires Dashboard to **distinguish** Purpose and Description.
+
+If Purpose/Description were classified as document-body content, these two requirements would directly conflict — Dashboard would be required to display them and forbidden from touching them at the same time. That is not a minor tension; it forecloses that path.
+
+**Consequence:** the only resolution consistent with both requirements is that Purpose and Description belong in the **metadata layer** — i.e., some extension of or addition to `ProjectRecord` — not in Workspace document-body content. The "leave them in the document body" option, considered earlier as a plausible candidate, is not actually architecturally available.
+
+This sharpens, but does not resolve, the open question: it narrows *where* the answer must live, without yet deciding *what* the answer is (a new tiered field? a separate but still-metadata-layer structure? something else within the metadata layer?).
+
+## Process consequence — this needs its own decision, separate from Dashboard's other open items
+
+`P4-R797` and `P4-R798` (missing/invalid record presentation) are Dashboard *presentation* choices — they don't touch `ProjectRecord`'s shape, and can be resolved inside a normal, bounded Dashboard implementation contract with no ACP required.
+
+Purpose/Description ownership is a different category of decision. `ProjectRecord` is explicitly "closed after ACP-001, ACP-002, ACP-003" — the same status that required ACP-009 to retire `completed` and reshape the status enum. Extending or restructuring the metadata layer to accommodate Purpose/Description is therefore very likely its own small ACP, decided on its own terms, not folded into whatever Dashboard implementation contract eventually resolves `R797`/`R798`. The two should not be conflated merely because both currently block the same downstream Dashboard work.
+
 ## What is NOT permitted until this is resolved
 
 - Do not add `purpose`/`description` fields to `ProjectRecord`.
