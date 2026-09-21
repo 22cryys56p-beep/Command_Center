@@ -3,34 +3,51 @@ import { ObsidianProjectRecordProvider } from "../../src/integration/obsidian-pr
 import type { ProjectRecord } from "../../src/data/project-record";
 
 // --- Simple test doubles ----------------------------------------------------
-// No mocking library, per this project's established test convention
-// (tests/data/project-record.test.ts, tests/views/*.test.ts).
 
 interface FakeFile {
   path: string;
 }
 
-function makeFakeVaultAndCache(files: Array<{ path: string; frontmatter?: Record<string, unknown> }>) {
-  // Reads `files` live on every call — deliberately not snapshotted at
-  // setup time, so tests can mutate `files` between provider calls to
-  // simulate a changed vault state.
+function makeFakeVaultAndCache(
+  files: Array<{
+    path: string;
+    frontmatter?: Record<string, unknown>;
+  }>
+) {
   const vault = {
-    getMarkdownFiles: (): FakeFile[] => files.map((f) => ({ path: f.path })),
+    getMarkdownFiles: (): FakeFile[] =>
+      files.map((file) => ({ path: file.path })),
   };
+
   const metadataCache = {
     getFileCache: (file: FakeFile) => {
-      const match = files.find((f) => f.path === file.path);
-      return match && match.frontmatter !== undefined ? { frontmatter: match.frontmatter } : null;
+      const match = files.find((entry) => entry.path === file.path);
+
+      if (!match || match.frontmatter === undefined) {
+        return null;
+      }
+
+      return {
+        frontmatter: match.frontmatter,
+      };
     },
   };
 
   return { vault, metadataCache };
 }
 
-function buildProvider(files: Array<{ path: string; frontmatter?: Record<string, unknown> }>) {
+function buildProvider(
+  files: Array<{
+    path: string;
+    frontmatter?: Record<string, unknown>;
+  }>
+) {
   const { vault, metadataCache } = makeFakeVaultAndCache(files);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  return new ObsidianProjectRecordProvider(vault as any, metadataCache as any);
+
+  return new ObsidianProjectRecordProvider(
+    vault as any,
+    metadataCache as any
+  );
 }
 
 const validFrontmatter = {
@@ -48,28 +65,51 @@ const validFrontmatter = {
 
 describe("candidate discovery", () => {
   it("includes a file whose frontmatter has project_id", () => {
-    const provider = buildProvider([{ path: "Active Projects/A.md", frontmatter: validFrontmatter }]);
+    const provider = buildProvider([
+      {
+        path: "Active Projects/A.md",
+        frontmatter: validFrontmatter,
+      },
+    ]);
+
     const records = provider.getProjectRecords();
+
     expect(records).toHaveLength(1);
     expect(records[0].project_id).toBe("proj-0001");
   });
 
   it("excludes a file with no frontmatter at all", () => {
-    const provider = buildProvider([{ path: "README.md" }]);
+    const provider = buildProvider([
+      {
+        path: "README.md",
+      },
+    ]);
+
     expect(provider.getProjectRecords()).toHaveLength(0);
   });
 
-  it("excludes a file whose frontmatter has no project_id (e.g. a template)", () => {
+  it("excludes a file whose frontmatter has no project_id", () => {
     const provider = buildProvider([
-      { path: "Templates/New Project Template.md", frontmatter: { type: "project", status: "planning" } },
+      {
+        path: "Templates/New Project Template.md",
+        frontmatter: {
+          type: "project",
+          status: "planning",
+        },
+      },
     ]);
+
     expect(provider.getProjectRecords()).toHaveLength(0);
   });
 
   it("does not use folder location to determine candidacy", () => {
     const provider = buildProvider([
-      { path: "Completed Projects/random-note.md", frontmatter: validFrontmatter },
+      {
+        path: "Completed Projects/random-note.md",
+        frontmatter: validFrontmatter,
+      },
     ]);
+
     expect(provider.getProjectRecords()).toHaveLength(1);
   });
 });
@@ -79,10 +119,17 @@ describe("frontmatter mapping", () => {
     const provider = buildProvider([
       {
         path: "Active Projects/A.md",
-        frontmatter: { ...validFrontmatter, unrelated_field: "should be ignored" },
+        frontmatter: {
+          ...validFrontmatter,
+          unrelated_field: "should be ignored",
+        },
       },
     ]);
-    const record = provider.getProjectRecords()[0] as ProjectRecord & { unrelated_field?: unknown };
+
+    const record = provider.getProjectRecords()[0] as ProjectRecord & {
+      unrelated_field?: unknown;
+    };
+
     expect(record.unrelated_field).toBeUndefined();
   });
 
@@ -93,47 +140,102 @@ describe("frontmatter mapping", () => {
       status: "possible" as const,
       focus: "Something worth exploring later",
     };
-    const provider = buildProvider([{ path: "Active Projects/A.md", frontmatter: minimalValid }]);
+
+    const provider = buildProvider([
+      {
+        path: "Active Projects/A.md",
+        frontmatter: minimalValid,
+      },
+    ]);
+
     const record = provider.getProjectRecords()[0];
+
     expect(record.milestone).toBeUndefined();
   });
 
-  it("preserves an explicit null for blockers rather than treating it as missing", () => {
+  it("preserves an explicit null for blockers", () => {
     const provider = buildProvider([
-      { path: "Active Projects/A.md", frontmatter: { ...validFrontmatter, blockers: null } },
+      {
+        path: "Active Projects/A.md",
+        frontmatter: {
+          ...validFrontmatter,
+          blockers: null,
+        },
+      },
     ]);
+
     const record = provider.getProjectRecords()[0];
+
     expect(record.blockers).toBeNull();
   });
 });
 
 describe("validation delegation", () => {
-  it("excludes a candidate missing a required field and diagnoses it", () => {
+  it("excludes a candidate missing required fields", () => {
     const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+
     const provider = buildProvider([
-      { path: "Active Projects/broken.md", frontmatter: { project_id: "proj-0002" } }, // missing name/status/focus
+      {
+        path: "Active Projects/broken.md",
+        frontmatter: {
+          project_id: "proj-0002",
+        },
+      },
     ]);
+
     expect(provider.getProjectRecords()).toHaveLength(0);
     expect(warnSpy).toHaveBeenCalled();
+
     warnSpy.mockRestore();
   });
 
   it("excludes a candidate with an invalid status value", () => {
     const provider = buildProvider([
-      { path: "Active Projects/A.md", frontmatter: { ...validFrontmatter, status: "completed" } },
+      {
+        path: "Active Projects/A.md",
+        frontmatter: {
+          ...validFrontmatter,
+          status: "completed",
+        },
+      },
     ]);
+
     expect(provider.getProjectRecords()).toHaveLength(0);
   });
 
   it("continues loading valid candidates after an invalid one", () => {
     const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+
     const provider = buildProvider([
-      { path: "Active Projects/valid1.md", frontmatter: { ...validFrontmatter, project_id: "proj-0001" } },
-      { path: "Active Projects/invalid.md", frontmatter: { project_id: "proj-0002" } },
-      { path: "Active Projects/valid2.md", frontmatter: { ...validFrontmatter, project_id: "proj-0003" } },
+      {
+        path: "Active Projects/valid1.md",
+        frontmatter: {
+          ...validFrontmatter,
+          project_id: "proj-0001",
+        },
+      },
+      {
+        path: "Active Projects/invalid.md",
+        frontmatter: {
+          project_id: "proj-0002",
+        },
+      },
+      {
+        path: "Active Projects/valid2.md",
+        frontmatter: {
+          ...validFrontmatter,
+          project_id: "proj-0003",
+        },
+      },
     ]);
+
     const records = provider.getProjectRecords();
-    expect(records.map((r) => r.project_id)).toEqual(["proj-0001", "proj-0003"]);
+
+    expect(records.map((record) => record.project_id)).toEqual([
+      "proj-0001",
+      "proj-0003",
+    ]);
+
     warnSpy.mockRestore();
   });
 });
@@ -141,89 +243,198 @@ describe("validation delegation", () => {
 describe("duplicate project_id handling", () => {
   it("excludes all candidates sharing a duplicate project_id", () => {
     const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+
     const provider = buildProvider([
-      { path: "Active Projects/A.md", frontmatter: { ...validFrontmatter, name: "A" } },
-      { path: "Active Projects/B.md", frontmatter: { ...validFrontmatter, name: "B" } },
+      {
+        path: "Active Projects/A.md",
+        frontmatter: {
+          ...validFrontmatter,
+          name: "A",
+        },
+      },
+      {
+        path: "Active Projects/B.md",
+        frontmatter: {
+          ...validFrontmatter,
+          name: "B",
+        },
+      },
     ]);
+
     expect(provider.getProjectRecords()).toHaveLength(0);
     expect(warnSpy).toHaveBeenCalled();
+
     warnSpy.mockRestore();
   });
 
-  it("excludes a valid candidate whose project_id collides with an otherwise-invalid candidate", () => {
-    // The edge case duplicate-checking-after-validation would miss: A is
-    // fully valid; B shares A's project_id but is invalid for an unrelated
-    // reason (missing required fields). Both must be excluded — A must not
-    // silently survive just because B happened to be malformed.
+  it("excludes a valid candidate whose project_id collides with an invalid candidate", () => {
     const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+
     const provider = buildProvider([
-      { path: "Active Projects/A.md", frontmatter: { ...validFrontmatter, project_id: "proj-shared" } },
-      { path: "Active Projects/B.md", frontmatter: { project_id: "proj-shared" } }, // missing name/status/focus
+      {
+        path: "Active Projects/A.md",
+        frontmatter: {
+          ...validFrontmatter,
+          project_id: "proj-shared",
+        },
+      },
+      {
+        path: "Active Projects/B.md",
+        frontmatter: {
+          project_id: "proj-shared",
+        },
+      },
     ]);
+
     expect(provider.getProjectRecords()).toHaveLength(0);
     expect(warnSpy).toHaveBeenCalled();
+
     warnSpy.mockRestore();
   });
 
   it("does not silently pick a winner among duplicates", () => {
     const provider = buildProvider([
-      { path: "Active Projects/A.md", frontmatter: { ...validFrontmatter, name: "A" } },
-      { path: "Active Projects/B.md", frontmatter: { ...validFrontmatter, name: "B" } },
+      {
+        path: "Active Projects/A.md",
+        frontmatter: {
+          ...validFrontmatter,
+          name: "A",
+        },
+      },
+      {
+        path: "Active Projects/B.md",
+        frontmatter: {
+          ...validFrontmatter,
+          name: "B",
+        },
+      },
     ]);
+
     const records = provider.getProjectRecords();
-    expect(records.find((r) => r.name === "A")).toBeUndefined();
-    expect(records.find((r) => r.name === "B")).toBeUndefined();
+
+    expect(records.find((record) => record.name === "A")).toBeUndefined();
+    expect(records.find((record) => record.name === "B")).toBeUndefined();
   });
 
   it("continues loading unrelated valid projects when a duplicate exists elsewhere", () => {
     const provider = buildProvider([
-      { path: "Active Projects/dup1.md", frontmatter: { ...validFrontmatter, project_id: "proj-dup" } },
-      { path: "Active Projects/dup2.md", frontmatter: { ...validFrontmatter, project_id: "proj-dup" } },
-      { path: "Active Projects/unique.md", frontmatter: { ...validFrontmatter, project_id: "proj-unique" } },
+      {
+        path: "Active Projects/dup1.md",
+        frontmatter: {
+          ...validFrontmatter,
+          project_id: "proj-dup",
+        },
+      },
+      {
+        path: "Active Projects/dup2.md",
+        frontmatter: {
+          ...validFrontmatter,
+          project_id: "proj-dup",
+        },
+      },
+      {
+        path: "Active Projects/unique.md",
+        frontmatter: {
+          ...validFrontmatter,
+          project_id: "proj-unique",
+        },
+      },
     ]);
+
     const records = provider.getProjectRecords();
-    expect(records.map((r) => r.project_id)).toEqual(["proj-unique"]);
+
+    expect(records.map((record) => record.project_id)).toEqual([
+      "proj-unique",
+    ]);
   });
 });
 
 describe("deterministic ordering", () => {
-  it("returns records sorted lexicographically by project_id regardless of input order", () => {
+  it("returns records sorted lexicographically by project_id", () => {
     const provider = buildProvider([
-      { path: "Active Projects/C.md", frontmatter: { ...validFrontmatter, project_id: "proj-c" } },
-      { path: "Active Projects/A.md", frontmatter: { ...validFrontmatter, project_id: "proj-a" } },
-      { path: "Active Projects/B.md", frontmatter: { ...validFrontmatter, project_id: "proj-b" } },
+      {
+        path: "Active Projects/C.md",
+        frontmatter: {
+          ...validFrontmatter,
+          project_id: "proj-c",
+        },
+      },
+      {
+        path: "Active Projects/A.md",
+        frontmatter: {
+          ...validFrontmatter,
+          project_id: "proj-a",
+        },
+      },
+      {
+        path: "Active Projects/B.md",
+        frontmatter: {
+          ...validFrontmatter,
+          project_id: "proj-b",
+        },
+      },
     ]);
+
     const records = provider.getProjectRecords();
-    expect(records.map((r) => r.project_id)).toEqual(["proj-a", "proj-b", "proj-c"]);
+
+    expect(records.map((record) => record.project_id)).toEqual([
+      "proj-a",
+      "proj-b",
+      "proj-c",
+    ]);
   });
 });
 
 describe("read-only behavior and freshness", () => {
   it("performs no mutation of the vault/file objects it discovers", () => {
     const { vault, metadataCache } = makeFakeVaultAndCache([
-      { path: "Active Projects/A.md", frontmatter: validFrontmatter },
+      {
+        path: "Active Projects/A.md",
+        frontmatter: validFrontmatter,
+      },
     ]);
+
     const modifyingMethods = ["create", "modify", "delete", "rename"];
+
     for (const method of modifyingMethods) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       expect((vault as any)[method]).toBeUndefined();
     }
-    const provider = new ObsidianProjectRecordProvider(vault as any, metadataCache as any);
+
+    const provider = new ObsidianProjectRecordProvider(
+      vault as any,
+      metadataCache as any
+    );
+
     provider.getProjectRecords();
   });
 
-  it("reflects a changed vault state on a later call rather than returning a stored result", () => {
-    const files: Array<{ path: string; frontmatter?: Record<string, unknown> }> = [
-      { path: "Active Projects/A.md", frontmatter: validFrontmatter },
+  it("reflects a changed vault state on a later call", () => {
+    const files: Array<{
+      path: string;
+      frontmatter?: Record<string, unknown>;
+    }> = [
+      {
+        path: "Active Projects/A.md",
+        frontmatter: validFrontmatter,
+      },
     ];
+
     const { vault, metadataCache } = makeFakeVaultAndCache(files);
-    const provider = new ObsidianProjectRecordProvider(vault as any, metadataCache as any);
+
+    const provider = new ObsidianProjectRecordProvider(
+      vault as any,
+      metadataCache as any
+    );
 
     expect(provider.getProjectRecords()).toHaveLength(1);
 
-    // Mutate the SAME backing store the SAME provider instance reads from.
-    // No new provider is constructed here — this is the point of the test.
-    files.push({ path: "Active Projects/B.md", frontmatter: { ...validFrontmatter, project_id: "proj-0099" } });
+    files.push({
+      path: "Active Projects/B.md",
+      frontmatter: {
+        ...validFrontmatter,
+        project_id: "proj-0099",
+      },
+    });
 
     expect(provider.getProjectRecords()).toHaveLength(2);
   });

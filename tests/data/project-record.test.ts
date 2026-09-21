@@ -5,8 +5,6 @@ import {
   type ProjectRecord,
 } from "../../src/data/project-record";
 
-// --- Fixtures -------------------------------------------------------------
-
 const minimalPossible: ProjectRecord = {
   project_id: "proj-0012",
   name: "Grading Assistant",
@@ -32,8 +30,6 @@ const validCurrent: ProjectRecord = {
   repo_reference: "github.com/example-user/teacher-toolbox",
 };
 
-// --- Always-required fields ------------------------------------------------
-
 describe("always-required fields", () => {
   it("accepts a minimal valid possible-status record", () => {
     const result = validateProjectRecord(minimalPossible);
@@ -52,14 +48,23 @@ describe("always-required fields", () => {
   });
 
   it("flags an empty (whitespace-only) name", () => {
-    const result = validateProjectRecord({ ...minimalPossible, name: "   " });
-    expect(result.issues).toContainEqual({ field: "name", reason: "missing" });
+    const result = validateProjectRecord({
+      ...minimalPossible,
+      name: "   ",
+    });
+    expect(result.issues).toContainEqual({
+      field: "name",
+      reason: "missing",
+    });
   });
 
   it("flags a missing status", () => {
     const { status, ...rest } = minimalPossible;
     const result = validateProjectRecord(rest);
-    expect(result.issues).toContainEqual({ field: "status", reason: "missing" });
+    expect(result.issues).toContainEqual({
+      field: "status",
+      reason: "missing",
+    });
   });
 
   it("flags an invalid status enum value", () => {
@@ -77,18 +82,29 @@ describe("always-required fields", () => {
     expect(validateProjectRecord(minimalPossible).valid).toBe(true);
     expect(validateProjectRecord(validPlanned).valid).toBe(true);
     expect(validateProjectRecord(validCurrent).valid).toBe(true);
+
     expect(
-      validateProjectRecord({ ...minimalPossible, status: "ongoing" }).valid
+      validateProjectRecord({
+        ...minimalPossible,
+        status: "ongoing",
+      }).valid
     ).toBe(true);
+
     expect(
-      validateProjectRecord({ ...minimalPossible, status: "archived" }).valid
+      validateProjectRecord({
+        ...minimalPossible,
+        status: "archived",
+      }).valid
     ).toBe(true);
   });
 
   it("flags a missing focus", () => {
     const { focus, ...rest } = minimalPossible;
     const result = validateProjectRecord(rest);
-    expect(result.issues).toContainEqual({ field: "focus", reason: "missing" });
+    expect(result.issues).toContainEqual({
+      field: "focus",
+      reason: "missing",
+    });
   });
 
   it("does not evaluate tier-gated fields when status itself is invalid", () => {
@@ -98,13 +114,15 @@ describe("always-required fields", () => {
       status: "not-a-real-status" as ProjectRecord["status"],
       focus: "x",
     });
+
     expect(result.issues).toEqual([
-      { field: "status", reason: "invalid_enum_value" },
+      {
+        field: "status",
+        reason: "invalid_enum_value",
+      },
     ]);
   });
 });
-
-// --- Planned-tier fields (carried into current), per ACP-003 --------------
 
 describe("planned-tier fields", () => {
   it("does not require planned-tier fields at possible status", () => {
@@ -119,11 +137,21 @@ describe("planned-tier fields", () => {
       status: "planned" as const,
       focus: "Just started",
     };
+
     const result = validateProjectRecord(bare);
+
     expect(result.valid).toBe(false);
+
     const fields = result.issues.map((i) => i.field).sort();
+
     expect(fields).toEqual(
-      ["blockers", "last_updated", "milestone", "next_action", "progress"].sort()
+      [
+        "blockers",
+        "last_updated",
+        "milestone",
+        "next_action",
+        "progress",
+      ].sort()
     );
   });
 
@@ -136,6 +164,7 @@ describe("planned-tier fields", () => {
       ...validPlanned,
       progress: "almost there" as ProjectRecord["progress"],
     });
+
     expect(result.issues).toContainEqual({
       field: "progress",
       reason: "invalid_enum_value",
@@ -143,14 +172,22 @@ describe("planned-tier fields", () => {
   });
 
   it("treats blockers: null as valid (intentional absence)", () => {
-    const result = validateProjectRecord({ ...validPlanned, blockers: null });
+    const result = validateProjectRecord({
+      ...validPlanned,
+      blockers: null,
+    });
+
     expect(result.valid).toBe(true);
   });
 
-  it("treats blockers: undefined at the planned tier as invalid (missing, not absent)", () => {
+  it("treats blockers: undefined at the planned tier as invalid", () => {
     const { blockers, ...rest } = validPlanned;
     const result = validateProjectRecord(rest);
-    expect(result.issues).toContainEqual({ field: "blockers", reason: "missing" });
+
+    expect(result.issues).toContainEqual({
+      field: "blockers",
+      reason: "missing",
+    });
   });
 
   it("rejects a non-array, non-null blockers value", () => {
@@ -158,6 +195,7 @@ describe("planned-tier fields", () => {
       ...validPlanned,
       blockers: "one blocker" as unknown as string[],
     });
+
     expect(result.issues).toContainEqual({
       field: "blockers",
       reason: "invalid_type",
@@ -169,6 +207,7 @@ describe("planned-tier fields", () => {
       ...validPlanned,
       blockers: ["Waiting on stakeholder sign-off"],
     });
+
     expect(result.valid).toBe(true);
   });
 
@@ -177,23 +216,23 @@ describe("planned-tier fields", () => {
       ...validPlanned,
       last_updated: "not-a-date",
     });
+
     expect(result.issues).toContainEqual({
       field: "last_updated",
       reason: "invalid_timestamp",
     });
   });
 
-  it("requires last_updated at planned, per ACP-003 (not just current)", () => {
+  it("requires last_updated at planned, per ACP-003", () => {
     const { last_updated, ...rest } = validPlanned;
     const result = validateProjectRecord(rest);
+
     expect(result.issues).toContainEqual({
       field: "last_updated",
       reason: "missing",
     });
   });
 });
-
-// --- Current-tier fields ----------------------------------------------------
 
 describe("current-tier fields", () => {
   it("does not require repo_reference at planned status", () => {
@@ -204,6 +243,7 @@ describe("current-tier fields", () => {
   it("requires repo_reference at current status", () => {
     const { repo_reference, ...rest } = validCurrent;
     const result = validateProjectRecord(rest);
+
     expect(result.issues).toContainEqual({
       field: "repo_reference",
       reason: "missing",
@@ -222,33 +262,52 @@ describe("current-tier fields", () => {
       focus: "Implementation underway",
       repo_reference: "github.com/example/bare",
     };
+
     const result = validateProjectRecord(bareCurrent);
     const fields = result.issues.map((i) => i.field).sort();
+
     expect(fields).toEqual(
-      ["blockers", "last_updated", "milestone", "next_action", "progress"].sort()
+      [
+        "blockers",
+        "last_updated",
+        "milestone",
+        "next_action",
+        "progress",
+      ].sort()
     );
   });
 });
 
-// --- hasNoBlockers helper ---------------------------------------------------
-
 describe("hasNoBlockers", () => {
   it("returns true when blockers is explicitly null", () => {
-    expect(hasNoBlockers({ ...validPlanned, blockers: null })).toBe(true);
+    expect(
+      hasNoBlockers({
+        ...validPlanned,
+        blockers: null,
+      })
+    ).toBe(true);
   });
 
-  it("returns false when blockers is undefined (not yet applicable)", () => {
+  it("returns false when blockers is undefined", () => {
     const { blockers, ...rest } = validPlanned;
     expect(hasNoBlockers(rest)).toBe(false);
   });
 
   it("returns false when blockers is a populated array", () => {
     expect(
-      hasNoBlockers({ ...validPlanned, blockers: ["something"] })
+      hasNoBlockers({
+        ...validPlanned,
+        blockers: ["something"],
+      })
     ).toBe(false);
   });
 
-  it("returns false when blockers is an empty array (distinct from null)", () => {
-    expect(hasNoBlockers({ ...validPlanned, blockers: [] })).toBe(false);
+  it("returns false when blockers is an empty array", () => {
+    expect(
+      hasNoBlockers({
+        ...validPlanned,
+        blockers: [],
+      })
+    ).toBe(false);
   });
 });
