@@ -1,12 +1,18 @@
 ---
 type: open-question
 phase: 4
-status: unresolved — no implementation inference permitted
+status: resolved — see ACP-014
 date: 2026-09-17
 relates_to: Project Dashboard (Category 43), Project Workspace (Category 22-28)
 ---
 
 # Open Question — Purpose/Description Ownership and Source
+
+**RESOLVED 2026-09-18 — see `docs/architecture/ACP-014 — Purpose and Description Metadata Representation.md`.**
+
+Purpose and Description are accepted as universal-tier `ProjectRecord` fields (required at every status, alongside `project_id`/`name`/`status`/`focus`). The evidence trail below is preserved as the record of how that conclusion was reached; it should not be re-derived or second-guessed in future sessions — if it needs revisiting, that itself goes through the ACP process, not silent re-inference.
+
+Implementation (interface/validator/provider/tests) is a separate, not-yet-completed step — see ACP-014 §5. Until that lands and is verified, the live code does not yet reflect this decision.
 
 ## The question
 
@@ -46,13 +52,15 @@ This sharpens, but does not resolve, the open question: it narrows *where* the a
 
 Purpose/Description ownership is a different category of decision. `ProjectRecord` is explicitly "closed after ACP-001, ACP-002, ACP-003" — the same status that required ACP-009 to retire `completed` and reshape the status enum. Extending or restructuring the metadata layer to accommodate Purpose/Description is therefore very likely its own small ACP, decided on its own terms, not folded into whatever Dashboard implementation contract eventually resolves `R797`/`R798`. The two should not be conflated merely because both currently block the same downstream Dashboard work.
 
-## What is NOT permitted until this is resolved
+## What was NOT permitted before ACP-014 (historical — superseded)
 
-- Do not add `purpose`/`description` fields to `ProjectRecord`.
-- Do not assign them to Workspace document-body content by inference.
-- Do not create a second persistence or read path for them.
-- Do not silently resolve this in the course of implementing Dashboard or Workspace — surface it explicitly instead.
+This section reflected the state before resolution and is preserved for history. It no longer governs.
 
-## When this becomes live
+- ~~Do not add `purpose`/`description` fields to `ProjectRecord`.~~ — **Now permitted and decided: they are added, per ACP-014.**
+- Do not assign them to Workspace document-body content — still correct; ACP-014 confirms this path was foreclosed, not merely deferred.
+- Do not create a second persistence or read path for them — still correct; ACP-014 rejected the adjacent-structure alternative for this same reason.
+- Do not silently resolve this in the course of implementing Dashboard or Workspace — satisfied; it was resolved explicitly, through the ACP process, not silently during implementation.
 
-This becomes a real design question the moment Project Dashboard or Project Workspace implementation actually reaches the requirement to display Purpose and/or Description. At that point it likely needs a small ACP — not a redesign, just an explicit decision on where these two fields live and how they're read — resolved through the normal architecture-change process, not inferred by whoever happens to be implementing Dashboard at the time.
+## Implementation status
+
+Not yet implemented. ACP-014 §5 specifies the next steps: extend `ProjectRecord` and `validateProjectRecord()`, update WP14's provider mapping and tests, verify against a fresh clone before anything is proposed for commit.
