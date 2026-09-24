@@ -18,6 +18,8 @@ function record(project_id: string, status: ProjectRecord["status"]): ProjectRec
   return {
     project_id,
     name: `Project ${project_id}`,
+    purpose: "test fixture",
+    description: "test fixture",
     status,
     focus: "test fixture",
   };

@@ -83,6 +83,8 @@ describe("ProjectListView", () => {
       {
         project_id: "proj-1",
         name: "Project One",
+        purpose: "test fixture",
+        description: "test fixture",
         status: "current",
         focus: "Focus one",
       },

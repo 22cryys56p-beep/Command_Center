@@ -36,6 +36,8 @@ function buildProvider(files: Array<{ path: string; frontmatter?: Record<string,
 const validFrontmatter = {
   project_id: "proj-0001",
   name: "Teacher Toolbox",
+  purpose: "Give teachers back time currently lost to administrative work",
+  description: "A modular educational productivity platform",
   status: "current" as const,
   focus: "Reduce administrative time for teachers",
   milestone: "M1 — Foundation",
@@ -75,6 +77,13 @@ describe("candidate discovery", () => {
 });
 
 describe("frontmatter mapping", () => {
+  it("maps purpose and description through unchanged (ACP-014)", () => {
+    const provider = buildProvider([{ path: "Active Projects/A.md", frontmatter: validFrontmatter }]);
+    const record = provider.getProjectRecords()[0];
+    expect(record.purpose).toBe(validFrontmatter.purpose);
+    expect(record.description).toBe(validFrontmatter.description);
+  });
+
   it("maps only the canonical fields, ignoring extras", () => {
     const provider = buildProvider([
       {
@@ -90,6 +99,8 @@ describe("frontmatter mapping", () => {
     const minimalValid = {
       project_id: "proj-0001",
       name: "An Idea",
+      purpose: "Explore whether this is worth pursuing",
+      description: "A rough idea, not yet formalized",
       status: "possible" as const,
       focus: "Something worth exploring later",
     };

@@ -32,6 +32,8 @@ import { validateProjectRecord, type ProjectRecord } from "../data/project-recor
 const CANONICAL_FIELDS = [
   "project_id",
   "name",
+  "purpose",
+  "description",
   "status",
   "focus",
   "milestone",

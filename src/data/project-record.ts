@@ -4,7 +4,8 @@
  * Implements: Phase 3 Architecture Record, Section B (Final Data Model).
  * Governing decisions: ACP-002 (stable identity via project_id), ACP-003
  * (last_updated scope extended to `planned` and `current`), ACP-009
- * (ProjectStatus enum reconciliation).
+ * (ProjectStatus enum reconciliation), ACP-014 (purpose/description added
+ * as universal-tier fields).
  *
  * This module defines the record shape and its validation rules only.
  * It does not read or write files — that is the responsibility of a later
@@ -40,6 +41,15 @@ export interface ProjectRecord {
   // responsibility of a record-creation function, not this module.
   project_id: string;
   name: string;
+  // purpose/description added per ACP-014 (2026-09-18): universal-tier
+  // fields, required at every status alongside project_id/name/status/
+  // focus. Phase 3 Section B did not contain these; Phase 4 (P4-R102,
+  // P4-R103, P4-R308) established them as core, required, distinguishable
+  // project concepts, grouped with the same universal-identity fields
+  // already here. See ACP-014 for the full evidence trail and the
+  // rejected alternative (a separate adjacent metadata structure).
+  purpose: string;
+  description: string;
   status: ProjectStatus;
   focus: string;
 
@@ -124,6 +134,16 @@ export function validateProjectRecord(
 
   if (!isNonEmptyString(record.name)) {
     issues.push({ field: "name", reason: "missing" });
+  }
+
+  // purpose/description: universal-tier per ACP-014, same validation
+  // pattern as name/focus.
+  if (!isNonEmptyString(record.purpose)) {
+    issues.push({ field: "purpose", reason: "missing" });
+  }
+
+  if (!isNonEmptyString(record.description)) {
+    issues.push({ field: "description", reason: "missing" });
   }
 
   if (record.status === undefined) {

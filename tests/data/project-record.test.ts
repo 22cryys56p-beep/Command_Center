@@ -10,6 +10,8 @@ import {
 const minimalPossible: ProjectRecord = {
   project_id: "proj-0012",
   name: "Grading Assistant",
+  purpose: "Reduce teacher time spent on first-pass rubric scoring",
+  description: "An automated grading-assistance idea, not yet formalized",
   status: "possible",
   focus: "An idea for automating first-pass rubric scoring",
 };
@@ -17,6 +19,8 @@ const minimalPossible: ProjectRecord = {
 const validPlanned: ProjectRecord = {
   project_id: "proj-0007",
   name: "Teacher Toolbox",
+  purpose: "Give teachers back time currently lost to administrative work",
+  description: "A modular educational productivity platform",
   status: "planned",
   focus: "Practical tools that reduce administrative time for teachers",
   milestone: "M1 — Foundation",
@@ -54,6 +58,28 @@ describe("always-required fields", () => {
   it("flags an empty (whitespace-only) name", () => {
     const result = validateProjectRecord({ ...minimalPossible, name: "   " });
     expect(result.issues).toContainEqual({ field: "name", reason: "missing" });
+  });
+
+  it("flags a missing purpose", () => {
+    const { purpose, ...rest } = minimalPossible;
+    const result = validateProjectRecord(rest);
+    expect(result.issues).toContainEqual({ field: "purpose", reason: "missing" });
+  });
+
+  it("flags an empty (whitespace-only) purpose", () => {
+    const result = validateProjectRecord({ ...minimalPossible, purpose: "   " });
+    expect(result.issues).toContainEqual({ field: "purpose", reason: "missing" });
+  });
+
+  it("flags a missing description", () => {
+    const { description, ...rest } = minimalPossible;
+    const result = validateProjectRecord(rest);
+    expect(result.issues).toContainEqual({ field: "description", reason: "missing" });
+  });
+
+  it("flags an empty (whitespace-only) description", () => {
+    const result = validateProjectRecord({ ...minimalPossible, description: "   " });
+    expect(result.issues).toContainEqual({ field: "description", reason: "missing" });
   });
 
   it("flags a missing status", () => {
@@ -95,6 +121,8 @@ describe("always-required fields", () => {
     const result = validateProjectRecord({
       project_id: "x",
       name: "x",
+      purpose: "x",
+      description: "x",
       status: "not-a-real-status" as ProjectRecord["status"],
       focus: "x",
     });
@@ -116,6 +144,8 @@ describe("planned-tier fields", () => {
     const bare = {
       project_id: "proj-0099",
       name: "Bare Project",
+      purpose: "x",
+      description: "x",
       status: "planned" as const,
       focus: "Just started",
     };
@@ -218,6 +248,8 @@ describe("current-tier fields", () => {
     const bareCurrent = {
       project_id: "proj-0055",
       name: "Bare Current",
+      purpose: "x",
+      description: "x",
       status: "current" as const,
       focus: "Implementation underway",
       repo_reference: "github.com/example/bare",
