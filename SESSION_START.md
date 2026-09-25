@@ -14,15 +14,15 @@ Command Center is a standalone project management, project observation, and AI c
 
 This repository owns:
 
-- Command Center architecture
-- Phase documentation
-- Implementation specifications
-- Source code
-- Tests
-- Obsidian plugin files
-- Navigation and interface components
-- Project record structures
-- Supporting implementation infrastructure
+* Command Center architecture
+* Phase documentation
+* Implementation specifications
+* Source code
+* Tests
+* Obsidian plugin files
+* Navigation and interface components
+* Project record structures
+* Supporting implementation infrastructure
 
 ---
 
@@ -36,18 +36,18 @@ Command Center must not assume that any particular external project is uniquely 
 
 An external project may be used to:
 
-- validate Command Center behavior
-- test project representation
-- provide realistic project data
-- demonstrate project-source relationships
-- validate AI observation and collaboration concepts
+* validate Command Center behavior
+* test project representation
+* provide realistic project data
+* demonstrate project-source relationships
+* validate AI observation and collaboration concepts
 
 This relationship does not mean:
 
-- external project code belongs inside Command Center
-- external project architecture is part of Command Center
-- external project implementation decisions govern Command Center
-- Command Center may restructure or control the external project's internal organization
+* external project code belongs inside Command Center
+* external project architecture is part of Command Center
+* external project implementation decisions govern Command Center
+* Command Center may restructure or control the external project's internal organization
 
 The general relationship is:
 
@@ -93,17 +93,17 @@ Git history is part of the project's recovery and continuity system.
 
 Never:
 
-- invent commit hashes
-- report sandbox-local commits as repository commits
-- assume files exist because a previous session claimed they existed
-- modify files without knowing the current repository state
-- reconstruct an existing document's content from memory when the live file can simply be read — a real incident occurred where doing this silently overwrote an accepted architectural decision with fabricated content before it was caught
+* invent commit hashes
+* report sandbox-local commits as repository commits
+* assume files exist because a previous session claimed they existed
+* modify files without knowing the current repository state
+* reconstruct an existing document's content from memory when the live file can simply be read — a real incident occurred where doing this silently overwrote an accepted architectural decision with fabricated content before it was caught
 
 If working in an environment without access to the actual repository:
 
-- state that limitation explicitly
-- do not claim repository verification
-- do not provide authoritative commit information
+* state that limitation explicitly
+* do not claim repository verification
+* do not provide authoritative commit information
 
 A disconnected environment may verify code internally, but only the actual repository can establish project history.
 
@@ -117,19 +117,19 @@ AI collaborators must treat this repository as the source of truth.
 
 Do not infer:
 
-- repository structure from memory
-- project relationships from conversation history
-- implementation status from previous discussions
-- architectural decisions from remembered conversations
-- requirements from earlier versions of documents when a later authoritative document exists
+* repository structure from memory
+* project relationships from conversation history
+* implementation status from previous discussions
+* architectural decisions from remembered conversations
+* requirements from earlier versions of documents when a later authoritative document exists
 
 Verify first.
 
 If uncertain:
 
-- ask before acting
-- identify the uncertainty
-- do not silently resolve ambiguity
+* ask before acting
+* identify the uncertainty
+* do not silently resolve ambiguity
 
 Honest uncertainty is preferred over incorrect assumptions.
 
@@ -161,11 +161,11 @@ archived
 
 The following are **not**, and have never been, formal Project Status values:
 
-- Active
-- Paused
-- Cancelled
-- Failed
-- Completed (retired by ACP-009; formerly valid under the original Phase 3 four-value enum, no longer valid)
+* Active
+* Paused
+* Cancelled
+* Failed
+* Completed (retired by ACP-009; formerly valid under the original Phase 3 four-value enum, no longer valid)
 
 These must not be introduced as an alternative or second Project Status taxonomy.
 
@@ -175,19 +175,19 @@ The human project owner is the sole authority for assigning, changing, or approv
 
 AI collaborators may:
 
-- observe project activity
-- analyze project state
-- identify possible status changes
-- recommend a status transition
-- raise Attention/Signals or Flags where appropriate
+* observe project activity
+* analyze project state
+* identify possible status changes
+* recommend a status transition
+* raise Attention/Signals or Flags where appropriate
 
 AI collaborators must not:
 
-- independently change a project's status
-- assume a project should advance because of activity level
-- infer ownership decisions from file contents or repository activity
-- invent new Project Status values
-- automatically map a retired or legacy status value to a new one on the Project Owner's behalf
+* independently change a project's status
+* assume a project should advance because of activity level
+* infer ownership decisions from file contents or repository activity
+* invent new Project Status values
+* automatically map a retired or legacy status value to a new one on the Project Owner's behalf
 
 A Project Status change represents a change in Command Center's recorded understanding and presentation of the project.
 
@@ -195,23 +195,25 @@ It does not represent a filesystem operation.
 
 Changing a project's status:
 
-- updates the project's recorded state
-- changes how Command Center presents and navigates that project
-- affects project organization within the Command Center management layer
+* updates the project's recorded state
+* changes how Command Center presents and navigates that project
+* affects project organization within the Command Center management layer
 
 Changing a project's status does not:
 
-- move project files
-- rename folders
-- reorganize repositories
-- duplicate content
-- alter the physical storage location of the project
+* move project files
+* rename folders
+* reorganize repositories
+* duplicate content
+* alter the physical storage location of the project
 
 The physical repository location of a project is independent from its Command Center status.
 
 Command Center provides a management and observation layer above projects. It does not control or restructure the internal organization of the projects it observes.
 
-**Metadata note:** for `ongoing` and `archived` statuses, the standard operational fields (`milestone`, `progress`, `next_action`, `blockers`) are optional — they do not carry forward the Planned/Current tier's requirements. `blockers` specifically may be genuinely absent at these two statuses, unlike Planned/Current where it must be explicit (`null` or an array, never simply missing). Existing metadata must never be cleared or relocated merely because a project transitions into `ongoing` or `archived`.
+**Metadata note:** The universal-tier `ProjectRecord` fields required for every status are `project_id`, `name`, `purpose`, `description`, `status`, and `focus`. `purpose` and `description` were formally established as universal-tier fields by **ACP-014**.
+
+For `planned` and `current` statuses, the standard operational fields (`milestone`, `progress`, `next_action`, `blockers`) are required according to their existing tier rules. For `ongoing` and `archived` statuses, those standard operational fields are optional — they do not carry forward the Planned/Current tier's requirements. `blockers` specifically may be genuinely absent at these two statuses, unlike Planned/Current where it must be explicit (`null` or an array, never simply missing). Existing metadata must never be cleared or relocated merely because a project transitions into `ongoing` or `archived`.
 
 ---
 
@@ -231,12 +233,16 @@ Current governing documents:
 6. UI Architecture Specification (living document, actively reconciled against the Matrix)
 7. Accepted ACP standalone records (`docs/architecture/ACP-*.md`)
 
+**Current implementation status:** ACP-014 has been formally accepted and implemented. The universal `ProjectRecord` fields `purpose` and `description` are implemented across the canonical data model, validation, Obsidian provider mapping, and affected test fixtures. The implementation has been independently verified on the live `main` branch: TypeScript is clean, the build succeeds, and **147/147 tests pass**.
+
+The ProjectRecord/provider/WP14/ACP-014 implementation arc is therefore closed. Further work proceeds from the current repository state and governing records; ACP-014 is not an open implementation item.
+
 Frozen architectural decisions are not changed during implementation.
 
 If implementation reveals a conflict with a frozen decision:
 
-- do not silently adjust the implementation
-- raise an Architecture Change Proposal (ACP)
+* do not silently adjust the implementation
+* raise an Architecture Change Proposal (ACP)
 
 ---
 
@@ -246,12 +252,12 @@ Command Center is an orchestration, management, navigation, and observation laye
 
 CC must not become:
 
-- the IDE
-- the document editor
-- the repository
-- the cloud-storage system
-- the AI provider
-- the AI Agent itself
+* the IDE
+* the document editor
+* the repository
+* the cloud-storage system
+* the AI provider
+* the AI Agent itself
 
 CC connects those things.
 
@@ -292,26 +298,26 @@ Project → Obsidian
 
 A Project Source may represent:
 
-- local filesystem material
-- GitHub
-- GitLab
-- Bitbucket
-- cloud storage
-- application-specific storage
-- Obsidian
-- repositories
-- documents
-- workspaces
-- backups
-- reference sources
-- future providers
+* local filesystem material
+* GitHub
+* GitLab
+* Bitbucket
+* cloud storage
+* application-specific storage
+* Obsidian
+* repositories
+* documents
+* workspaces
+* backups
+* reference sources
+* future providers
 
 The architecture must remain provider-independent.
 
 A source has both:
 
-- a **provider**
-- a **role**
+* a **provider**
+* a **role**
 
 Provider and role are separate concepts.
 
@@ -333,10 +339,10 @@ Re-entry context should be selective and operational rather than requiring the e
 
 Project context is distinct from:
 
-- Chat Threads
-- Handover records
-- external source content
-- shared working context
+* Chat Threads
+* Handover records
+* external source content
+* shared working context
 
 These supporting artifacts provide provenance and additional context, but Project State remains primary.
 
@@ -348,12 +354,12 @@ AI is a participant in the Command Center architecture, not the owner of a Proje
 
 AI Participants may have defined:
 
-- read permissions
-- write permissions
-- suggestion permissions
-- maintenance responsibilities
-- project-specific roles
-- attribution/provenance
+* read permissions
+* write permissions
+* suggestion permissions
+* maintenance responsibilities
+* project-specific roles
+* attribution/provenance
 
 Different AI Participants may have different roles on different Projects.
 
@@ -379,11 +385,11 @@ Agents are distinct from ordinary AI Participants:
 
 Agents may have project-specific:
 
-- scope
-- role
-- permissions
-- assignment
-- responsibilities
+* scope
+* role
+* permissions
+* assignment
+* responsibilities
 
 Agents are not limited to software projects.
 
@@ -433,16 +439,16 @@ Handover Assessment
 
 A Handover may preserve:
 
-- source thread
-- receiving thread
-- actual handover prompt
-- reason
-- scope
-- supporting references
-- source/target relationships
-- receiving-AI assessment
-- prompt version
-- referenced Decisions, Files, Threads, or other Project artifacts
+* source thread
+* receiving thread
+* actual handover prompt
+* reason
+* scope
+* supporting references
+* source/target relationships
+* receiving-AI assessment
+* prompt version
+* referenced Decisions, Files, Threads, or other Project artifacts
 
 Handover is not disposable summary text.
 
@@ -462,11 +468,11 @@ For example:
 
 This context may be reused across:
 
-- Projects
-- AI providers
-- Chat Threads
-- AI Participants
-- Agents
+* Projects
+* AI providers
+* Chat Threads
+* AI Participants
+* Agents
 
 It should not be unnecessarily duplicated into every Project.
 
@@ -482,12 +488,12 @@ The Phase 4 matrix is an architectural and implementation planning artifact.
 
 The revised matrix must distinguish:
 
-- KEEP — Phase 4
-- KEEP — Architectural Foundation
-- DEFER
-- REVISE
-- REMOVE
-- OPEN
+* KEEP — Phase 4
+* KEEP — Architectural Foundation
+* DEFER
+* REVISE
+* REMOVE
+* OPEN
 
 A requirement classified as **DEFER** or **REMOVE** must not be silently reintroduced during Phase 4 implementation.
 
@@ -505,9 +511,9 @@ Since Step 65, further architectural work has proceeded through the **ACP (Archi
 
 Therefore:
 
-- Categories 1–64, with Step 65's P4-R796–802 incorporated, form the current stable matrix foundation
-- unresolved (OPEN) material must not be treated as authoritative Phase 4 requirements
-- architectural questions arising after the matrix's current scope are resolved via ACP, not by extending the matrix further
+* Categories 1–64, with Step 65's P4-R796–802 incorporated, form the current stable matrix foundation
+* unresolved (OPEN) material must not be treated as authoritative Phase 4 requirements
+* architectural questions arising after the matrix's current scope are resolved via ACP, not by extending the matrix further
 
 The separate Clean Matrix documents covering Categories 1–64 may be consolidated into a single clean matrix artifact when appropriate, but consolidation does not change their authority or status.
 
@@ -517,37 +523,37 @@ The separate Clean Matrix documents covering Categories 1–64 may be consolidat
 
 The Steps 1–64 audit, Step 65, and the subsequent ACP process have established the following architectural principles:
 
-- **Command Center is an orchestration layer** — CC connects projects, sources, applications, AI Participants, Agents, Threads, and other resources rather than replacing them.
+* **Command Center is an orchestration layer** — CC connects projects, sources, applications, AI Participants, Agents, Threads, and other resources rather than replacing them.
 
-- **Project Sources are provider-independent** — a Project has Sources; GitHub, Obsidian, local filesystems, cloud systems, and other providers are implementations of that broader concept.
+* **Project Sources are provider-independent** — a Project has Sources; GitHub, Obsidian, local filesystems, cloud systems, and other providers are implementations of that broader concept.
 
-- **Provider and Source Role are separate concepts** — CC should know both who/what provides a source and what role that source plays for the Project.
+* **Provider and Source Role are separate concepts** — CC should know both who/what provides a source and what role that source plays for the Project.
 
-- **Project context is operational** — Project Type, technology/stack, tools, Sources, AI Participants, Agents, and related information may eventually influence how CC presents and connects Project artifacts.
+* **Project context is operational** — Project Type, technology/stack, tools, Sources, AI Participants, Agents, and related information may eventually influence how CC presents and connects Project artifacts.
 
-- **AI is a participant, not the owner** — AI may read, contribute, suggest, maintain designated information, and raise Flags within defined authority; Project governance remains human-controlled.
+* **AI is a participant, not the owner** — AI may read, contribute, suggest, maintain designated information, and raise Flags within defined authority; Project governance remains human-controlled.
 
-- **Agents are first-class but optional** — the architecture must accommodate Projects using zero, few, or many Agents.
+* **Agents are first-class but optional** — the architecture must accommodate Projects using zero, few, or many Agents.
 
-- **Chat Threads are distinct from AI identity** — CC must preserve the identity of the exact conversation, not merely the provider or AI involved.
+* **Chat Threads are distinct from AI identity** — CC must preserve the identity of the exact conversation, not merely the provider or AI involved.
 
-- **Handover is a traceable artifact** — Source Thread → Handover Prompt → Receiving Thread → Assessment should remain identifiable.
+* **Handover is a traceable artifact** — Source Thread → Handover Prompt → Receiving Thread → Assessment should remain identifiable.
 
-- **Shared Working Context is separate from Project Context** — reusable "How to Work With Kurt" information should not be duplicated into every Project.
+* **Shared Working Context is separate from Project Context** — reusable "How to Work With Kurt" information should not be duplicated into every Project.
 
-- **Persistent Project State is primary for re-entry** — Threads, Handovers, and other supporting artifacts provide provenance and additional context but do not replace Project State.
+* **Persistent Project State is primary for re-entry** — Threads, Handovers, and other supporting artifacts provide provenance and additional context but do not replace Project State.
 
-- **The Project Status model remains single-tier** — a proposed second status taxonomy silently contradicted the frozen status model and was removed, not merely revised, during the original audit. The authoritative `ProjectRecord.status` field remains the sole formal Project Status field, now at five values per ACP-009.
+* **The Project Status model remains single-tier** — a proposed second status taxonomy silently contradicted the frozen status model and was removed, not merely revised, during the original audit. The authoritative `ProjectRecord.status` field remains the sole formal Project Status field, now at five values per ACP-009.
 
-- **Status is not navigation** — top-level organizational/navigation categories and Project Status are separate concepts and must not be conflated. This extends to the navigation type system itself: `Depth` (a navigation-tree position, now including `"gateway"` per ACP-012) and `CurrentObject.kind` (an object identity, including `"category"` for status-scoped Project List views) are unrelated concepts that happen to have shared a literal string historically — they must never be conflated even where their names once overlapped.
+* **Status is not navigation** — top-level organizational/navigation categories and Project Status are separate concepts and must not be conflated. This extends to the navigation type system itself: `Depth` (a navigation-tree position, now including `"gateway"` per ACP-012) and `CurrentObject.kind` (an object identity, including `"category"` for status-scoped Project List views) are unrelated concepts that happen to have shared a literal string historically — they must never be conflated even where their names once overlapped.
 
-- **CC must not silently reconstruct frozen architecture from memory** — when an authoritative implementation or architecture record exists, it takes precedence over remembered discussions or earlier drafts. A real incident occurred where reconstructing a live document from memory instead of reading it silently fabricated content overwriting an accepted decision; it was caught only through independent verification before anything was committed.
+* **CC must not silently reconstruct frozen architecture from memory** — when an authoritative implementation or architecture record exists, it takes precedence over remembered discussions or earlier drafts. A real incident occurred where reconstructing a live document from memory instead of reading it silently fabricated content overwriting an accepted decision; it was caught only through independent verification before anything was committed.
 
-- **The human owner remains the final authority on governance decisions** — AI may analyze and recommend but must not silently establish authoritative Project governance.
+* **The human owner remains the final authority on governance decisions** — AI may analyze and recommend but must not silently establish authoritative Project governance.
 
-- **Command Center must not silently manufacture project truth** — this applies to both representation and authority. When required project data is missing or invalid, CC must fail honestly rather than substitute fabricated, stale, or misleading content; AI-generated estimates and recommendations must remain visibly distinguishable from authoritative data and must never be silently converted into it.
+* **Command Center must not silently manufacture project truth** — this applies to both representation and authority. When required project data is missing or invalid, CC must fail honestly rather than substitute fabricated, stale, or misleading content; AI-generated estimates and recommendations must remain visibly distinguishable from authoritative data and must never be silently converted into it.
 
-- **Before adding new architecture, check whether an existing category or ACP already covers it** — this has been missed multiple times, each time only caught through direct verification against the existing matrix or registry, never through inspection alone. Checking first is cheaper than discovering the duplication later.
+* **Before adding new architecture, check whether an existing category or ACP already covers it** — this has been missed multiple times, each time only caught through direct verification against the existing matrix or registry, never through inspection alone. Checking first is cheaper than discovering the duplication later.
 
 ---
 
@@ -568,12 +574,13 @@ A new rendering, presentation, or implementation technique may be adopted when i
 
 **ACP Registry summary** (full records in `docs/architecture/`, index in the Master Implementation Index; Phase 3's own ACP-001–007 remain in the Phase 3 Architecture Record's registry, unedited, per the historical-record rule below):
 
-- **ACP-008** — Metadata Cache treated as a platform-level read mechanism, not an application-level cache.
-- **ACP-009** — `ProjectRecord.status` reconciled to five values (`possible | planned | current | ongoing | archived`); `completed` retired; no automatic migration authorized.
-- **ACP-010** — Category-level sibling paging retired (`getCategorySiblings()` and `CATEGORY_ORDER` both removed); project-level sibling paging retained.
-- **ACP-011** — Gateway destination-to-view mapping; Category Screen retirement trigger defined (requires all four status-mapped views plus Ideas' `possible`-record exposure, not just the four views alone).
-- **ACP-012** — Root navigation `Depth` literal renamed from `"category"` to `"gateway"` (pure semantic rename; `CurrentObject.kind: "category"` unaffected and unrelated).
-- **ACP-013** — New Project established as a distinct workflow entry point existing entirely outside `NavigationState` (no new `CurrentObject` kind or `Depth` value); the orientation bar hides while it is active; entry, Cancel, and exit require no navigation-state changes.
+* **ACP-008** — Metadata Cache treated as a platform-level read mechanism, not an application-level cache.
+* **ACP-009** — `ProjectRecord.status` reconciled to five values (`possible | planned | current | ongoing | archived`); `completed` retired; no automatic migration authorized.
+* **ACP-010** — Category-level sibling paging retired (`getCategorySiblings()` and `CATEGORY_ORDER` both removed); project-level sibling paging retained.
+* **ACP-011** — Gateway destination-to-view mapping; Category Screen retirement trigger defined (requires all four status-mapped views plus Ideas' `possible`-record exposure, not just the four views alone).
+* **ACP-012** — Root navigation `Depth` literal renamed from `"category"` to `"gateway"` (pure semantic rename; `CurrentObject.kind: "category"` unaffected and unrelated).
+* **ACP-013** — New Project established as a distinct workflow entry point existing entirely outside `NavigationState` (no new `CurrentObject` kind or `Depth` value); the orientation bar hides while it is active; entry, Cancel, and exit require no navigation-state changes.
+* **ACP-014** — `purpose` and `description` established as universal-tier `ProjectRecord` fields, required at every status alongside `project_id`, `name`, `status`, and `focus`. The decision was formally accepted and subsequently implemented across the canonical data model, validation, provider mapping, and affected test fixtures. Implementation is independently verified and closed.
 
 The Phase 3 Architecture Record itself is **never edited** to reflect later ACPs — it remains the accurate historical record of what Phase 3 froze at the time. Later ACPs are the mechanism by which that frozen model is formally extended or reconciled; they do not rewrite history.
 
@@ -589,10 +596,10 @@ External projects may be used as validation projects to demonstrate that Command
 
 The purpose of connecting Command Center to external projects is validation and operation:
 
-- Can Command Center load a real project?
-- Can Command Center display meaningful project state?
-- Can Command Center demonstrate that the architecture works with an actual project?
-- Can Command Center maintain useful project context across tools and AI collaborators?
+* Can Command Center load a real project?
+* Can Command Center display meaningful project state?
+* Can Command Center demonstrate that the architecture works with an actual project?
+* Can Command Center maintain useful project context across tools and AI collaborators?
 
 External projects remain independent.
 
@@ -616,36 +623,36 @@ The intended user experience for Command Center is a visual project command boar
 
 The primary metaphor is a physical planning board:
 
-- a large workspace surface
-- visual flow structures
-- connected stages or areas
-- sticky-note-style project elements
-- movement through project states represented visually
+* a large workspace surface
+* visual flow structures
+* connected stages or areas
+* sticky-note-style project elements
+* movement through project states represented visually
 
 The user experience should feel like:
 
-- a project planning wall
-- a visual flowchart
-- a command center
-- an intuitive workspace
+* a project planning wall
+* a visual flowchart
+* a command center
+* an intuitive workspace
 
 It should not feel like:
 
-- a database viewer
-- a spreadsheet
-- a folder browser
-- a collection of disconnected documents
+* a database viewer
+* a spreadsheet
+* a folder browser
+* a collection of disconnected documents
 
 Projects, tasks, milestones, decisions, and status changes should be represented as visual elements on the board.
 
 The visual system may include:
 
-- sticky notes
-- cards
-- connectors
-- flow paths
-- status areas
-- navigation elements
+* sticky notes
+* cards
+* connectors
+* flow paths
+* status areas
+* navigation elements
 
 The visual representation is not decoration. It is the primary interface for understanding project state.
 
@@ -659,18 +666,18 @@ Do not confuse the current implementation mechanism with the final user experien
 
 Current implementation foundation:
 
-- Obsidian
-- Markdown files
-- TypeScript
-- Git
-- ProjectRecord data structures
+* Obsidian
+* Markdown files
+* TypeScript
+* Git
+* ProjectRecord data structures
 
 User-facing goal:
 
-- a visual project operating surface
-- flow visualization
-- intuitive project navigation
-- AI-assisted understanding of project state
+* a visual project operating surface
+* flow visualization
+* intuitive project navigation
+* AI-assisted understanding of project state
 
 The technology is the foundation.
 
