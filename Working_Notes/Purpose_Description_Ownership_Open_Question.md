@@ -63,4 +63,4 @@ This section reflected the state before resolution and is preserved for history.
 
 ## Implementation status
 
-Not yet implemented. ACP-014 §5 specifies the next steps: extend `ProjectRecord` and `validateProjectRecord()`, update WP14's provider mapping and tests, verify against a fresh clone before anything is proposed for commit.
+Implemented and verified. As of commit `8907207` (tsc --noEmit clean, 147/147 tests passing): `purpose` and `description` are present as required fields in `ProjectRecord` (`src/data/project-record.ts`), enforced in `validateProjectRecord()`, mapped in WP14's `obsidian-project-record-provider.ts`, and covered by `project-record.test.ts` and `obsidian-project-record-provider.test.ts`.
