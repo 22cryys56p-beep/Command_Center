@@ -86,6 +86,20 @@ These are maintained consistently with `SESSION_START.md` Section 7.
 - **Status:** Gateway root navigation and the New Project entry-point shell are implemented. Automated verification has passed. Full New Project workflow/content remains future work.
 - **Integrated implementation commits:** Gateway `631ad97`; New Project entry point `849fc7a`; Category Screen retirement `12725f3`.
 
+### WP14 — Obsidian ProjectRecordProvider
+
+- **Purpose:** replace the stub `ProjectRecordProvider` with a real, read-only, Obsidian-backed implementation, and establish `purpose`/`description` as universal-tier `ProjectRecord` fields per ACP-014.
+- **Governing architecture:** ACP-014, and Phase 3's `ProjectRecord` data model as extended by it.
+- **Files created / implemented:**
+  - `src/integration/obsidian-project-record-provider.ts` — real Obsidian frontmatter/MetadataCache-backed `ProjectRecordProvider`, with validation and duplicate-`project_id` exclusion
+  - `src/data/project-record.ts` — `purpose`/`description` added as required universal-tier fields, validated by `validateProjectRecord()`
+  - `docs/specifications/CC_Phase 4_WP14 Obsidian ProjectRecordProvider Specification.md` — governing specification
+  - `docs/architecture/ACP-014 — Purpose and Description Metadata Representation.md` — accepted Purpose/Description metadata decision record
+- **ACPs referenced:** ACP-014.
+- **Dependencies:** WP11 `ProjectRecord` data model; WP13's Gateway and Project List, which consume this provider in place of the earlier stub. Depended on by: Project Dashboard, Project Workspace, and any future work reading live `ProjectRecord` data.
+- **Status:** Implemented and verified on live `main`. `tsc --noEmit` clean; full test suite passing, including `project-record.test.ts` and `obsidian-project-record-provider.test.ts`.
+- **Integrated implementation commits:** ACP-014 acceptance/implementation `19457a0`; provider implementation `606f954`.
+
 ---
 
 ## Dependency Graph (current)
@@ -99,6 +113,8 @@ WP12 — Persistent Orientation Element
   ↓
 WP13 — Gateway Root Navigation + New Project Entry Point
   ↓
+WP14 — Obsidian ProjectRecordProvider
+  ↓
 Project List
   ↓
 Project Dashboard
@@ -110,7 +126,7 @@ AI observation surface
 
 WP12 remains code-complete through Slice 8B but not formally closed because Slice 9B and the Baseline Freeze disposition remain outstanding. That historical WP12 closure state does not block the already-implemented WP13 Gateway and New Project work.
 
-WP13 establishes the Gateway/root-navigation layer and New Project entry point. The full New Project workflow/content, Project Dashboard, Project Workspace, and AI observation surface remain downstream work.
+WP13 establishes the Gateway/root-navigation layer and New Project entry point. WP14 replaces the stub provider consumed by that layer with a real, read-only Obsidian-backed provider. The full New Project workflow/content, Project Dashboard, Project Workspace, and AI observation surface remain downstream work.
 
 ---
 
@@ -124,6 +140,7 @@ WP13 establishes the Gateway/root-navigation layer and New Project entry point. 
 | ACP-011 | WP13 | Resolved — Accepted | Establishes the Gateway destination-to-view mapping: Current, Planning, Ongoing, and Archive resolve through the existing Project List mechanism using their corresponding ProjectStatus values; Ideas exposes `possible`-status ProjectRecords through that mechanism while remaining capable of containing pre-formal Idea content that is not a ProjectRecord; New Project resolves to a distinct workflow entry point. Establishes the Category Screen retirement trigger: eligible once Gateway provides equivalent access to all four status-mapped views and Ideas exposes `possible`-status records per this ACP. |
 | ACP-012 | WP13 | Resolved — Accepted | Renames the existing navigation root depth from `Depth: "category"` to `Depth: "gateway"`, reflecting Gateway's replacement of the former Category Screen as the root navigation surface. Pure semantic rename — no additional navigation depth introduced; `CurrentObject.kind: "category"` and all other frozen navigation/status decisions (ACP-009, ACP-010, ACP-011) remain unchanged. |
 | ACP-013 | WP13 | Resolved — Accepted | Establishes the representation and navigation lifecycle of the New Project entry point. New Project is a distinct workflow entry rather than a ProjectStatus or `NavigationState` destination. The initial implementation provides the workflow entry-point shell; the complete New Project fields/content and submission behavior remain future work. |
+| ACP-014 | WP14 | Resolved — Accepted and Implemented | Establishes `purpose` and `description` as universal-tier `ProjectRecord` fields, required at every status alongside `project_id`, `name`, `status`, and `focus`. Implementation (data model, validator, provider mapping, test fixtures) is complete and independently verified on live `main`. |
 
 *(ACP-001 through ACP-007 belong to Phase 3 and are recorded in full in the Phase 3 Architecture Record's own registry — not duplicated here to avoid two sources of truth for the same resolutions. This table only tracks ACPs raised during Phase 4 implementation work. Full Phase 4 ACP decision records are maintained separately under `docs/architecture/ACP-*.md`.)*
 
