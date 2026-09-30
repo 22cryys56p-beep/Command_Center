@@ -55,6 +55,7 @@ The general relationship is:
 Command_Center
     |
     └── references / observes / validates against ──> External Project(s)
+
 ```
 
 The specific external projects used for validation or reference may change over time.
@@ -135,6 +136,34 @@ Honest uncertainty is preferred over incorrect assumptions.
 
 Before proposing new architecture, check whether an existing category, ACP, or governing document already resolves the question. This has been missed multiple times — always check first, propose second.
 
+## Documentation Synchronization Protocol
+
+Documentation synchronization is part of the work itself, not cleanup performed afterward.
+
+For every meaningful Command Center update:
+
+1. Identify all authoritative repository documents, registries, indexes, specifications, architecture records, status records, and other durable artifacts affected by the change.
+2. Synchronize those affected artifacts in the same work cycle as the change itself.
+3. Verify that the affected documentation remains internally consistent with the actual repository state.
+4. Explicitly identify intentional non-changes when an apparently related authoritative artifact does not require modification.
+5. Do not silently introduce new architecture while synchronizing documentation. If synchronization exposes a genuine architectural conflict or unresolved decision, stop and raise it for resolution rather than inventing a reconciliation.
+6. Repository evidence takes precedence over memory or prior AI descriptions. Do not reconstruct authoritative documentation from memory when the repository artifact exists.
+7. The completion test is:
+
+> **If another AI opened this repository right now with no conversation history, would the authoritative documentation accurately describe the current architectural and implementation state?**
+
+If the answer is no, the work is not complete.
+
+### ACP-specific minimum
+
+When an ACP is accepted, the following must be updated together in the same pass:
+
+* the ACP record
+* the Master Implementation Index ACP registry entry
+* `SESSION_START.md` Section 16 ACP registry/current-status note
+
+If other authoritative artifacts are affected by the ACP, those artifacts must be synchronized as well.
+
 ---
 
 # 6. Project Status Authority
@@ -145,6 +174,7 @@ The authoritative status field is:
 
 ```text
 ProjectRecord.status
+
 ```
 
 As of **ACP-009**, the implementation enum and the working navigational vocabulary have been unified. The authoritative values are:
@@ -155,6 +185,7 @@ planned
 current
 ongoing
 archived
+
 ```
 
 `completed` is **retired** and is not a valid value. It was removed, not deprecated — code should never emit or accept it. No automatic migration exists for any legacy `completed` value; if one is ever encountered, it requires the Project Owner's explicit manual reclassification (never an automatic or AI-inferred mapping).
@@ -237,6 +268,8 @@ Current governing documents:
 
 The ProjectRecord/provider/WP14/ACP-014 implementation arc is therefore closed. Further work proceeds from the current repository state and governing records; ACP-014 is not an open implementation item.
 
+**ACP-015** has also been formally accepted (2026-09-30). It establishes "AI Progress Estimate" (required by P4-R323 for Workspace and P4-R802 for Dashboard) as a distinct, non-authoritative AI-output category — separate from Phase 3 Section E's two existing AI observation types (staleness, invalid absence of required fields) rather than an addition to them, and separate from the user-maintained `ProjectRecord.progress` field. A Project Dashboard (or Workspace) implementation specification may not be treated as implementation-ready until: (a) that specification makes AI Progress Estimate's exact derivation method and permitted inputs explicit and acceptance-testable — ACP-015 deliberately leaves this undefined, and (b) Phase 3 Section E's historical wording is reconciled or annotated to reflect ACP-015, since read alone it currently appears to exclude this now-accepted category. Neither of these is optional polish; both are named exit conditions of ACP-015 itself.
+
 Frozen architectural decisions are not changed during implementation.
 
 If implementation reveals a conflict with a frozen decision:
@@ -270,6 +303,7 @@ CC → inspect / navigate / provide context
    → hand off to appropriate external system
    → external system performs specialized work
    → CC records or observes relevant project context
+
 ```
 
 CC should manage relationships and context rather than unnecessarily replacing specialized tools.
@@ -282,18 +316,21 @@ The architectural model is:
 
 ```text
 Project → Project Sources
+
 ```
 
 not:
 
 ```text
 Project → GitHub
+
 ```
 
 and not:
 
 ```text
 Project → Obsidian
+
 ```
 
 A Project Source may represent:
@@ -375,6 +412,7 @@ The architecture must support:
 
 ```text
 0 Agents → few Agents → many Agents
+
 ```
 
 Agents are distinct from ordinary AI Participants:
@@ -417,6 +455,7 @@ Project
    └── Chat Thread
           |
           └── AI Participant / Agent
+
 ```
 
 Multiple Chat Threads may exist for a Project.
@@ -435,6 +474,7 @@ Handover Prompt
 Receiving Thread
     ↓
 Handover Assessment
+
 ```
 
 A Handover may preserve:
@@ -517,6 +557,8 @@ Therefore:
 
 The separate Clean Matrix documents covering Categories 1–64 may be consolidated into a single clean matrix artifact when appropriate, but consolidation does not change their authority or status.
 
+**Note on Category 35 (Reviews, Checkpoints & Project Progress) and Category 18 (Project Workspace Editing & Permissions):** these categories, both `KEEP-Foundation`, contain AI-related safeguards (P4-R249–250, P4-R496–499) that bear directly on AI-generated progress/completion output. They were not connected to P4-R323/P4-R802's "AI Progress Estimate" requirement until that connection was traced during the ACP-015 reconciliation. Before treating any AI-observation or AI-estimate question as newly discovered, check both of these categories in addition to Section E.
+
 ---
 
 # 15. Phase 4 Architectural Principles Established by Audit
@@ -524,36 +566,22 @@ The separate Clean Matrix documents covering Categories 1–64 may be consolidat
 The Steps 1–64 audit, Step 65, and the subsequent ACP process have established the following architectural principles:
 
 * **Command Center is an orchestration layer** — CC connects projects, sources, applications, AI Participants, Agents, Threads, and other resources rather than replacing them.
-
 * **Project Sources are provider-independent** — a Project has Sources; GitHub, Obsidian, local filesystems, cloud systems, and other providers are implementations of that broader concept.
-
 * **Provider and Source Role are separate concepts** — CC should know both who/what provides a source and what role that source plays for the Project.
-
 * **Project context is operational** — Project Type, technology/stack, tools, Sources, AI Participants, Agents, and related information may eventually influence how CC presents and connects Project artifacts.
-
 * **AI is a participant, not the owner** — AI may read, contribute, suggest, maintain designated information, and raise Flags within defined authority; Project governance remains human-controlled.
-
 * **Agents are first-class but optional** — the architecture must accommodate Projects using zero, few, or many Agents.
-
 * **Chat Threads are distinct from AI identity** — CC must preserve the identity of the exact conversation, not merely the provider or AI involved.
-
 * **Handover is a traceable artifact** — Source Thread → Handover Prompt → Receiving Thread → Assessment should remain identifiable.
-
 * **Shared Working Context is separate from Project Context** — reusable "How to Work With Kurt" information should not be duplicated into every Project.
-
 * **Persistent Project State is primary for re-entry** — Threads, Handovers, and other supporting artifacts provide provenance and additional context but do not replace Project State.
-
 * **The Project Status model remains single-tier** — a proposed second status taxonomy silently contradicted the frozen status model and was removed, not merely revised, during the original audit. The authoritative `ProjectRecord.status` field remains the sole formal Project Status field, now at five values per ACP-009.
-
 * **Status is not navigation** — top-level organizational/navigation categories and Project Status are separate concepts and must not be conflated. This extends to the navigation type system itself: `Depth` (a navigation-tree position, now including `"gateway"` per ACP-012) and `CurrentObject.kind` (an object identity, including `"category"` for status-scoped Project List views) are unrelated concepts that happen to have shared a literal string historically — they must never be conflated even where their names once overlapped.
-
 * **CC must not silently reconstruct frozen architecture from memory** — when an authoritative implementation or architecture record exists, it takes precedence over remembered discussions or earlier drafts. A real incident occurred where reconstructing a live document from memory instead of reading it silently fabricated content overwriting an accepted decision; it was caught only through independent verification before anything was committed.
-
 * **The human owner remains the final authority on governance decisions** — AI may analyze and recommend but must not silently establish authoritative Project governance.
-
 * **Command Center must not silently manufacture project truth** — this applies to both representation and authority. When required project data is missing or invalid, CC must fail honestly rather than substitute fabricated, stale, or misleading content; AI-generated estimates and recommendations must remain visibly distinguishable from authoritative data and must never be silently converted into it.
-
 * **Before adding new architecture, check whether an existing category or ACP already covers it** — this has been missed multiple times, each time only caught through direct verification against the existing matrix or registry, never through inspection alone. Checking first is cheaper than discovering the duplication later.
+* **Accepted requirements across different Matrix categories or tiers are not automatically reconciled with each other** — P4-R323/P4-R802 (AI Progress Estimate) sat formally accepted for a real stretch alongside Category 35/18's AI-estimate safeguards and Phase 3 Section E's narrower observation boundary, with no one connecting the three until ACP-015. A requirement being accepted somewhere does not mean it has been checked against every other accepted requirement that touches the same concept — that check is a distinct step, not implied by acceptance.
 
 ---
 
@@ -581,6 +609,7 @@ A new rendering, presentation, or implementation technique may be adopted when i
 * **ACP-012** — Root navigation `Depth` literal renamed from `"category"` to `"gateway"` (pure semantic rename; `CurrentObject.kind: "category"` unaffected and unrelated).
 * **ACP-013** — New Project established as a distinct workflow entry point existing entirely outside `NavigationState` (no new `CurrentObject` kind or `Depth` value); the orientation bar hides while it is active; entry, Cancel, and exit require no navigation-state changes.
 * **ACP-014** — `purpose` and `description` established as universal-tier `ProjectRecord` fields, required at every status alongside `project_id`, `name`, `status`, and `focus`. The decision was formally accepted and subsequently implemented across the canonical data model, validation, provider mapping, and affected test fixtures. Implementation is independently verified and closed.
+* **ACP-015** — "AI Progress Estimate" (required by P4-R323 for Workspace and P4-R802 for Dashboard) established as a distinct, non-authoritative AI-output category, separate from Phase 3 Section E's two existing AI observation types (staleness, invalid absence) and from the user-maintained `ProjectRecord.progress` field. Must be labeled as an estimate, must never become authoritative Project Status, must remain subordinate to observable indicators (per Category 35's P4-R496–499), and must fail honestly rather than fabricate a value when available information is insufficient. Reconciles P4-R323/P4-R802 with Section E and with Category 35/18's AI-estimate safeguards, none of which had previously been connected to one another. The exact derivation method and permitted inputs are deliberately left to the Dashboard/Workspace implementation specifications, which must make them explicit and acceptance-testable before implementation begins. Phase 3 Section E's original wording has not yet been amended or annotated to reflect this ACP — until it is, Section E read alone will appear to exclude this now-accepted category; ACP-015 governs regardless.
 
 The Phase 3 Architecture Record itself is **never edited** to reflect later ACPs — it remains the accurate historical record of what Phase 3 froze at the time. Later ACPs are the mechanism by which that frozen model is formally extended or reconciled; they do not rewrite history.
 
