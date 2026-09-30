@@ -164,6 +164,10 @@ When an ACP is accepted, the following must be updated together in the same pass
 
 If other authoritative artifacts are affected by the ACP, those artifacts must be synchronized as well.
 
+### Approval state
+
+When the Project Owner approves an architectural decision or document in conversation, treat that decision as approved immediately. The final material delivered after approval must already use accepted/current language — do not leave "proposed," "awaiting approval," "pending approval," "upon approval," or "decision pending" language for the Project Owner to remove manually later. If a document was originally drafted as a proposal and is subsequently approved, the repository-ready version must be converted completely to its accepted state in the same pass.
+
 ---
 
 # 6. Project Status Authority
