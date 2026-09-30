@@ -128,6 +128,8 @@ WP12 remains code-complete through Slice 8B but not formally closed because Slic
 
 WP13 establishes the Gateway/root-navigation layer and New Project entry point. WP14 replaces the stub provider consumed by that layer with a real, read-only Obsidian-backed provider. The full New Project workflow/content, Project Dashboard, Project Workspace, and AI observation surface remain downstream work.
 
+**ACP-015**, accepted 2026-09-30, is an architecture-only decision (no work package, no code) and is not a node in this dependency graph. It governs a Dashboard/Workspace prerequisite: it is a named blocking dependency for any future Dashboard or Workspace work package that implements the "AI Progress Estimate" requirement, and it is tracked as such under Outstanding Items below rather than in this graph.
+
 ---
 
 ## ACP Registry (Phase 4 portion — continues Phase 3's numbering)
@@ -141,6 +143,7 @@ WP13 establishes the Gateway/root-navigation layer and New Project entry point. 
 | ACP-012 | WP13 | Resolved — Accepted | Renames the existing navigation root depth from `Depth: "category"` to `Depth: "gateway"`, reflecting Gateway's replacement of the former Category Screen as the root navigation surface. Pure semantic rename — no additional navigation depth introduced; `CurrentObject.kind: "category"` and all other frozen navigation/status decisions (ACP-009, ACP-010, ACP-011) remain unchanged. |
 | ACP-013 | WP13 | Resolved — Accepted | Establishes the representation and navigation lifecycle of the New Project entry point. New Project is a distinct workflow entry rather than a ProjectStatus or `NavigationState` destination. The initial implementation provides the workflow entry-point shell; the complete New Project fields/content and submission behavior remain future work. |
 | ACP-014 | WP14 | Resolved — Accepted and Implemented | Establishes `purpose` and `description` as universal-tier `ProjectRecord` fields, required at every status alongside `project_id`, `name`, `status`, and `focus`. Implementation (data model, validator, provider mapping, test fixtures) is complete and independently verified on live `main`. |
+| ACP-015 | Dashboard/Workspace reconciliation (no WP; architecture-only) | Resolved — Accepted | Establishes "AI Progress Estimate" (required by P4-R323 for Workspace and P4-R802 for Dashboard) as a distinct, non-authoritative AI-output category — separate from Phase 3 Section E's two existing AI observation types (staleness, invalid absence) rather than an addition to them, and separate from the user-maintained `ProjectRecord.progress` field. Must be labeled as an estimate, must never become authoritative Project Status, must remain subordinate to observable indicators per Category 35's P4-R496–499, and must fail honestly rather than fabricate a value when available information is insufficient. Reconciles P4-R323/P4-R802 with Section E and with Category 35/18's previously unconnected AI-estimate safeguards. Deliberately leaves the exact derivation method and permitted inputs to the Dashboard/Workspace implementation specifications, which must define them explicitly and acceptance-testably before implementation begins. Phase 3 Section E's original wording has not yet been amended or annotated to reflect this ACP. |
 
 *(ACP-001 through ACP-007 belong to Phase 3 and are recorded in full in the Phase 3 Architecture Record's own registry — not duplicated here to avoid two sources of truth for the same resolutions. This table only tracks ACPs raised during Phase 4 implementation work. Full Phase 4 ACP decision records are maintained separately under `docs/architecture/ACP-*.md`.)*
 
@@ -151,9 +154,10 @@ WP13 establishes the Gateway/root-navigation layer and New Project entry point. 
 - **WP12 historical closure:** execute/dispose of Slice 9B and the Baseline Freeze declaration, including disposition of the known `goUp()` enabled-success-path verification gap. This is a historical WP12 closure item and does not block the implemented Gateway/New Project work.
 - **New Project:** implement the complete workflow/content beyond the current ACP-013 entry-point shell.
 - **Ideas:** define and implement the future pre-formal Ideas representation and its relationship to the existing `possible`-status Project List.
-- **Project Dashboard:** implement the next downstream project surface after Project List.
-- **Project Workspace:** implement the downstream workspace surface.
+- **Project Dashboard:** implement the next downstream project surface after Project List. Blocked in part by ACP-015: the Dashboard specification must define AI Progress Estimate's exact derivation method and permitted inputs, explicitly and acceptance-testably, before implementation begins. Also still open, separately: P4-R797/P4-R798 (missing/invalid `ProjectRecord` presentation).
+- **Project Workspace:** implement the downstream workspace surface. Also subject to ACP-015's AI Progress Estimate definition requirement (P4-R323).
 - **AI observation surface:** implement the downstream AI observation/collaboration surface.
+- **Phase 3 Section E reconciliation:** Section E's original wording (staleness + invalid-absence as the only AI observation types) has not been amended or annotated to reflect ACP-015. Until it is, Section E read alone will appear to exclude the now-accepted "AI Progress Estimate" category. Per the historical-preservation rule below, this likely needs a current-state annotation pointing to ACP-015 rather than a rewrite of Section E's frozen historical text — but the annotation itself has not yet been done.
 
 ---
 
@@ -162,6 +166,8 @@ WP13 establishes the Gateway/root-navigation layer and New Project entry point. 
 Before starting any new work package: read this index top to bottom, confirm the dependency graph shows your target WP's prerequisites as Closed or otherwise explicitly available for the intended work, then read the specific Phase 3 section(s), Phase 4 specification(s), and accepted ACP record(s) your WP governs before writing anything.
 
 After implementing a work package: update this index to reflect what actually exists, what the work package itself built, what it depends on, what now depends on it, and what remains open. Add any new ACPs to the registry above.
+
+**Standing rule:** whenever a new ACP is accepted, update this index and `SESSION_START.md`'s ACP registry (Section 16) together, in the same pass as the ACP document itself — not as separate, later follow-ups. This index has twice fallen out of sync with an already-accepted, already-implemented decision (WP14/ACP-014, then again briefly with ACP-015) because the index update was treated as a deferred step rather than part of accepting the ACP.
 
 **Historical preservation rule:** implementation history remains historical. Do not rewrite older Implementation Notes, the frozen Phase 3 Architecture Record, or other historical records merely to make them match the current architecture. Current-state reconciliation belongs in this index and in the appropriate current governing document. If a historical document contains a current implementation instruction that has become stale, correct that instruction only when its role requires it; do not rewrite historical facts.
 
