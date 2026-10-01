@@ -9,7 +9,7 @@ Authority: Phase 4 Matrix Categories 3, 8-14, 22-28, 43; Phase 3 Architecture Re
 
 1. Purpose
 
-This ACP does not implement Dashboard, Workspace, or any UI. It resolves a question the Working_Notes open-question record (Purpose_Description_Ownership_Open_Question.md) identified but deliberately left open: where do the Purpose and Description project concepts live, and in what form.
+This ACP does not implement Dashboard, Workspace, or any UI. It resolves a question the CC_Working_Notes open-question record (Purpose_Description_Ownership_Open_Question.md) identified but deliberately left open: where do the Purpose and Description project concepts live, and in what form.
 
 2. Evidence
 
@@ -68,7 +68,7 @@ This ACP does not decide: Dashboard's presentation of Purpose/Description (separ
 This ACP is resolved and accepted by Kurt as of 2026-09-18.
 
 Next steps, in order:
-1. Surgical update to Working_Notes/Purpose_Description_Ownership_Open_Question.md marking the ownership question resolved and pointing to this ACP.
+1. Surgical update to CC_Working_Notes/Purpose_Description_Ownership_Open_Question.md marking the ownership question resolved and pointing to this ACP.
 2. Implementation: extend the ProjectRecord interface and validateProjectRecord() in src/data/project-record.ts, update WP14's provider mapping (CANONICAL_FIELDS) and tests accordingly, verified against a fresh clone with full type-check/build/test — as its own separately-reviewed implementation step, not bundled into this decision record.
 
 Until step 2 is complete and verified, no code in the repository reflects this decision.

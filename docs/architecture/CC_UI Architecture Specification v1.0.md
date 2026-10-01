@@ -126,7 +126,7 @@ Today, this separation maps as follows:
 
 *Stays as the data layer (largely untouched):* the folder structure, Markdown files as content, Markdown frontmatter as the current metadata store, Git as version history underneath everything.
 
-*Retired:* `Portfolio Map.canvas` is superseded by the Gateway and is no longer part of the data or navigation layer. A future visual/spatial secondary representation of the portfolio remains a deferred candidate idea (see `Working_Notes/Visual_Portfolio_Representation_Candidate.md`) but is not part of this architecture and would be new work, not a continuation of the Canvas file.
+*Retired:* `Portfolio Map.canvas` is superseded by the Gateway and is no longer part of the data or navigation layer. A future visual/spatial secondary representation of the portfolio remains a deferred candidate idea (see `CC_Working_Notes/Visual_Portfolio_Representation_Candidate.md`) but is not part of this architecture and would be new work, not a continuation of the Canvas file.
 
 *Becomes presentation (replaced or wrapped, not exposed):* wikilink-based browsing as a primary navigation method, the Kanban plugin's specific rendering (the underlying data can stay; the plugin's visual board is Obsidian-dependent and swappable), manually maintained dashboard tables (becomes a generated view over the metadata layer rather than hand-typed prose).
 

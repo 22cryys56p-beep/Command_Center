@@ -2,7 +2,7 @@
 
 **Prepared:** 2026-09-25
 **Purpose:** Factual evidence for Codex's own audit and next-step judgment. Deliberately contains no recommendation on what to do next — that's Codex's call to make, not preempted here.
-**Baseline:** Codex's original roadmap, `Working_Notes/Codex CC Roadmap 2026.09.13.txt`, written at commit `9109db4`.
+**Baseline:** Codex's original roadmap, `CC_Working_Notes/Codex CC Roadmap 2026.09.13.txt`, written at commit `9109db4`.
 **Current state:** `main` at `6cb038f` (2026-09-25 19:46 JST). `tsc --noEmit` clean. 147/147 tests passing. Verified directly against the live repo, not against any summary.
 
 ---
@@ -34,8 +34,8 @@ In chronological order:
 - **WP14 — Obsidian ProjectRecordProvider**: specification (`de07844`), implementation (`606f954`) — replaces the stub provider with real Obsidian frontmatter/MetadataCache-backed discovery, duplicate-ID exclusion, and validation
 - **Automatic dev build/sync workflow** (`scripts/dev.mjs`) added so `main.js` auto-syncs into the Obsidian plugin folder on build (`c2d2d13`)
 - **Purpose/Description open question** raised, investigated, and resolved as **ACP-014** — `purpose`/`description` established as universal-tier `ProjectRecord` fields (`6118e53`, `19457a0`); a documentation-corruption incident during this work was caught and fully restored from git history rather than regenerated (`16ebbe7`, `f4f912a`)
-- **SESSION_START.md** updated multiple times, including the addition of an explicit step (step 8) requiring `Working_Notes/` be checked for open questions before treating something as newly discovered
-- Most recently: a stale "Implementation status: Not yet implemented" line in the Purpose/Description Working_Notes doc — left over from before ACP-014's implementation landed — was found and corrected (`6cb038f`)
+- **SESSION_START.md** updated multiple times, including the addition of an explicit step (step 8) requiring `CC_Working_Notes/` be checked for open questions before treating something as newly discovered
+- Most recently: a stale "Implementation status: Not yet implemented" line in the Purpose/Description CC_Working_Notes doc — left over from before ACP-014's implementation landed — was found and corrected (`6cb038f`)
 
 ## 3. Current status of Codex's original 8 milestones
 
@@ -50,7 +50,7 @@ In chronological order:
 | 7 | Workspace specification and implementation | Not started |
 | 8 | Cross-cutting capability tracks (Project creation, Sources, Threads, Decisions, Tasks, History, Search, AI/provenance, archive/ongoing workflows) | Not started as a track, though New Project (ACP-013) — one slice of this milestone's "Project creation" item — was built early, outside the original sequence |
 
-The roadmap document itself, `Working_Notes/Codex CC Roadmap 2026.09.13.txt`, has not been updated to reflect any of the above — it still reads as if written at the `9109db4` baseline.
+The roadmap document itself, `CC_Working_Notes/Codex CC Roadmap 2026.09.13.txt`, has not been updated to reflect any of the above — it still reads as if written at the `9109db4` baseline.
 
 ## 4. Also relevant / not yet resolved
 
