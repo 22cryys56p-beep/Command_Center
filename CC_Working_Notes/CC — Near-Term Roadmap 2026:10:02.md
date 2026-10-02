@@ -17,7 +17,7 @@ A living sequence of work.
 * Resolve Missing / Invalid / Duplicate ProjectRecord handling.
 * Resolve the provider/data-resolution contract.
 * Resolve the AI Progress Estimate / ACP-015 question.
-* **Status: IN PROGRESS**
+* **Status: DONE**
 
 Q1–Q10 have substantially closed the ProjectRecord resolution question. Dashboard presentation remains to be resolved.
 
