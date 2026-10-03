@@ -100,6 +100,17 @@ These are maintained consistently with `SESSION_START.md` Section 7.
 - **Status:** Implemented and verified on live `main`. `tsc --noEmit` clean; full test suite passing, including `project-record.test.ts` and `obsidian-project-record-provider.test.ts`.
 - **Integrated implementation commits:** ACP-014 acceptance/implementation `19457a0`; provider implementation `606f954`.
 
+### WP15 — Project Dashboard: ProjectRecord Resolution and Presentation
+
+- **Purpose:** implement Dashboard's resolution of a requested `project_id` (Missing/Invalid/Duplicate, per ACP-016) and Dashboard's presentation of each condition. Scoped to this "Track A" only — AI Progress Estimate (ACP-015, "Track B") is a separate, still-unresolved Dashboard dependency, named but not specified by this work package.
+- **Governing architecture:** ACP-016 (primary), Phase 3 Architecture Record Section D (Project Dashboard, WP5) and Section E (AI Observation Boundary, as an acceptance constraint, not altered).
+- **Specification:** `docs/specifications/CC_Phase 4_WP15 Dashboard Implementation Specification.md` — accepted 2026-10-02, after four drafting rounds each independently reviewed against the live repository and ACP-016's text.
+- **Proposed mechanism (per the specification, not yet implemented):** a new `resolveProjectRecord(project_id)` method on `ObsidianProjectRecordProvider`, required to reuse the existing `discoverCandidates()`/`excludeDuplicateIds()` private methods rather than re-implementing discovery or duplicate detection, and required to preserve the existing duplicate-before-validity ordering (an otherwise-valid candidate sharing an ID with an invalid one still resolves to `duplicate`, not `resolved`). `getProjectRecords()`'s existing contract and all its passing tests are unaffected.
+- **ACPs referenced:** ACP-016 (implemented by this WP); ACP-015 (named as a related, non-blocking dependency — see the specification's `relates_to`).
+- **Dependencies:** WP14's provider (extended, not replaced); WP11's already-exported `ValidationIssue`/`ValidationResult` types, confirmed suitable for this use without modification. Depended on by: the AI observation surface, if/when Section E's invalid-absence observation is implemented, since it will need the same diagnostic data this WP exposes.
+- **Status:** Specification accepted. Implementation (the `resolveProjectRecord()` method, Dashboard's unresolved-state rendering, and the six acceptance tests the specification requires) has not yet begun.
+- **Explicitly not yet decided:** visual layout, component structure, UI copy, and navigation/interaction behavior for the unresolved state (per ACP-016 §3.7/§3.8, deliberately left open); AI Progress Estimate's derivation (Track B, separate).
+
 ---
 
 ## Dependency Graph (current)
@@ -117,7 +128,9 @@ WP14 — Obsidian ProjectRecordProvider
   ↓
 Project List
   ↓
-Project Dashboard
+WP15 — Dashboard ProjectRecord Resolution and Presentation (spec accepted; implementation pending)
+  ↓
+Project Dashboard (remaining content, beyond WP15's scope)
   ↓
 Project Workspace
   ↓
@@ -157,7 +170,7 @@ WP13 establishes the Gateway/root-navigation layer and New Project entry point. 
 - **WP12 historical closure:** execute/dispose of Slice 9B and the Baseline Freeze declaration, including disposition of the known `goUp()` enabled-success-path verification gap. This is a historical WP12 closure item and does not block the implemented Gateway/New Project work.
 - **New Project:** implement the complete workflow/content beyond the current ACP-013 entry-point shell.
 - **Ideas:** define and implement the future pre-formal Ideas representation and its relationship to the existing `possible`-status Project List.
-- **Project Dashboard:** implement the next downstream project surface after Project List. Blocked by two accepted ACPs whose implementation specifications have not yet been written: ACP-015 (the Dashboard specification must define AI Progress Estimate's exact derivation method and permitted inputs, explicitly and acceptance-testably) and ACP-016 (the Dashboard specification must define the actual provider interface/resolution mechanism and presentation treatment for the Missing/Invalid/Duplicate taxonomy, and must satisfy the dual acceptance constraint of resolving P4-R797/P4-R798 while also unblocking Section E's existing invalid-absence observation capability). P4-R797/P4-R798 themselves are resolved at the architectural-contract level by ACP-016; what remains outstanding is the implementation specification, not the open architectural question.
+- **Project Dashboard:** WP15's specification (ACP-016's "Track A" — ProjectRecord resolution/presentation) is accepted; implementation has not yet begun. Remaining before Dashboard is fully implementation-ready: (a) WP15's own implementation and its six required acceptance tests; (b) visual layout, component structure, and navigation/interaction behavior, deliberately left open by ACP-016/WP15; (c) ACP-015's "Track B" — AI Progress Estimate's derivation method and inputs remain unresolved, likely requiring its own evidence-first decision process before it can be specified at all. Track A and Track B are independent; Track A does not wait on Track B.
 - **Project Workspace:** implement the downstream workspace surface. Also subject to ACP-015's AI Progress Estimate definition requirement (P4-R323).
 - **AI observation surface:** implement the downstream AI observation/collaboration surface.
 - **Phase 3 Section E reconciliation:** Section E's original wording (staleness + invalid-absence as the only AI observation types) has not been amended or annotated to reflect ACP-015. Until it is, Section E read alone will appear to exclude the now-accepted "AI Progress Estimate" category. Per the historical-preservation rule below, this likely needs a current-state annotation pointing to ACP-015 rather than a rewrite of Section E's frozen historical text — but the annotation itself has not yet been done.
