@@ -3,7 +3,7 @@ type: master-index
 phase: 4
 status: living document — updated as each new WP closes
 date: 2026-09-16
-last_updated: 2026-10-02
+last_updated: 2026-10-03
 read_this_first: true
 ---
 
