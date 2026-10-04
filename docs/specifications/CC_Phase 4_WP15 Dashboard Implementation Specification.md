@@ -1,7 +1,7 @@
 ---
 type: implementation-specification
 phase: 4
-work_package: WP15 — Project Dashboard ProjectRecord Resolution and Presentation
+work_package: WP15 — Project Dashboard: ProjectRecord Resolution and Presentation
 status: Accepted
 date: 2026-10-02
 approved_by: Kurt
@@ -135,11 +135,19 @@ Explicit unresolved state, distinct from Invalid's presentation (per ACP-016 §3
 
 ### 3.6 Visual/layout treatment
 
-**Not decided by this specification.** ACP-016 §3.7/§3.8 explicitly left visual layout open. Sections 3.3–3.5 specify required *information content* only.
+The presentation/interaction decision group (P1–P6, resolved after this specification's acceptance) establishes the complete architecturally-required boundary for unresolved-state presentation as:
+
+1. Conveying the minimum information required for Missing, Invalid, and Duplicate (inherited from ACP-016 §3.8, restated in Sections 3.3–3.5 above).
+2. Keeping those three conditions informationally distinguishable (inherited from ACP-016 §3.7).
+3. Preserving the existing `Top` → Gateway escape as an available and functional outcome — `resolveTop()` is unconditional and independent of Dashboard resolution; the presentation must not disable, remove, or otherwise make this outcome unavailable.
+4. Never causing a navigation-state change through presentation or resolution outcome. Content-driven navigation is prohibited: resolution outcomes must never trigger a `NavigationState` transition. This is a deliberate constraint, not an absence of a feature — its purpose is to prevent a render → navigation-state-change → render feedback loop. Navigation-state changes originate only from explicit user-initiated navigation actions (`selectCategory`, `selectProject`, `pageNext`, `pagePrevious`, `goUp`, `goTop`), never from a resolution result.
+5. Requiring no remembered resolution history beyond the current resolution result — transient component/UI state is permitted (the only existing precedent, `new-project-view.ts`'s DOM element references, is lifecycle-scoped and reset on close), but such state must never become resolution history, caching, persistence, or cause/history tracking.
+
+These five are the complete architectural constraints on presentation. **Exact component structure, layout, typography, color, iconography, wording, diagnostic-detail treatment, control placement, and visual treatment of the orientation area remain implementation/component-design decisions**, not architectural locks.
 
 ### 3.7 Navigation/interaction behavior
 
-**Not decided by this specification**, per ACP-016's explicit exclusion of this from the architectural lock.
+Resolved by constraint 4 above: presentation may never itself cause a navigation-state change. Any user-initiated navigation away from an unresolved Dashboard proceeds through the existing, unmodified `NavigationController` action methods — no new navigation mechanism is introduced or required. Which specific control(s) a user interacts with to invoke those existing methods (e.g., relying solely on the persistent orientation bar vs. also offering an inline affordance that calls the same underlying method) remains implementation choice, not decided here.
 
 ---
 
@@ -152,8 +160,8 @@ ACP-016 requires the *resolution result* to carry sufficient diagnostic informat
 ## 5. Explicit non-goals of this specification
 
 - Does not define AI Progress Estimate's derivation (Section 3.2) — flagged as a required follow-on decision.
-- Does not specify visual layout, component structure, or UI copy (Section 3.6).
-- Does not specify navigation/interaction behavior for unresolved states (Section 3.7).
+- Does not specify visual layout, component structure, typography, color/iconography, or UI copy — the P1–P6 decision group (Section 3.6) establishes the required information/behavioral boundary, not these implementation choices.
+- Does not specify which specific control(s) a user interacts with for navigation — only that any such navigation uses the existing `NavigationController` methods, and that presentation may never itself trigger a navigation-state change (Section 3.7, P4).
 - Does not implement Section E's observation rendering — only ensures the data it would need is available (Section 3.4).
 - Does not alter `getProjectRecords()`'s contract, `CurrentObject`, or any WP12/WP13 code.
 - Does not permit a second, independent candidate-discovery or duplicate-detection implementation (Section 2).
@@ -172,3 +180,5 @@ At minimum, mirroring the existing provider test suite's style and rigor:
 ## 7. Status
 
 **Accepted by Kurt, 2026-10-02.** Scoped to Track A only (Section 0) — Track B (AI Progress Estimate, ACP-015) remains separately unresolved and does not block this specification. This document is now the authoritative implementation specification for Dashboard's ProjectRecord resolution and presentation; implementation work may proceed against it. Per the Documentation Synchronization Protocol, this acceptance is accompanied in the same pass by updates to the Master Implementation Index and SESSION_START.md.
+
+**Updated 2026-10-04:** Sections 3.6/3.7 revised to incorporate the P1–P6 presentation/interaction decision group's conclusions, resolved after this specification's initial acceptance. No architectural decision from Q1–Q10, ACP-015, or ACP-016 was reopened in this update; this is a documentation-synchronization pass, not a new specification round. The corresponding SESSION_START.md §15 principle (content-driven navigation prohibition) was added in the same pass.
