@@ -80,7 +80,7 @@ Before beginning work:
 4. Confirm the current branch.
 5. Confirm the latest commit.
 6. Read this document.
-7. Read the Master Implementation Index.
+7. Read the Master Implementation Index, then `docs/indexes/CC_Repository File Index.md` — the complete map of every authoritative file in the repository, so you don't have to rediscover or re-enumerate the repository's structure from scratch.
 8. Check `CC_Working_Notes/` for any open architectural question relevant to the area you're about to touch. An open question recorded there is not resolved by inference, however reasonable the inference seems — it is resolved only by the process the note itself describes (typically a new ACP). This step exists because a genuinely open question has previously been silently re-derived, or nearly re-resolved by inference, more than once across different sessions and different AI collaborators.
 9. Verify that the repository state matches the documented state.
 
@@ -163,6 +163,10 @@ When an ACP is accepted, the following must be updated together in the same pass
 * `SESSION_START.md` Section 16 ACP registry/current-status note
 
 If other authoritative artifacts are affected by the ACP, those artifacts must be synchronized as well.
+
+### Repository File Index maintenance
+
+Adding, renaming, or removing any authoritative file (an ACP, a WP specification, an implementation note, a Matrix document, or a source file) requires updating `docs/indexes/CC_Repository File Index.md` in the same synchronization pass as the file's own change — not as a deferred follow-up. This index exists specifically so a fresh collaborator never has to rediscover the repository's structure from scratch; letting it drift out of date defeats its purpose.
 
 ### Approval state
 
@@ -263,10 +267,11 @@ Current governing documents:
 1. Phase 3 Architecture Record (frozen historical record)
 2. Phase 4 WP specifications
 3. Phase 4 Master Implementation Index (includes the Phase 4 ACP registry)
-4. Implementation Notes
-5. Clean revised Phase 4 Matrix, including Step 65 incorporations
-6. UI Architecture Specification (living document, actively reconciled against the Matrix)
-7. Accepted ACP standalone records (`docs/architecture/ACP-*.md`)
+4. `docs/indexes/CC_Repository File Index.md` — the complete, living map of every authoritative file in the repository
+5. Implementation Notes
+6. Clean revised Phase 4 Matrix, including Step 65 incorporations
+7. UI Architecture Specification (living document, actively reconciled against the Matrix)
+8. Accepted ACP standalone records (`docs/architecture/ACP-*.md`)
 
 **Current implementation status:** ACP-014 has been formally accepted and implemented. The universal `ProjectRecord` fields `purpose` and `description` are implemented across the canonical data model, validation, Obsidian provider mapping, and affected test fixtures. The implementation has been independently verified on the live `main` branch: TypeScript is clean, the build succeeds, and **147/147 tests pass**.
 

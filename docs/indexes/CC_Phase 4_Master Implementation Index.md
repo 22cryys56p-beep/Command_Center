@@ -16,10 +16,11 @@ read_this_first: true
 1. Phase 3 Architecture Record (frozen historical record)
 2. Phase 4 WP specifications
 3. This Master Implementation Index (includes the Phase 4 ACP registry)
-4. Implementation Notes
-5. Clean revised Phase 4 Matrix, including Step 65 incorporations
-6. UI Architecture Specification (living document, actively reconciled against the Matrix)
-7. Accepted ACP standalone records (`docs/architecture/ACP-*.md`)
+4. `docs/indexes/CC_Repository File Index.md` — the complete, living map of every authoritative file in the repository
+5. Implementation Notes
+6. Clean revised Phase 4 Matrix, including Step 65 incorporations
+7. UI Architecture Specification (living document, actively reconciled against the Matrix)
+8. Accepted ACP standalone records (`docs/architecture/ACP-*.md`)
 
 These are maintained consistently with `SESSION_START.md` Section 7.
 
