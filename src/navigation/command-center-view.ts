@@ -5,13 +5,13 @@
  * WP12 Step 5, Slice 7 — first integration slice. Owns creation,
  * mounting, render coordination, and destruction of
  * NavigationController, OrientationBarComponent, NavigationInspector,
- * GatewayView, and ProjectListView. Registration (registerView) and
+ * GatewayView, ProjectListView, and DashboardView. Registration (registerView) and
  * activation (open command, leaf-reuse) are implemented in main.ts
  * (Slices 8A/8B) — this file defines the view class only and does not
  * itself register or activate.
  *
  * IMPORTANT — this is not a routing layer. It owns no navigation
- * logic of its own: Gateway and Project List are constructed here,
+ * logic of its own: Gateway, Project List, and Dashboard are constructed here,
  * but each renders itself from NavigationController's state, and
  * transitions happen through NavigationController, not through this
  * class. This file's job is construction, mounting, and render
@@ -28,9 +28,9 @@
  * Render coordination (RESOLVED at Slice 7): this class is the sole
  * coordinator. It supplies OrientationBarComponent's onStateChange
  * callback; that callback calls orientationBar.render(),
- * navigationInspector.render(), gatewayView.render(), and
- * projectListView.render(), in that order, unconditionally, every
- * time. No event bus, observer pattern, subscriptions, or global state
+ * navigationInspector.render(), gatewayView.render(),
+ * projectListView.render(), and dashboardView.render(), in that order,
+ * unconditionally, every time. No event bus, observer pattern, subscriptions, or global state
  * — a single closure is the entire coordination mechanism, approved
  * specifically because there is one coordinator and several rendering
  * consumers.
@@ -65,6 +65,7 @@ import { NavigationInspector } from "./navigation-inspector";
 import { EntryView } from "../views/entry-view";
 import { ProjectListView } from "../views/project-list-view";
 import { GatewayView } from "../views/gateway-view";
+import { DashboardView } from "../views/dashboard-view";
 import { NewProjectView } from "../views/new-project-view";
 import type { ProjectStatus } from "../data/project-record";
 import { ObsidianProjectRecordProvider } from "../integration/obsidian-project-record-provider";
@@ -77,6 +78,7 @@ export class CommandCenterView extends ItemView {
   private navigationInspector: NavigationInspector | null = null;
   private projectListView: ProjectListView | null = null;
   private gatewayView: GatewayView | null = null;
+  private dashboardView: DashboardView | null = null;
   private entryView: EntryView | null = null;
 
   // Stored directly (not re-queried by CSS class) so New Project's view
@@ -84,6 +86,7 @@ export class CommandCenterView extends ItemView {
   private orientationBarContainer: HTMLElement | null = null;
   private gatewayViewContainer: HTMLElement | null = null;
   private projectListViewContainer: HTMLElement | null = null;
+  private dashboardViewContainer: HTMLElement | null = null;
 
   private newProjectView: NewProjectView | null = null;
   private newProjectContainer: HTMLElement | null = null;
@@ -158,9 +161,18 @@ export class CommandCenterView extends ItemView {
       cls: "command-center-project-list-view-container",
     });
 
+    // WP15: Dashboard renders the unresolved-state presentation only. It is
+    // tracked like the other persistent containers because New Project
+    // exists outside NavigationState (ACP-013): entering it does not change
+    // depth, so Dashboard's own depth guard would not hide it.
+    const dashboardViewContainer = root.createDiv({
+      cls: "command-center-dashboard-view-container",
+    });
+
     this.orientationBarContainer = orientationBarContainer;
     this.gatewayViewContainer = gatewayViewContainer;
     this.projectListViewContainer = projectListViewContainer;
+    this.dashboardViewContainer = dashboardViewContainer;
 
     // The sole coordination mechanism (Slice 7, resolved): a single
     // callback, closing over all mounted component references, calling
@@ -171,6 +183,7 @@ export class CommandCenterView extends ItemView {
       this.navigationInspector?.render();
       this.gatewayView?.render();
       this.projectListView?.render();
+      this.dashboardView?.render();
     };
 
     this.orientationBar = new OrientationBarComponent(
@@ -193,6 +206,13 @@ export class CommandCenterView extends ItemView {
       this.controller,
       getProjectRecords
     );
+    // WP15: no onStateChange — Dashboard never changes navigation state;
+    // this class's callback above re-renders it.
+    this.dashboardView = new DashboardView(
+      dashboardViewContainer,
+      this.controller,
+      provider.resolveProjectRecord
+    );
 
     this.gatewayView.setOnStateChange(onStateChange);
     this.projectListView.setOnStateChange(onStateChange);
@@ -203,6 +223,7 @@ export class CommandCenterView extends ItemView {
     this.navigationInspector.render();
     this.gatewayView.render();
     this.projectListView.render();
+    this.dashboardView.render();
   }
 
   async onClose(): Promise<void> {
@@ -217,9 +238,11 @@ export class CommandCenterView extends ItemView {
     this.navigationInspector = null;
     this.projectListView = null;
     this.gatewayView = null;
+    this.dashboardView = null;
     this.gatewayViewContainer = null;
     this.orientationBarContainer = null;
     this.projectListViewContainer = null;
+    this.dashboardViewContainer = null;
     this.newProjectView = null;
     this.newProjectContainer = null;
     this.isNewProjectActive = false;
@@ -249,6 +272,7 @@ export class CommandCenterView extends ItemView {
     this.suppressContainer(this.orientationBarContainer);
     this.suppressContainer(this.gatewayViewContainer);
     this.suppressContainer(this.projectListViewContainer);
+    this.suppressContainer(this.dashboardViewContainer);
 
     const root = this.containerEl.children[1] as HTMLElement;
     this.newProjectContainer = root.createDiv({
@@ -302,6 +326,7 @@ export class CommandCenterView extends ItemView {
     if (this.orientationBarContainer) this.restoreContainer(this.orientationBarContainer);
     if (this.gatewayViewContainer) this.restoreContainer(this.gatewayViewContainer);
     if (this.projectListViewContainer) this.restoreContainer(this.projectListViewContainer);
+    if (this.dashboardViewContainer) this.restoreContainer(this.dashboardViewContainer);
 
     this.isNewProjectActive = false;
   }

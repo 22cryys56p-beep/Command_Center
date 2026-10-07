@@ -2,7 +2,7 @@
 type: file-index
 status: living document — update immediately, in the same pass, whenever an authoritative file is added, renamed, removed, or whenever CC_Working_Notes/ changes materially
 date: 2026-10-06
-last_updated: 2026-10-06
+last_updated: 2026-10-07
 read_this_first: true
 ---
 
@@ -104,6 +104,7 @@ The actual implementation everything above governs. Always check the live file, 
 - `src/views/entry-view.ts`
 - `src/views/gateway-view.ts`
 - `src/views/project-list-view.ts`
+- `src/views/dashboard-view.ts`
 - `src/views/new-project-view.ts`
 - Corresponding files under `tests/`, mirroring the same structure.
 

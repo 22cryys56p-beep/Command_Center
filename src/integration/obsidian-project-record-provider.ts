@@ -27,7 +27,11 @@
  */
 
 import type { Vault, MetadataCache, TFile } from "obsidian";
-import { validateProjectRecord, type ProjectRecord } from "../data/project-record";
+import {
+  validateProjectRecord,
+  type ProjectRecord,
+  type ValidationIssue,
+} from "../data/project-record";
 
 const CANONICAL_FIELDS = [
   "project_id",
@@ -49,6 +53,17 @@ interface Candidate {
   readonly record: Partial<ProjectRecord>;
 }
 
+/**
+ * Outcome of resolving one requested project_id (WP15 §2, ACP-016
+ * §3.5/§3.6). Exactly one condition applies; no result is ever a
+ * silently-chosen winner among duplicates.
+ */
+export type ResolutionResult =
+  | { condition: "resolved"; record: ProjectRecord }
+  | { condition: "missing" }
+  | { condition: "invalid"; candidatePath: string; issues: ValidationIssue[] }
+  | { condition: "duplicate"; paths: string[] };
+
 export class ObsidianProjectRecordProvider {
   constructor(
     private readonly vault: Vault,
@@ -66,6 +81,54 @@ export class ObsidianProjectRecordProvider {
     const deduplicated = this.excludeDuplicateIds(candidates);
     const valid = this.validateCandidates(deduplicated);
     return this.sortByProjectId(valid);
+  };
+
+  /**
+   * WP15 §2 / ACP-016 — resolve one requested project_id to exactly one of
+   * resolved / missing / invalid / duplicate.
+   *
+   * Reuses the existing pipeline rather than re-implementing it:
+   * discoverCandidates() decides what a candidate is, and
+   * excludeDuplicateIds() remains the single authority on what counts as a
+   * duplicate. Duplicate exclusion is applied before validity, so an
+   * otherwise-valid candidate sharing the requested id with an invalid one
+   * resolves to `duplicate`, never `resolved` or `invalid`.
+   *
+   * Keeps no cache and no memory of any previous call: every call re-reads
+   * the vault's current state. Read-only; writes nothing.
+   */
+  resolveProjectRecord = (project_id: string): ResolutionResult => {
+    const matching = this.discoverCandidates().filter(
+      (candidate) => String(candidate.record.project_id) === project_id
+    );
+
+    if (matching.length === 0) {
+      return { condition: "missing" };
+    }
+
+    // Only the requested id's candidates are passed in, so diagnostics are
+    // limited to this id; whether it is a duplicate is still decided by
+    // excludeDuplicateIds(), not by a second implementation here.
+    const survivors = this.excludeDuplicateIds(matching);
+    if (survivors.length === 0) {
+      return { condition: "duplicate", paths: matching.map((c) => c.file.path) };
+    }
+
+    const candidate = survivors[0];
+    const result = validateProjectRecord(candidate.record);
+    if (result.valid) {
+      return { condition: "resolved", record: candidate.record as ProjectRecord };
+    }
+
+    console.warn(
+      `Command Center: invalid ProjectRecord in "${candidate.file.path}" — excluded.`,
+      result.issues
+    );
+    return {
+      condition: "invalid",
+      candidatePath: candidate.file.path,
+      issues: result.issues,
+    };
   };
 
   /** §4 — Candidate discovery: frontmatter contains the project_id key, nothing else. */

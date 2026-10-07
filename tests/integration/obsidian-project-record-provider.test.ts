@@ -239,3 +239,89 @@ describe("read-only behavior and freshness", () => {
     expect(provider.getProjectRecords()).toHaveLength(2);
   });
 });
+
+describe("resolveProjectRecord (WP15 §6)", () => {
+  it("resolved — a single valid candidate for the requested project_id", () => {
+    const provider = buildProvider([
+      { path: "Active Projects/A.md", frontmatter: validFrontmatter },
+      { path: "Active Projects/B.md", frontmatter: { ...validFrontmatter, project_id: "proj-0002" } },
+    ]);
+    const result = provider.resolveProjectRecord("proj-0001");
+    expect(result.condition).toBe("resolved");
+    if (result.condition === "resolved") {
+      expect(result.record.project_id).toBe("proj-0001");
+    }
+  });
+
+  it("missing — no candidate exists for the requested project_id", () => {
+    const provider = buildProvider([
+      { path: "Active Projects/B.md", frontmatter: { ...validFrontmatter, project_id: "proj-0002" } },
+      { path: "README.md" },
+    ]);
+    expect(provider.resolveProjectRecord("proj-0001")).toEqual({ condition: "missing" });
+  });
+
+  it("invalid — one candidate fails validation; result carries its path and the complete issues array", () => {
+    const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const provider = buildProvider([
+      { path: "Active Projects/broken.md", frontmatter: { project_id: "proj-0002" } }, // missing name/status/focus/etc.
+    ]);
+    const result = provider.resolveProjectRecord("proj-0002");
+    expect(result.condition).toBe("invalid");
+    if (result.condition === "invalid") {
+      expect(result.candidatePath).toBe("Active Projects/broken.md");
+      expect(result.issues.length).toBeGreaterThan(1); // all issues, not just the first
+      const fields = result.issues.map((issue) => issue.field);
+      expect(fields).toEqual(expect.arrayContaining(["name", "status", "focus"]));
+    }
+    warnSpy.mockRestore();
+  });
+
+  it("duplicate — multiple candidates share the requested project_id; result lists all paths", () => {
+    const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const provider = buildProvider([
+      { path: "Active Projects/A.md", frontmatter: { ...validFrontmatter, name: "A" } },
+      { path: "Active Projects/B.md", frontmatter: { ...validFrontmatter, name: "B" } },
+    ]);
+    const result = provider.resolveProjectRecord("proj-0001");
+    expect(result.condition).toBe("duplicate");
+    if (result.condition === "duplicate") {
+      expect(result.paths).toHaveLength(2);
+      expect(result.paths).toEqual(
+        expect.arrayContaining(["Active Projects/A.md", "Active Projects/B.md"])
+      );
+    }
+    warnSpy.mockRestore();
+  });
+
+  it("duplicate takes precedence over validity — a valid candidate colliding with an invalid one is `duplicate`", () => {
+    const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const provider = buildProvider([
+      { path: "Active Projects/A.md", frontmatter: { ...validFrontmatter, project_id: "proj-shared" } },
+      { path: "Active Projects/B.md", frontmatter: { project_id: "proj-shared" } }, // missing required fields
+    ]);
+    const result = provider.resolveProjectRecord("proj-shared");
+    expect(result.condition).toBe("duplicate");
+    if (result.condition === "duplicate") {
+      expect(result.paths).toEqual(
+        expect.arrayContaining(["Active Projects/A.md", "Active Projects/B.md"])
+      );
+    }
+    warnSpy.mockRestore();
+  });
+
+  it("fresh read — reflects the vault's current state on each call; no caching", () => {
+    const files: Array<{ path: string; frontmatter?: Record<string, unknown> }> = [];
+    const { vault, metadataCache } = makeFakeVaultAndCache(files);
+    const provider = new ObsidianProjectRecordProvider(vault as any, metadataCache as any);
+
+    expect(provider.resolveProjectRecord("proj-0001").condition).toBe("missing");
+
+    // Mutate the SAME backing store the SAME provider instance reads from.
+    files.push({ path: "Active Projects/A.md", frontmatter: validFrontmatter });
+    expect(provider.resolveProjectRecord("proj-0001").condition).toBe("resolved");
+
+    files.length = 0;
+    expect(provider.resolveProjectRecord("proj-0001").condition).toBe("missing");
+  });
+});
