@@ -3,7 +3,7 @@ type: master-index
 phase: 4
 status: living document — updated as each new WP closes
 date: 2026-09-16
-last_updated: 2026-10-07
+last_updated: 2026-10-09
 read_this_first: true
 ---
 
@@ -173,7 +173,8 @@ WP13 establishes the Gateway/root-navigation layer and New Project entry point. 
 - **WP12 historical closure:** execute/dispose of Slice 9B and the Baseline Freeze declaration, including disposition of the known `goUp()` enabled-success-path verification gap. This is a historical WP12 closure item and does not block the implemented Gateway/New Project work.
 - **New Project:** implement the complete workflow/content beyond the current ACP-013 entry-point shell.
 - **Ideas:** define and implement the future pre-formal Ideas representation and its relationship to the existing `possible`-status Project List.
-- **Project Dashboard:** WP15 (ACP-016's "Track A" — ProjectRecord resolution/presentation) is implemented: `resolveProjectRecord()`, Dashboard's unresolved-state rendering, and the six required acceptance tests are in place. Remaining before Dashboard is fully implemented: (a) normal (resolved) Dashboard content per Phase 3 Section D, currently a deferred placeholder in `DashboardView`, with visual layout, component structure, and navigation/interaction behavior for that content still to be designed; (b) ACP-015's "Track B" — AI Progress Estimate's derivation method and inputs remain unresolved, likely requiring its own evidence-first decision process before it can be specified at all. Track A and Track B are independent; Track A did not wait on Track B.
+- **Project Dashboard:** WP15 (ACP-016's "Track A" — ProjectRecord resolution/presentation) is implemented: `resolveProjectRecord()`, Dashboard's unresolved-state rendering, and the six required acceptance tests are in place. Remaining before Dashboard is fully implemented: (a) normal (resolved) Dashboard content per Phase 3 Section D, currently a deferred placeholder in `DashboardView`, with visual layout, component structure, and navigation/interaction behavior for that content still to be designed; (b) ACP-015's "Track B" — AI Progress Estimate's derivation method and inputs remain unresolved, likely requiring its own evidence-first decision process before it can be specified at all. Track A and Track B are independent; Track A did not wait on Track B. Scope and source requirements for the next Dashboard work package (resolved-state core content): `CC_Working_Notes/CC — Dashboard Core-Content Specification Scope 2026-10-09.md`.
+- **Documentation — Document D (Steps 43–49):** P4-R797 and P4-R798 are still listed as OPEN although ACP-016 resolved them. Update that text as a separate, tracked documentation task.
 - **Project Workspace:** implement the downstream workspace surface. Also subject to ACP-015's AI Progress Estimate definition requirement (P4-R323).
 - **AI observation surface:** implement the downstream AI observation/collaboration surface.
 - **Phase 3 Section E reconciliation:** Section E's original wording (staleness + invalid-absence as the only AI observation types) has not been amended or annotated to reflect ACP-015. Until it is, Section E read alone will appear to exclude the now-accepted "AI Progress Estimate" category. Per the historical-preservation rule below, this likely needs a current-state annotation pointing to ACP-015 rather than a rewrite of Section E's frozen historical text — but the annotation itself has not yet been done.

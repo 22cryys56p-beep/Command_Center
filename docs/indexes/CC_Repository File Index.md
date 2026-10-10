@@ -2,7 +2,7 @@
 type: file-index
 status: living document — update immediately, in the same pass, whenever an authoritative file is added, renamed, removed, or whenever CC_Working_Notes/ changes materially
 date: 2026-10-06
-last_updated: 2026-10-07
+last_updated: 2026-10-09
 read_this_first: true
 ---
 
@@ -77,6 +77,7 @@ Context and evidence trail — **not automatically authoritative**. Check before
 
 - `README.md`
 - `ACP-008_Proposal_Status_Enum_Reconciliation.md`
+- `CC — Dashboard Core-Content Specification Scope 2026-10-09.md`
 - `CC — Near-Term Roadmap 2026:10:02.md`
 - `CC_Phase 4_New Project Intake and Data Model — Candidate Design Notes.md`
 - `CC_Phase_4_Gateway_Screen_and_Ongoing_Archived_Distinction.md`
