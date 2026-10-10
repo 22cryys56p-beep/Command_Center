@@ -2,7 +2,7 @@
 
 A living sequence of work.
 
-Last updated: 2026/10/09
+Last updated: 2026/10/10
 
 **Rule:** When a task is done, move to the next unresolved item. No calendar or artificial deadlines.
 
@@ -34,7 +34,7 @@ Q1–Q10 closed the ProjectRecord resolution question (ACP-016). The Dashboard p
 * Use the real ProjectRecord provider.
 * Implement the accepted resolution and presentation behavior.
 * **Status: DONE for WP15's scope** — implemented, verified, and merged to `main` (2026-10-08): `resolveProjectRecord()`, the unresolved-state Dashboard view (Missing, Invalid, Duplicate), and the six acceptance tests.
-* **Not covered by this item and still open:** normal (resolved) Dashboard content per Phase 3 Section D, currently a deferred placeholder ("Dashboard content pending."), and the AI Progress Estimate's derivation (Track B). The Master Implementation Index's Outstanding Items section is the authoritative record of what remains.
+* **Not covered by this item and still open:** normal (resolved) Dashboard content per Phase 3 Section D, specified by WP16 (accepted 2026-10-10, implementation pending) and currently a deferred placeholder ("Dashboard content pending."), and the AI Progress Estimate's derivation (Track B). The Master Implementation Index's Outstanding Items section is the authoritative record of what remains.
 
 ## 5. Workspace Specification
 

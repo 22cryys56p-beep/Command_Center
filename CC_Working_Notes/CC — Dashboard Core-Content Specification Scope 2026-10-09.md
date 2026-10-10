@@ -1,7 +1,7 @@
 # Command Center — Dashboard Core-Content Specification: Scope and Source Requirements
 
 **Date:** 2026-10-09
-**Status:** Scope agreed as the basis of the next work package. This is not the specification and is not implementation-ready.
+**Status:** Scope agreed as the basis of the next work package; specified by WP16 (`docs/specifications/CC_Phase 4_WP16 Dashboard Core-Content Specification.md`, accepted 2026-10-10). This document is the scope boundary, not the specification.
 **Baseline:** `main` at `a3c3f34` (WP15 implemented and merged).
 
 ## 1. Purpose

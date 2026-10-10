@@ -158,6 +158,8 @@ Every step down is optional except reaching the Dashboard — the architecture m
 
 ## E. AI Observation Boundary (WP9)
 
+*(Annotation per ACP-015, accepted 2026-09-30: the two observation types in this section, staleness and invalid absence, remain the complete set of observations authorized here, and this section's boundary is unchanged. ACP-015 establishes "AI Progress Estimate" (P4-R323, P4-R802) as a separate, non-authoritative AI-output category governed by its own safeguards. It is not an addition to those observation types, and the rules below do not govern it. Read alone, the original wording below can appear to exclude that category; ACP-015 resolves that apparent conflict without weakening this boundary. The original text of this section is otherwise unchanged.)*
+
 **Allowed:** statements about a Project Record's condition, derived entirely from data already present in WP1 — staleness (record exceeds the staleness threshold, applicable at `planned` and `current` per ACP-003), and invalid absence (a `planned`/`current` record missing a field WP1 requires at its tier). Every observation must be traceable to a specific, statable rule — never freeform or generative.
 
 **Forbidden:** any suggested status change, recommended next action, proposed field edit, or output implying the AI has assessed what the project should do next. This category has no home anywhere in the architecture — not restricted, simply out of scope entirely. Observations must never be worded as a command or as an action already taken.

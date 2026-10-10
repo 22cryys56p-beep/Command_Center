@@ -3,7 +3,7 @@ type: master-index
 phase: 4
 status: living document — updated as each new WP closes
 date: 2026-09-16
-last_updated: 2026-10-09
+last_updated: 2026-10-10
 read_this_first: true
 ---
 
@@ -114,6 +114,16 @@ These are maintained consistently with `SESSION_START.md` Section 7.
 - **Status:** Implemented (2026-10-07). Verified by actual execution: `tsc --noEmit` clean, build succeeds, 161/161 tests passing. No test exercises `CommandCenterView` itself, so the wiring was verified by type-checking, review, and a manual run inside Obsidian (2026-10-08, all five Gateway categories reaching the Dashboard placeholder), not by an automated test. The Dashboard view's `resolved` branch is a deliberately deferred placeholder ("Dashboard content pending.") — it is not a start on Phase 3 Section D content.
 - **Explicitly out of scope / not yet decided:** normal (resolved) Dashboard content per Phase 3 Section D, which remains later Dashboard work; AI Progress Estimate's derivation (Track B, separate). Unresolved-state layout, copy, and component structure were implementation choices within WP15 §3.6, not architectural locks.
 
+### WP16 — Project Dashboard: Core Content (Resolved-State Presentation)
+
+- **Purpose:** specify the Dashboard's resolved-state presentation from the existing `ProjectRecord` only (replacing WP15's deferred "Dashboard content pending." placeholder), and refine the Invalid presentation so Section E's invalid-absence acceptance conditions can be demonstrated.
+- **Governing architecture:** the approved scope document `CC_Working_Notes/CC — Dashboard Core-Content Specification Scope 2026-10-09.md`; Phase 3 Section D (Project Dashboard) and Section E (AI Observation Boundary, unaltered); ACP-014 (Purpose and Description); ACP-016 (dual acceptance constraint, invalid-absence side); ACP-015 (Track B, named and deferred).
+- **Specification:** `docs/specifications/CC_Phase 4_WP16 Dashboard Core-Content Specification.md` — accepted 2026-10-10 after three rounds of independent review.
+- **Specified mechanism:** `DashboardView`'s resolved and Invalid branches only. Content is tiered by status: identity, a distinct Purpose/Description/Focus triad, a Where Things Stand section derived only from `milestone`, `progress`, `next_action`, `blockers`, and `last_updated` and retained at every status, and `repo_reference` at `current` as plain text. The Invalid presentation distinguishes absence from malformation and names the tier rule from a fixed field-to-tier map, with no change to `ResolutionResult`. No change to the provider, `CurrentObject`, `NavigationController`, `orientation.ts`, or `CommandCenterView`.
+- **Dependencies:** WP15 (`DashboardView`, `resolveProjectRecord()`, unchanged); WP11's `ProjectRecord` and `validateProjectRecord()` (unchanged).
+- **Status:** Specification accepted (2026-10-10). Implementation has not yet begun. Readiness (WP16 Section 9): SESSION_START's AI Progress Estimate prerequisite applies only to work packages that include that category, and WP16 excludes it; Track B remains unresolved and separate, not waived. The Section E annotation prerequisite was cleared on 2026-10-10.
+- **Explicitly deferred:** Attention (R582), navigation to Workspace sections (R587), the Dashboard-to-Workspace action (R589), the AI Progress Estimate and its placeholder (R802, Track B), Section E staleness, non-status adaptation (R584), the AI-maintained side of R586, and the Dashboard/Workspace boundary questions (R316, R318/R151, R587 against the hub rule, R783).
+
 ---
 
 ## Dependency Graph (current)
@@ -133,7 +143,9 @@ Project List
   ↓
 WP15 — Dashboard ProjectRecord Resolution and Presentation (implemented)
   ↓
-Project Dashboard (remaining content, beyond WP15's scope)
+WP16 — Dashboard Core Content (specification accepted; implementation pending)
+  ↓
+Project Dashboard (remaining deferred content: Track B, Attention, navigation)
   ↓
 Project Workspace
   ↓
@@ -173,11 +185,12 @@ WP13 establishes the Gateway/root-navigation layer and New Project entry point. 
 - **WP12 historical closure:** execute/dispose of Slice 9B and the Baseline Freeze declaration, including disposition of the known `goUp()` enabled-success-path verification gap. This is a historical WP12 closure item and does not block the implemented Gateway/New Project work.
 - **New Project:** implement the complete workflow/content beyond the current ACP-013 entry-point shell.
 - **Ideas:** define and implement the future pre-formal Ideas representation and its relationship to the existing `possible`-status Project List.
-- **Project Dashboard:** WP15 (ACP-016's "Track A" — ProjectRecord resolution/presentation) is implemented: `resolveProjectRecord()`, Dashboard's unresolved-state rendering, and the six required acceptance tests are in place. Remaining before Dashboard is fully implemented: (a) normal (resolved) Dashboard content per Phase 3 Section D, currently a deferred placeholder in `DashboardView`, with visual layout, component structure, and navigation/interaction behavior for that content still to be designed; (b) ACP-015's "Track B" — AI Progress Estimate's derivation method and inputs remain unresolved, likely requiring its own evidence-first decision process before it can be specified at all. Track A and Track B are independent; Track A did not wait on Track B. Scope and source requirements for the next Dashboard work package (resolved-state core content): `CC_Working_Notes/CC — Dashboard Core-Content Specification Scope 2026-10-09.md`.
+- **Project Dashboard:** WP15 (ACP-016's "Track A" — ProjectRecord resolution/presentation) is implemented: `resolveProjectRecord()`, Dashboard's unresolved-state rendering, and the six required acceptance tests are in place. Remaining before Dashboard is fully implemented: (a) WP16 (accepted 2026-10-10) specifies the resolved-state core content per Phase 3 Section D, but its implementation is pending and `DashboardView`'s resolved branch remains the deferred placeholder until then; WP16 defers Attention (R582), navigation to Workspace sections (R587), the Dashboard-to-Workspace action (R589), and staleness; (b) ACP-015's "Track B" — AI Progress Estimate's derivation method and inputs remain unresolved, likely requiring its own evidence-first decision process before it can be specified at all. Track A and Track B are independent; Track A did not wait on Track B. Specification for the resolved-state core content: `docs/specifications/CC_Phase 4_WP16 Dashboard Core-Content Specification.md`, bounded by `CC_Working_Notes/CC — Dashboard Core-Content Specification Scope 2026-10-09.md`.
 - **Documentation — Document D (Steps 43–49):** P4-R797 and P4-R798 are still listed as OPEN although ACP-016 resolved them. Update that text as a separate, tracked documentation task.
+- **Documentation — WP15 specification frontmatter:** the `work_package` value is not valid YAML (an unquoted colon), and the `relates_to` reference to ACP-015 omits the " - " in that file's name. Correct as a separate, tracked documentation task.
 - **Project Workspace:** implement the downstream workspace surface. Also subject to ACP-015's AI Progress Estimate definition requirement (P4-R323).
 - **AI observation surface:** implement the downstream AI observation/collaboration surface.
-- **Phase 3 Section E reconciliation:** Section E's original wording (staleness + invalid-absence as the only AI observation types) has not been amended or annotated to reflect ACP-015. Until it is, Section E read alone will appear to exclude the now-accepted "AI Progress Estimate" category. Per the historical-preservation rule below, this likely needs a current-state annotation pointing to ACP-015 rather than a rewrite of Section E's frozen historical text — but the annotation itself has not yet been done.
+- **Phase 3 Section E reconciliation:** Resolved (2026-10-10). A current-state annotation per ACP-015 was added directly beneath the Section E heading in the Phase 3 Architecture Record. Section E's original wording is unchanged, per the historical-preservation rule.
 
 ---
 
