@@ -5,14 +5,12 @@ updated: 2026-07-20
 
 # Executive Dashboard
 
-> [!abstract] Portfolio health — **1 active · 0 blocked · 0 completed**
-> Current portfolio focus: [[Active Projects/Teacher Toolbox|Teacher Toolbox]] — establish product scope and first milestone.
+> [!abstract] Portfolio health — **0 active · 0 blocked · 0 completed**
+> No project is currently in focus.
 
 ## Active Projects
 
-| Project | Status | Current milestone | Progress | Next action |
-| --- | --- | --- | --- | --- |
-| [[Active Projects/Teacher Toolbox\|Teacher Toolbox]] | 🟢 Current | M1 - Foundation (see [[Active Projects/Teacher Toolbox\|record]]) | underway | Practical tools for reducing teacher administrative time |
+No active projects.
 
 ## Current Focus
 
@@ -35,7 +33,6 @@ updated: 2026-07-20
 
 - [ ] Review project records for stale information.
 - [ ] Verify dashboard and canvas links resolve correctly.
-- [x] Record the development environment — now tracked as `repo_reference` in [[Active Projects/Teacher Toolbox|the project record]]
 
 ## Recently Completed
 

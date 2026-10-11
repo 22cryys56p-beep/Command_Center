@@ -76,7 +76,7 @@ This sequencing does not prevent the core Dashboard specification from progressi
 
 ## 8. Out of scope
 
-Implementation; Track B derivation; Workspace; Attention; navigation to Sources, Threads, Decisions, Tasks and History; staleness; New Project label wording; the Navigation Inspector; Teacher Toolbox's missing `purpose` and `description`.
+Implementation; Track B derivation; Workspace; Attention; navigation to Sources, Threads, Decisions, Tasks and History; staleness; New Project label wording; the Navigation Inspector; the sample Teacher Toolbox note's missing `purpose` and `description` (the note has since been removed from the vault).
 
 ## 9. Tracked documentation items
 

@@ -12,6 +12,8 @@ This repository contains the **Command Center** project.
 
 Command Center is a standalone project management, project observation, and AI collaboration system.
 
+**Command Center is not any of the projects it tracks.** Projects such as iCanSpell, Teacher Toolbox, an AI workbench, a series of Sun Tzu projects, the kurt-engine-core project, a kernel-extraction project, and non-software work such as a construction project, a wedding plan, a seminar, or a car restoration are *examples* of what Command Center can track or has been tested against. This list is illustrative and non-exhaustive, not a registry, and it may change; no one of these projects is privileged, and none is part of this repository's architecture, scope, or open work. A note in the vault that records such a project is a reference record only: its contents, and any shortcomings in it, are not Command Center requirements, work items, or architecture inputs. Section 2 states the boundary rule.
+
 This repository owns:
 
 * Command Center architecture
