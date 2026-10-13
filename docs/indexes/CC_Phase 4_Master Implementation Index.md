@@ -3,13 +3,12 @@ type: master-index
 phase: 4
 status: living document — updated as each new WP closes
 date: 2026-09-16
-last_updated: 2026-10-12
-read_this_first: true
+last_updated: 2026-10-13
 ---
 
 # Phase 4 — Master Implementation Index
 
-**This is the first document any collaborator — human or AI — should read before beginning or continuing any Phase 4 work package.** It is the table of contents for all implementation work: what exists, what governs it, what depends on what, and what is still open.
+**Read this second, immediately after `SESSION_START.md` and before beginning or continuing any Phase 4 work package (the full reading order is in `docs/indexes/CC_Repository File Index.md`, Section 1).** It is the table of contents for all implementation work: what exists, what governs it, what depends on what, and what is still open.
 
 **Current governing documents, in order of authority:**
 
