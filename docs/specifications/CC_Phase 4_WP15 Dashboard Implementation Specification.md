@@ -1,7 +1,7 @@
 ---
 type: implementation-specification
 phase: 4
-work_package: WP15 — Project Dashboard: ProjectRecord Resolution and Presentation
+work_package: "WP15 — Project Dashboard: ProjectRecord Resolution and Presentation"
 status: Accepted
 date: 2026-10-02
 approved_by: Kurt
@@ -14,7 +14,7 @@ depends_on:
   - src/navigation/orientation.ts, navigation-controller.ts (WP12)
   - "docs/architecture/ACP-016 — Dashboard ProjectRecord Resolution (Missing, Invalid, Duplicate).md"
   - Phase 3 Architecture Record, Section D (Project Dashboard, WP5) and Section E (AI Observation Boundary)
-relates_to: docs/architecture/ACP-015 — AI Progress Estimate Architectural Reconciliation.md (Track B — separate Dashboard dependency, out of scope for this specification; see Section 0)
+relates_to: docs/architecture/ACP-015 — AI Progress Estimate - Architectural Reconciliation.md (Track B — separate Dashboard dependency, out of scope for this specification; see Section 0)
 ---
 
 # WP15 — Project Dashboard: ProjectRecord Resolution and Presentation
@@ -181,4 +181,4 @@ At minimum, mirroring the existing provider test suite's style and rigor:
 
 **Accepted by Kurt, 2026-10-02.** Scoped to Track A only (Section 0) — Track B (AI Progress Estimate, ACP-015) remains separately unresolved and does not block this specification. This document is now the authoritative implementation specification for Dashboard's ProjectRecord resolution and presentation; implementation work may proceed against it. Per the Documentation Synchronization Protocol, this acceptance is accompanied in the same pass by updates to the Master Implementation Index and SESSION_START.md.
 
-**Updated 2026-10-04:** Sections 3.6/3.7 revised to incorporate the P1–P6 presentation/interaction decision group's conclusions, resolved after this specification's initial acceptance. No architectural decision from Q1–Q10, ACP-015, or ACP-016 was reopened in this update; this is a documentation-synchronization pass, not a new specification round. The corresponding SESSION_START.md §15 principle (content-driven navigation prohibition) was added in the same pass.
+**Updated 2026-10-04:** Sections 3.6/3.7 revised to incorporate the P1–P6 presentation/interaction decision group's conclusions, resolved after this specification's initial acceptance. No architectural decision from Q1–Q10, ACP-015, or ACP-016 was reopened in this update; this is a documentation-synchronization pass, not a new specification round. The corresponding SESSION_START.md §15 principle (content-driven navigation prohibition) was added in the same pass. *Post-acceptance correction (2026-10-13), no change to scope:* the `work_package` frontmatter value is now quoted so the frontmatter is valid YAML, and the ACP-015 filename reference is corrected.
