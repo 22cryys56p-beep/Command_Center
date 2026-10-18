@@ -192,21 +192,6 @@ describe("DashboardView (WP15 unresolved-state presentation)", () => {
     expect(allClasses(container)).toContain("command-center-dashboard-duplicate");
     expect(allClasses(container)).not.toContain("command-center-dashboard-missing");
   });
-
-  it("resolved — shows only the deferred placeholder, not Dashboard content", () => {
-    const record: ProjectRecord = {
-      project_id: "proj-0001",
-      name: "Should Not Be Shown",
-      purpose: "p",
-      description: "d",
-      status: "current",
-      focus: "f",
-    };
-    const { container } = renderWith({ condition: "resolved", record });
-    const text = allText(container);
-    expect(text).toContain("Dashboard content pending.");
-    expect(text).not.toContain("Should Not Be Shown");
-  });
 });
 
 describe("DashboardView invalid wording (WP16 §3)", () => {
@@ -297,5 +282,193 @@ describe("DashboardView invalid wording (WP16 §3)", () => {
     const text = invalidWith([{ field: "project_id", reason: "missing" }]);
     expect(text).toContain("project_id is missing.");
     expect(text).not.toContain("required for");
+  });
+});
+
+describe("DashboardView resolved presentation (WP16 §2)", () => {
+  type Status = "possible" | "planned" | "current" | "ongoing" | "archived";
+  const OPERATIONAL: Status[] = ["planned", "current"];
+  const NON_OPERATIONAL: Status[] = ["possible", "ongoing", "archived"];
+
+  function record(status: Status, over: Record<string, unknown> = {}): ProjectRecord {
+    const base: Record<string, unknown> = {
+      project_id: "proj-0001",
+      name: "Alpha Project",
+      purpose: "PURPOSE-TEXT",
+      description: "DESCRIPTION-TEXT",
+      status,
+      focus: "FOCUS-TEXT",
+    };
+    if (status === "planned" || status === "current") {
+      Object.assign(base, {
+        milestone: "MILESTONE-TEXT",
+        progress: "underway",
+        next_action: "NEXT-ACTION-TEXT",
+        blockers: ["BLOCKER-ONE", "BLOCKER-TWO"],
+        last_updated: "2026-10-01T09:30:00Z",
+      });
+    }
+    if (status === "current") base.repo_reference = "https://example.com/repo";
+    return { ...base, ...over } as unknown as ProjectRecord;
+  }
+
+  function show(rec: ProjectRecord) {
+    return renderWith({ condition: "resolved", record: rec });
+  }
+
+  function find(el: FakeElement, cls: string): FakeElement | null {
+    if (el.classList.includes(cls)) return el;
+    for (const child of el.children) {
+      const hit = find(child, cls);
+      if (hit) return hit;
+    }
+    return null;
+  }
+
+  function countTag(el: FakeElement, tag: string): number {
+    return (el.tagName === tag ? 1 : 0) + el.children.reduce((n, c) => n + countTag(c, tag), 0);
+  }
+
+  it("1 — possible, ongoing, archived show the universal fields and none of the tier fields", () => {
+    for (const status of NON_OPERATIONAL) {
+      const { container } = show(record(status, { milestone: "MILESTONE-TEXT", progress: "nearly_done", next_action: "NEXT-ACTION-TEXT", blockers: ["BLOCKER-ONE"], last_updated: "2026-10-01", repo_reference: "https://example.com/repo" }));
+      const text = allText(container);
+      for (const expected of ["Alpha Project", status, "PURPOSE-TEXT", "DESCRIPTION-TEXT", "FOCUS-TEXT"]) {
+        expect(text).toContain(expected);
+      }
+      for (const absent of ["MILESTONE-TEXT", "nearly_done", "Progress (recorded)", "NEXT-ACTION-TEXT", "BLOCKER-ONE", "2026-10-01", "https://example.com/repo"]) {
+        expect(text).not.toContain(absent);
+      }
+      expect(find(container, "command-center-dashboard-items")).toBeNull();
+    }
+  });
+
+  it("2 — planned shows the five operational fields and no repository line", () => {
+    const { container } = show(record("planned", { repo_reference: "https://example.com/repo" }));
+    const text = allText(container);
+    for (const expected of ["MILESTONE-TEXT", "underway", "NEXT-ACTION-TEXT", "BLOCKER-ONE", "BLOCKER-TWO", "2026-10-01T09:30:00Z"]) {
+      expect(text).toContain(expected);
+    }
+    expect(text).not.toContain("https://example.com/repo");
+    expect(find(container, "command-center-dashboard-reference")).toBeNull();
+  });
+
+  it("3 — current shows all of the above plus the repository line", () => {
+    const { container } = show(record("current"));
+    const text = allText(container);
+    for (const expected of ["MILESTONE-TEXT", "underway", "NEXT-ACTION-TEXT", "BLOCKER-ONE", "2026-10-01T09:30:00Z", "https://example.com/repo"]) {
+      expect(text).toContain(expected);
+    }
+    expect(find(container, "command-center-dashboard-reference")).not.toBeNull();
+  });
+
+  it("4 — Purpose, Description and Focus are separate, labeled elements; none contains another's value", () => {
+    for (const status of [...NON_OPERATIONAL, ...OPERATIONAL]) {
+      const { container } = show(record(status));
+      const parts: Array<[string, string, string]> = [
+        ["command-center-dashboard-focus", "Focus", "FOCUS-TEXT"],
+        ["command-center-dashboard-purpose", "Purpose", "PURPOSE-TEXT"],
+        ["command-center-dashboard-description", "Description", "DESCRIPTION-TEXT"],
+      ];
+      for (const [cls, label, own] of parts) {
+        const el = find(container, cls);
+        expect(el).not.toBeNull();
+        const text = allText(el as FakeElement);
+        expect(text).toContain(label);
+        expect(text).toContain(own);
+        for (const [, , other] of parts) {
+          if (other !== own) expect(text).not.toContain(other);
+        }
+      }
+    }
+  });
+
+  it("5 — Where Things Stand is present at every status and invents nothing at the lower tiers", () => {
+    for (const status of [...NON_OPERATIONAL, ...OPERATIONAL]) {
+      const { container } = show(record(status));
+      const section = find(container, "command-center-dashboard-where-things-stand");
+      expect(section).not.toBeNull();
+      expect(allText(section as FakeElement)).toContain("Where Things Stand");
+    }
+    for (const status of NON_OPERATIONAL) {
+      const { container } = show(record(status));
+      const text = allText(find(container, "command-center-dashboard-where-things-stand") as FakeElement);
+      expect(text).toContain("No operational information applies at this status.");
+      expect(text).not.toContain("FOCUS-TEXT");
+      expect(text).not.toContain(status);
+    }
+  });
+
+  it("6 — null and [] both show the no-blockers statement; a list shows every blocker", () => {
+    for (const blockers of [null, []]) {
+      const { container } = show(record("current", { blockers }));
+      expect(allText(container)).toContain("No blockers.");
+      expect(countTag(container, "li")).toBe(0);
+    }
+    const { container } = show(record("current"));
+    expect(allText(container)).not.toContain("No blockers.");
+    expect(countTag(container, "li")).toBe(2);
+    expect(allText(container)).toContain("BLOCKER-ONE");
+    expect(allText(container)).toContain("BLOCKER-TWO");
+  });
+
+  it("7 — progress is labeled as the recorded value and nothing implies an AI estimate", () => {
+    for (const status of OPERATIONAL) {
+      const text = allText(show(record(status)).container);
+      expect(text).toContain("Progress (recorded)");
+      expect(text).toContain("underway");
+      expect(/estimate|\bAI\b/i.test(text)).toBe(false);
+    }
+  });
+
+  it("8 — last_updated is shown exactly as stored, with no age or staleness wording", () => {
+    for (const status of OPERATIONAL) {
+      const text = allText(show(record(status)).container);
+      expect(text).toContain("2026-10-01T09:30:00Z");
+      expect(/\b(ago|stale|recent|recently|outdated|overdue)\b/i.test(text)).toBe(false);
+    }
+  });
+
+  it("9 — the deferred placeholder is gone", () => {
+    for (const status of [...NON_OPERATIONAL, ...OPERATIONAL]) {
+      expect(allText(show(record(status)).container)).not.toContain("Dashboard content pending.");
+    }
+  });
+
+  it("10 — rendering the resolved state calls no controller action and resolves afresh each time", () => {
+    const container = new FakeElement();
+    const controller = buildController(dashboardState);
+    const resolve = vi.fn().mockReturnValue({ condition: "resolved", record: record("current") });
+    const view = new DashboardView(
+      container as unknown as HTMLElement,
+      controller as unknown as NavigationController,
+      resolve
+    );
+    view.render();
+    view.render();
+    expect(resolve).toHaveBeenCalledTimes(2);
+    for (const action of [controller.selectCategory, controller.selectProject, controller.pageNext, controller.pagePrevious, controller.goUp, controller.goTop]) {
+      expect(action).not.toHaveBeenCalled();
+    }
+  });
+
+  it("11 — displayed values keep their line breaks, the name included", () => {
+    const { container } = show(record("current", { name: "Alpha\nProject", focus: "line one\nline two", purpose: "p1\np2", description: "d1\nd2", milestone: "m1\nm2", next_action: "n1\nn2" }));
+    const styled = (cls: string): string | undefined => find(container, cls)?.style.whiteSpace;
+    expect(styled("command-center-dashboard-name")).toBe("pre-wrap");
+    for (const cls of ["focus", "purpose", "description", "item-milestone", "item-next-action", "reference"]) {
+      expect(styled(`command-center-dashboard-${cls}-value`)).toBe("pre-wrap");
+    }
+    expect(allText(container)).toContain("Alpha\nProject");
+  });
+
+  it("12 — Focus and the Where Things Stand values share one text size (WP16 §2.4 rule 6)", () => {
+    const { container } = show(record("current"));
+    const size = (cls: string): string | undefined => find(container, cls)?.style.fontSize;
+    const focus = size("command-center-dashboard-focus-value");
+    expect(focus).toBeDefined();
+    for (const cls of ["item-milestone", "item-progress", "item-next-action", "item-last-updated"]) {
+      expect(size(`command-center-dashboard-${cls}-value`)).toBe(focus);
+    }
   });
 });

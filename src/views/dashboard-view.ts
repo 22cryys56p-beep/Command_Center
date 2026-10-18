@@ -9,11 +9,14 @@
  * exactly one of those conditions, never a normal Dashboard with empty or
  * default fields.
  *
- * DEFERRED — NOT IMPLEMENTED HERE: normal (resolved) Dashboard content per
- * Phase 3 Section D (including "Where Things Stand" and the AI Progress
- * Estimate, ACP-015). The `resolved` branch below is an explicitly deferred
- * placeholder, not a start on that work. Do not read it as Dashboard
- * implementation; the remaining Dashboard content belongs to later work.
+ * RESOLVED PRESENTATION (WP16 §2): the resolved record is shown from existing
+ * ProjectRecord fields only, gated by status tier, values as stored. Hierarchy comes
+ * from order and size, not from containers or per-field headings: name and status,
+ * Focus, a compact Where Things Stand group, quiet Purpose and Description lines, and
+ * a quiet Repository line (current only). There is no panel, border, or background;
+ * the only color is the theme's muted text. Still deferred, by design: Attention
+ * (R582), navigation to other sections (R587), the Dashboard-to-Workspace action
+ * (R589), the AI Progress Estimate (R802), and staleness.
  *
  * INVALID WORDING (WP16 §3): each issue line is a deterministic function of its
  * field and reason alone. Absence (`missing`, `empty`) is worded differently from
@@ -36,7 +39,7 @@
 
 import type { NavigationController } from "../navigation/navigation-controller";
 import type { ResolutionResult } from "../integration/obsidian-project-record-provider";
-import type { ValidationIssue } from "../data/project-record";
+import type { ProjectRecord, ValidationIssue } from "../data/project-record";
 
 /**
  * WP16 §3.2 — fixed field-to-tier map, used only to name the requirement behind
@@ -83,6 +86,9 @@ function describeIssue(issue: ValidationIssue): string {
   }
 }
 
+/** Theme-aware muted text color (Obsidian variable); the only color this view uses. */
+const MUTED = "var(--text-muted)";
+
 export class DashboardView {
   private readonly container: HTMLElement;
   private readonly controller: NavigationController;
@@ -125,7 +131,7 @@ export class DashboardView {
 
     switch (result.condition) {
       case "resolved":
-        this.renderDeferred();
+        this.renderResolved(result.record);
         return;
       case "missing":
         this.renderMissing(project_id);
@@ -145,12 +151,115 @@ export class DashboardView {
     }
   }
 
-  /** Placeholder only — normal Dashboard content is deferred (see file header). */
-  private renderDeferred(): void {
-    const block = this.container.createEl("div", {
-      cls: "command-center-dashboard-deferred",
-    });
-    block.createEl("p", { text: "Dashboard content pending." });
+  private renderResolved(record: ProjectRecord): void {
+    const root = this.container.createEl("div", { cls: "command-center-dashboard-resolved" });
+    root.style.display = "flex";
+    root.style.flexDirection = "column";
+    root.style.gap = "0.9rem";
+
+    const identity = root.createEl("div", { cls: "command-center-dashboard-identity" });
+    identity.style.display = "flex";
+    identity.style.flexWrap = "wrap";
+    identity.style.alignItems = "baseline";
+    identity.style.gap = "0.25rem 0.75rem";
+    const name = identity.createEl("h2", { cls: "command-center-dashboard-name", text: record.name });
+    name.style.margin = "0";
+    name.style.fontSize = "1.5rem";
+    name.style.fontWeight = "600";
+    name.style.whiteSpace = "pre-wrap";
+    name.style.overflowWrap = "anywhere";
+    const status = identity.createEl("span", { cls: "command-center-dashboard-status", text: record.status });
+    status.style.fontSize = "0.85rem";
+    status.style.color = MUTED;
+
+    this.renderLabeled(root, "command-center-dashboard-focus", "Focus", record.focus, "1rem", false);
+    this.renderWhereThingsStand(root, record);
+    this.renderLabeled(root, "command-center-dashboard-purpose", "Purpose", record.purpose, "0.9rem", false);
+    this.renderLabeled(root, "command-center-dashboard-description", "Description", record.description, "0.9rem", false);
+    if (record.status === "current" && typeof record.repo_reference === "string") {
+      this.renderLabeled(root, "command-center-dashboard-reference", "Repository", record.repo_reference, "0.8rem", true);
+    }
+  }
+
+  /** A small muted label above a value, shown as stored (line breaks preserved). */
+  private renderLabeled(
+    parent: HTMLElement,
+    cls: string,
+    label: string,
+    value: string,
+    valueSize: string,
+    muted: boolean
+  ): HTMLElement {
+    const block = parent.createEl("div", { cls });
+    const labelEl = block.createEl("div", { cls: `${cls}-label`, text: label });
+    labelEl.style.fontSize = "0.75rem";
+    labelEl.style.color = MUTED;
+    const valueEl = block.createEl("div", { cls: `${cls}-value`, text: value });
+    valueEl.style.fontSize = valueSize;
+    valueEl.style.whiteSpace = "pre-wrap";
+    valueEl.style.overflowWrap = "anywhere";
+    if (muted) valueEl.style.color = MUTED;
+    return block;
+  }
+
+  /**
+   * WP16 §2.4. Present at every status. Operational fields appear only at
+   * planned and current; elsewhere a neutral line says none apply.
+   */
+  private renderWhereThingsStand(parent: HTMLElement, record: ProjectRecord): void {
+    const section = parent.createEl("div", { cls: "command-center-dashboard-where-things-stand" });
+    const heading = section.createEl("div", { cls: "command-center-dashboard-where-things-stand-label", text: "Where Things Stand" });
+    heading.style.fontSize = "0.75rem";
+    heading.style.color = MUTED;
+
+    if (record.status !== "planned" && record.status !== "current") {
+      const empty = section.createEl("div", {
+        cls: "command-center-dashboard-where-things-stand-empty",
+        text: "No operational information applies at this status.",
+      });
+      empty.style.fontSize = "0.9rem";
+      empty.style.color = MUTED;
+      return;
+    }
+
+    const items = section.createEl("div", { cls: "command-center-dashboard-items" });
+    items.style.display = "flex";
+    items.style.flexWrap = "wrap";
+    items.style.gap = "0.5rem 1.75rem";
+    items.style.marginTop = "0.25rem";
+
+    const addItem = (cls: string, label: string, value: string | undefined): void => {
+      if (value === undefined) return;
+      this.renderLabeled(items, cls, label, value, "1rem", false);
+    };
+    addItem("command-center-dashboard-item-milestone", "Milestone", record.milestone);
+    addItem("command-center-dashboard-item-progress", "Progress (recorded)", record.progress);
+    addItem("command-center-dashboard-item-next-action", "Next action", record.next_action);
+    this.renderBlockers(items, record.blockers);
+    addItem("command-center-dashboard-item-last-updated", "Last updated", record.last_updated);
+  }
+
+  /** D2: null and [] both present the same no-blockers statement; otherwise every blocker is listed. */
+  private renderBlockers(parent: HTMLElement, blockers: ProjectRecord["blockers"]): void {
+    if (blockers === undefined) return;
+    const cls = "command-center-dashboard-item-blockers";
+    const block = parent.createEl("div", { cls });
+    const labelEl = block.createEl("div", { cls: `${cls}-label`, text: "Blockers" });
+    labelEl.style.fontSize = "0.75rem";
+    labelEl.style.color = MUTED;
+    if (blockers === null || blockers.length === 0) {
+      const none = block.createEl("div", { cls: `${cls}-value`, text: "No blockers." });
+      none.style.fontSize = "1rem";
+      return;
+    }
+    const list = block.createEl("ul", { cls: `${cls}-list` });
+    list.style.margin = "0";
+    list.style.paddingLeft = "1.1rem";
+    for (const blocker of blockers) {
+      const li = list.createEl("li", { text: blocker });
+      li.style.whiteSpace = "pre-wrap";
+      li.style.overflowWrap = "anywhere";
+    }
   }
 
   private renderMissing(project_id: string): void {
