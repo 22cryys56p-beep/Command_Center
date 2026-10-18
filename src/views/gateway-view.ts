@@ -78,12 +78,17 @@ export class GatewayView {
 
     this.container.empty();
     this.container.addClass("command-center-gateway-view");
-    this.container.style.display = "flex";
-    this.container.style.flexDirection = "column";
-    this.container.style.gap = "0.75rem";
-    this.container.style.padding = "1rem";
+    // Layout: the six destinations sit in the middle of the screen as two rows
+    // of three (Current, Planning, Ideas / Ongoing, New Project, Archive). The
+    // container itself is the grid, so each button stays a direct child.
+    this.container.style.display = "grid";
+    this.container.style.gridTemplateColumns = "repeat(3, minmax(0, 11rem))";
+    this.container.style.gap = "1rem";
+    this.container.style.justifyContent = "center";
+    this.container.style.alignContent = "center";
+    this.container.style.minHeight = "60vh";
+    this.container.style.padding = "2rem 1rem";
     this.container.style.width = "100%";
-    this.container.style.height = "100%";
 
     for (const destination of GATEWAY_DESTINATIONS) {
       const button = this.container.createEl("button", {
@@ -92,7 +97,9 @@ export class GatewayView {
       });
 
       button.type = "button";
-      button.style.padding = "0.75rem 1rem";
+      button.style.padding = "1.25rem 0.75rem";
+      button.style.fontSize = "1.05rem";
+      button.style.overflowWrap = "anywhere";
       button.style.cursor = "pointer";
 
       button.addEventListener("click", () => {

@@ -76,6 +76,19 @@ describe("GatewayView", () => {
     ]);
   });
 
+  it("lays the six destinations out as a centered three-by-two grid", () => {
+    const { container } = build();
+    expect(container.style.display).toBe("grid");
+    expect(container.style.gridTemplateColumns).toContain("repeat(3");
+    expect(container.style.justifyContent).toBe("center");
+    expect(container.style.alignContent).toBe("center");
+    // each destination is a direct child, so the grid places them three per row in order
+    expect(container.children).toHaveLength(6);
+    for (const button of container.children) {
+      expect(button.style.fontSize).toBeDefined();
+    }
+  });
+
   it("maps each status-backed destination to its required ProjectStatus", () => {
     const cases: Array<[string, string]> = [
       ["Current", "current"],
