@@ -117,6 +117,15 @@ export class OrientationBarComponent {
 
     this.container.empty();
     this.container.addClass("command-center-orientation-bar");
+    // A compact header strip at the top of the screen (UI Architecture Specification):
+    // << , centered label, >> , Up , Top, in one row with a subtle divider beneath.
+    this.container.style.display = "flex";
+    this.container.style.alignItems = "center";
+    this.container.style.gap = "0.5rem";
+    this.container.style.padding = "0.5rem 1rem";
+    this.container.style.width = "100%";
+    this.container.style.boxSizing = "border-box";
+    this.container.style.borderBottom = "1px solid var(--background-modifier-border)";
 
     const previousButton = this.container.createEl("button", {
       text: "<<",
@@ -132,6 +141,12 @@ export class OrientationBarComponent {
       cls: "command-center-orientation-label",
     });
     label.setText(this.resolveCurrentLabel());
+    label.style.flex = "1 1 auto";
+    label.style.minWidth = "0";
+    label.style.textAlign = "center";
+    label.style.whiteSpace = "nowrap";
+    label.style.overflow = "hidden";
+    label.style.textOverflow = "ellipsis";
 
     const nextButton = this.container.createEl("button", {
       text: ">>",

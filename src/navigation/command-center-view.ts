@@ -72,6 +72,14 @@ import { ObsidianProjectRecordProvider } from "../integration/obsidian-project-r
 
 export const COMMAND_CENTER_VIEW_TYPE = "command-center-view";
 
+/**
+ * The Navigation Inspector (WP12) is a passive diagnostic view, not a screen, and
+ * the UI Architecture Specification makes the orientation element the only
+ * persistent element. It is therefore hidden by default; set this to true to show
+ * it again while debugging navigation state.
+ */
+const SHOW_DIAGNOSTIC_INSPECTOR = false;
+
 export class CommandCenterView extends ItemView {
   private controller: NavigationController | null = null;
   private orientationBar: OrientationBarComponent | null = null;
@@ -133,6 +141,10 @@ export class CommandCenterView extends ItemView {
   private enterNavigationRoot(): void {
     const root = this.containerEl.children[1] as HTMLElement;
     root.empty();
+    // One vertical column: the orientation header on top, the active screen below.
+    root.style.display = "flex";
+    root.style.flexDirection = "column";
+    root.style.alignItems = "stretch";
 
     this.entryView = null;
 
@@ -154,6 +166,9 @@ export class CommandCenterView extends ItemView {
     const inspectorContainer = root.createDiv({
       cls: "command-center-inspector-container",
     });
+    if (!SHOW_DIAGNOSTIC_INSPECTOR) {
+      inspectorContainer.style.display = "none";
+    }
     const gatewayViewContainer = root.createDiv({
       cls: "command-center-gateway-view-container",
     });

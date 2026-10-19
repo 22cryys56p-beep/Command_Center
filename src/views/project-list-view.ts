@@ -46,7 +46,7 @@ export class ProjectListView {
     this.container.style.gap = "0.75rem";
     this.container.style.padding = "1rem";
     this.container.style.width = "100%";
-    this.container.style.height = "100%";
+    this.container.style.boxSizing = "border-box";
 
     if (state.object === null || state.object.kind !== "category") {
       this.renderEmptyState();
@@ -74,18 +74,30 @@ export class ProjectListView {
       button.style.alignItems = "flex-start";
       button.style.padding = "0.75rem 1rem";
       button.style.cursor = "pointer";
-      button.style.border = "1px solid #ccc";
+      // Theme-aware colors (Obsidian variables), so rows stay readable in any theme.
+      button.style.border = "1px solid var(--background-modifier-border)";
       button.style.borderRadius = "6px";
-      button.style.background = "white";
+      button.style.background = "var(--background-secondary)";
+      button.style.color = "var(--text-normal)";
+      button.style.fontSize = "1.05rem";
+      button.style.fontWeight = "600";
       button.style.textAlign = "left";
+      // Rows never shrink below their text, so a long name or focus is never clipped.
+      button.style.flex = "0 0 auto";
+      button.style.width = "100%";
+      button.style.boxSizing = "border-box";
+      button.style.height = "auto";
+      button.style.whiteSpace = "normal";
+      button.style.overflowWrap = "anywhere";
 
       const focus = button.createEl("span", {
         text: project.focus,
         cls: "command-center-project-list-focus",
       });
       focus.style.marginTop = "0.5rem";
-      focus.style.fontSize = "0.95rem";
-      focus.style.color = "#555";
+      focus.style.fontSize = "0.9rem";
+      focus.style.fontWeight = "400";
+      focus.style.color = "var(--text-muted)";
 
       button.addEventListener("click", () => {
         this.controller.selectProject(project.project_id);
@@ -102,6 +114,6 @@ export class ProjectListView {
 
     message.style.padding = "1rem";
     message.style.fontSize = "1rem";
-    message.style.color = "#555";
+    message.style.color = "var(--text-muted)";
   }
 }
