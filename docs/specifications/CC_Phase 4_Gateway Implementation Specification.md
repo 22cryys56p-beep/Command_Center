@@ -45,6 +45,15 @@ For each status-backed destination, Gateway makes exactly one existing controlle
 
 Ideas is not a ProjectStatus. This increment provides the required route to `possible` ProjectRecords; it does not define or implement pre-formal-Idea storage, lifecycle, or rendering.
 
+### 3.1 Layout (recorded 2026-10-20)
+
+Before this record the specification fixed the six destinations and their order but not their layout. The layout is as Kurt described it:
+
+- The six destinations are buttons in the middle of the screen, in two rows of three: **Current, Planning, Ideas** over **Ongoing, New Project, Archive**.
+- The buttons are equal in size and centered horizontally and vertically in the area below the orientation header.
+- Clicking a status destination opens the list of projects in that category; clicking a project opens that project's screen. Kurt's informal term for that screen is the "workboard"; in this repository it is the Project Dashboard (Category 43), and Workspace is reached from it.
+- Implemented in UI pass 1 (see the Master Implementation Index): the Gateway's container is itself the grid, so each button remains a direct child of it.
+
 ## 4. New Project prerequisite
 
 ACP-011 requires New Project to transition to a distinct workflow entry point, while explicitly leaving its internal workflow outside Gateway scope. No such entry point exists in the current codebase.

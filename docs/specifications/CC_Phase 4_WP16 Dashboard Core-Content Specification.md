@@ -25,11 +25,11 @@ relates_to: Track B (AI Progress Estimate derivation, ACP-015); the Dashboard/Wo
 
 **Status: Accepted (2026-10-10).** Approved by Kurt after three rounds of independent review by GPT, recorded in the revision history below. Section 8 records the approved decisions; items marked **[D1]–[D5]** in the body refer to that list. The approved scope document remains the boundary of this specification.
 
-**Revision history.** *v1 → v2:* Applied after GPT's review: D1's link alternative removed as inconsistent with §2.7 (a link would need an explicit exception); D2 now covers and tests both `null` and `[]`, and flags that `[]` extends beyond what the scope explicitly settles; D3 no longer implies a separate observation form is required; tests 5, 6, 13 and 14 strengthened; a visual-review acceptance step added for the prominence rule. One review point was not applied: the claim that §2.7 miscounts constraints. WP15 §3.6 lists exactly five numbered constraints, which are the consolidated result of the six-item P1–P6 decision group, so "five" is correct and the wording was clarified instead. *v2 → v3:* §2.2 now states that `blockers: null` is an intentional, meaningful state governed by §2.4 and [D2], and D2 states that `null` and `[]` remain distinct in the record with identical presentation. *v3 → accepted:* D1–D5 approved as presented. *Post-acceptance corrections (2026-10-10), no change to scope or D1–D5:* the `work_package` frontmatter value is now quoted so the frontmatter is valid YAML; the ACP-015 filename reference is corrected; Section 9 records the readiness ruling; the Teacher Toolbox mention in Section 5 now identifies it as a sample note.
+**Revision history.** *v1 → v2:* Applied after GPT's review: D1's link alternative removed as inconsistent with §2.7 (a link would need an explicit exception); D2 now covers and tests both `null` and `[]`, and flags that `[]` extends beyond what the scope explicitly settles; D3 no longer implies a separate observation form is required; tests 5, 6, 13 and 14 strengthened; a visual-review acceptance step added for the prominence rule. One review point was not applied: the claim that §2.7 miscounts constraints. WP15 §3.6 lists exactly five numbered constraints, which are the consolidated result of the six-item P1–P6 decision group, so "five" is correct and the wording was clarified instead. *v2 → v3:* §2.2 now states that `blockers: null` is an intentional, meaningful state governed by §2.4 and [D2], and D2 states that `null` and `[]` remain distinct in the record with identical presentation. *v3 → accepted:* D1–D5 approved as presented. *Post-acceptance corrections (2026-10-10), no change to scope or D1–D5:* the `work_package` frontmatter value is now quoted so the frontmatter is valid YAML; the ACP-015 filename reference is corrected; Section 9 records the readiness ruling; the Teacher Toolbox mention in Section 5 now identifies it as a sample note. *Post-implementation clarification (2026-10-20), no change to scope or D1–D5:* §3.1 now lists the `empty` reason, §3.2 states how a field outside the tier map is worded, and §9 records the implementation.
 
 ## 0. Scope — read this before anything else
 
-WP15 delivered the Dashboard's unresolved states (Missing, Invalid, Duplicate). The resolved branch of `DashboardView` is a deliberately deferred placeholder reading "Dashboard content pending." This specification replaces that placeholder with the Dashboard's core content, **built exclusively from the existing `ProjectRecord`**, and refines the Invalid presentation so that Section E's invalid-absence acceptance conditions can be demonstrated.
+WP15 delivered the Dashboard's unresolved states (Missing, Invalid, Duplicate). At the time of writing, the resolved branch of `DashboardView` was a deliberately deferred placeholder reading "Dashboard content pending." This specification replaces that placeholder with the Dashboard's core content, **built exclusively from the existing `ProjectRecord`**, and refines the Invalid presentation so that Section E's invalid-absence acceptance conditions can be demonstrated.
 
 The approved scope document is the boundary of this specification. Where this document and the scope document disagree, the scope document governs and this document is wrong.
 
@@ -106,7 +106,7 @@ The text "Dashboard content pending." and the `renderDeferred()` method are remo
 
 The Invalid condition remains a sub-case of the resolution taxonomy (ACP-016 §4); no separate visual state is introduced. WP15 §3.4 stated that the Section E acceptance constraint remained open. This section defines the conditions under which the Invalid presentation delivers the invalid-absence observation. The conditions below are **acceptance conditions**.
 
-**3.1 Absence is distinguished from malformation.** `missing` is presented as absence of a required field. `invalid_enum_value`, `invalid_type`, and `invalid_timestamp` are presented as a field that is present but not valid. The two kinds are never presented with the same wording.
+**3.1 Absence is distinguished from malformation.** `missing` and `empty` are presented as absence of a required field (`missing`: the field is absent; `empty`: it is present but has no value), each with its own wording and with the requirement named per §3.2. `invalid_enum_value`, `invalid_type`, and `invalid_timestamp` are presented as a field that is present but not valid. Absence and malformation are never presented with the same wording. (The validator's `ValidationIssue` type includes `empty`; it is handled exhaustively.)
 
 **3.2 The rule is named.** For each `missing` issue, the presentation states the requirement that makes the field required, derived from a fixed field-to-tier map:
 
@@ -115,6 +115,8 @@ The Invalid condition remains a sub-case of the resolution taxonomy (ACP-016 §4
 | `name`, `purpose`, `description`, `status`, `focus` | every status |
 | `milestone`, `progress`, `next_action`, `blockers`, `last_updated` | `planned` and `current` |
 | `repo_reference` | `current` |
+
+A field outside this map (for example `project_id`) is stated without a requirement clause, and no tier is implied.
 
 This requires no change to `ResolutionResult`. The validator reports tier-field issues only when the record's status is `planned` or `current`, and stops evaluation when the status is missing or invalid, so the tier cannot be guessed from the issue list alone and must not be.
 
@@ -190,11 +192,11 @@ Approved by Kurt, 2026-10-10.
 
 ## 9. Status
 
-**Accepted by Kurt, 2026-10-10.** D1–D5 approved as presented, after independent review. This document is now the authoritative specification for the Dashboard's resolved-state core content and the Invalid-presentation refinement. Scope and deferred items are those of the approved scope document. Per the Documentation Synchronization Protocol, this acceptance is accompanied in the same pass by updates to the Master Implementation Index, the Repository File Index, the Near-Term Roadmap, SESSION_START.md, and the scope document's status.
+**Accepted by Kurt, 2026-10-10. Implemented (2026-10-20).** D1–D5 were approved as presented, after independent review. Step 1 (§3, the Invalid presentation) is on `main` in commit `9574983`, and Step 2 (§2, the resolved presentation) is in commit `d287dec`. Verified by execution on the pushed `main`: `tsc --noEmit` clean, build succeeds, 183/183 tests passing. Scope and deferred items are those of the approved scope document. The touch set was `src/views/dashboard-view.ts` and `tests/views/dashboard-view.test.ts`.
 
-**Readiness.** SESSION_START.md names two conditions on a Dashboard implementation specification in its ACP-015 paragraph: (a) the AI Progress Estimate's derivation is defined, and (b) Phase 3 Section E's wording is annotated to reflect ACP-015.
+**Readiness (cleared).** SESSION_START.md named two conditions on a Dashboard implementation specification in its ACP-015 paragraph: (a) the AI Progress Estimate's derivation is defined, and (b) Phase 3 Section E's wording is annotated to reflect ACP-015.
 
-- **(b) is cleared.** On 2026-10-10 an annotation was added directly beneath the Section E heading in the Phase 3 Architecture Record; Section E's original wording is unchanged.
-- **(a) is ruled not to apply to this specification.** By Kurt's ruling of 2026-10-10 (recorded in SESSION_START.md), condition (a) applies to a work package that includes the AI Progress Estimate. WP16 explicitly excludes it (R802, deferred without a placeholder). Track B remains unresolved and separate; it is not waived.
+- **(b) was cleared** on 2026-10-10 by an annotation directly beneath the Section E heading in the Phase 3 Architecture Record; Section E's original wording is unchanged.
+- **(a) was ruled not to apply to this specification** by Kurt on 2026-10-10 (recorded in SESSION_START.md): it applies to a work package that includes the AI Progress Estimate, and WP16 excludes it (R802, deferred without a placeholder). Track B remains unresolved and separate; it is not waived.
 
-This does not reopen D1–D5 or change this specification's scope. Implementation begins only when Kurt authorizes it.
+**Open at closure, recorded in the Master Implementation Index and not decided here:** the conflict between D2 and UI Architecture Specification v1.0 Section 6 on how an absence of blockers is presented, and the stale-dashboard requirement that WP16 defers.
