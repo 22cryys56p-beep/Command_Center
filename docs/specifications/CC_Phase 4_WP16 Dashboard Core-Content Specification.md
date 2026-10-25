@@ -192,7 +192,7 @@ Approved by Kurt, 2026-10-10.
 
 ## 9. Status
 
-**Accepted by Kurt, 2026-10-10. Implemented (2026-10-20).** D1–D5 were approved as presented, after independent review. Step 1 (§3, the Invalid presentation) is on `main` in commit `9574983`, and Step 2 (§2, the resolved presentation) is in commit `d287dec`. Verified by execution on the pushed `main`: `tsc --noEmit` clean, build succeeds, 183/183 tests passing. Scope and deferred items are those of the approved scope document. The touch set was `src/views/dashboard-view.ts` and `tests/views/dashboard-view.test.ts`.
+**Accepted by Kurt, 2026-10-10. Implemented (2026-10-20).** D1–D5 were approved as presented, after independent review. Step 1 (§3, the Invalid presentation) is on `main` in commit `9574983`, and Step 2 (§2, the resolved presentation) is in commit `d287dec`. Verified by execution on the pushed `main`: `tsc --noEmit` clean, build succeeds, 183/183 tests passing. **Visual review (§2.4 rule 6, prominence):** completed by Kurt in Obsidian on 2026-10-25 on the sample notes; Where Things Stand was clear and prominent on the rendered Dashboard, all screens were readable, and the controls worked where applicable. Scope and deferred items are those of the approved scope document. The touch set was `src/views/dashboard-view.ts` and `tests/views/dashboard-view.test.ts`.
 
 **Readiness (cleared).** SESSION_START.md named two conditions on a Dashboard implementation specification in its ACP-015 paragraph: (a) the AI Progress Estimate's derivation is defined, and (b) Phase 3 Section E's wording is annotated to reflect ACP-015.
 
