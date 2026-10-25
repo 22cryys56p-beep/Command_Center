@@ -108,11 +108,11 @@ Context and evidence trail — **not automatically authoritative**. Check before
 - `README.md`
 - `ACP-008_Proposal_Status_Enum_Reconciliation.md`
 - `CC — Dashboard Core-Content Specification Scope 2026-10-09.md`
-- `CC — Near-Term Roadmap 2026:10:02.md`
+- `CC — Near-Term Roadmap 2026-10-02.md`
 - `CC_Phase 4_New Project Intake and Data Model — Candidate Design Notes.md`
 - `CC_Phase_4_Gateway_Screen_and_Ongoing_Archived_Distinction.md`
 - `CC_State_of_Repo_for_Codex_2026-09-25.md`
-- `Codex Audit - Current repository state 2026:09:29.md`
+- `Codex Audit - Current repository state 2026-09-29.md`
 - `Codex CC Roadmap 2026.09.13.txt`
 - `Dashboard ProjectRecord Resolution Gap — Evidence and Decision Scope.md`
 - `Document-E-Uncharted-Territory.md`
