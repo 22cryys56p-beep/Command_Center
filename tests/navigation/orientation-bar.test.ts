@@ -47,16 +47,26 @@ function build() {
 }
 
 describe("OrientationBarComponent layout", () => {
-  it("keeps the specified order in one row: <<, label, >>, Up, Top", () => {
+  it("lays the controls out in one row: <<, Up, label, Top, >>", () => {
     const container = build();
     expect(container.style.display).toBe("flex");
     expect(container.children.map((c) => c.classList[0])).toEqual([
       "command-center-orientation-previous",
-      "command-center-orientation-label",
-      "command-center-orientation-next",
       "command-center-orientation-up",
+      "command-center-orientation-label",
       "command-center-orientation-top",
+      "command-center-orientation-next",
     ]);
+  });
+
+  it("renders all four buttons at the larger size", () => {
+    const buttons = build().children.filter((c) => c.tagName === "button");
+    expect(buttons).toHaveLength(4);
+    for (const b of buttons) {
+      expect(b.style.padding).toBe("0.55rem 1.1rem");
+      expect(b.style.fontSize).toBe("1.05rem");
+      expect(b.style.minWidth).toBe("3.25rem");
+    }
   });
 
   it("is a compact header strip with a theme-aware divider", () => {
@@ -67,7 +77,7 @@ describe("OrientationBarComponent layout", () => {
   });
 
   it("lets the label take the free space, centered, and truncate instead of overflowing", () => {
-    const label = build().children[1];
+    const label = build().children.find((c) => c.classList[0] === "command-center-orientation-label")!;
     expect(label.style.flex).toBe("1 1 auto");
     expect(label.style.minWidth).toBe("0");
     expect(label.style.textAlign).toBe("center");

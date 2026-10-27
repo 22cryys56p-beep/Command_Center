@@ -117,8 +117,9 @@ export class OrientationBarComponent {
 
     this.container.empty();
     this.container.addClass("command-center-orientation-bar");
-    // A compact header strip at the top of the screen (UI Architecture Specification):
-    // << , centered label, >> , Up , Top, in one row with a subtle divider beneath.
+    // A header strip at the top of the screen (UI Architecture Specification):
+    // << , Up , centered label, Top , >> , in one row with a subtle divider beneath.
+    // Order and button size set by Kurt (UI pass 2).
     this.container.style.display = "flex";
     this.container.style.alignItems = "center";
     this.container.style.gap = "0.5rem";
@@ -131,9 +132,28 @@ export class OrientationBarComponent {
       text: "<<",
       cls: "command-center-orientation-previous",
     });
+    this.sizeButton(previousButton);
     previousButton.disabled = !availability.canPagePrevious;
     previousButton.addEventListener("click", () => {
       this.controller.pagePrevious();
+      this.onStateChange();
+    });
+
+    const upButton = this.container.createEl("button", {
+      text: "Up",
+      cls: "command-center-orientation-up",
+    });
+    this.sizeButton(upButton);
+    upButton.disabled = !availability.canGoUp;
+    upButton.addEventListener("click", () => {
+      // No defensive try/catch, per the approved Slice 5 decision,
+      // reaffirmed at Slice 7: getAvailability().canGoUp already
+      // determines whether this button is enabled, and a disabled
+      // native button does not fire click events. If goUp() throws
+      // here, onStateChange() is never reached — the exception
+      // propagates as a genuine, visible contract violation, not a
+      // silently swallowed one.
+      this.controller.goUp();
       this.onStateChange();
     });
 
@@ -148,43 +168,39 @@ export class OrientationBarComponent {
     label.style.overflow = "hidden";
     label.style.textOverflow = "ellipsis";
 
-    const nextButton = this.container.createEl("button", {
-      text: ">>",
-      cls: "command-center-orientation-next",
-    });
-    nextButton.disabled = !availability.canPageNext;
-    nextButton.addEventListener("click", () => {
-      this.controller.pageNext();
-      this.onStateChange();
-    });
-
-    const upButton = this.container.createEl("button", {
-      text: "Up",
-      cls: "command-center-orientation-up",
-    });
-    upButton.disabled = !availability.canGoUp;
-    upButton.addEventListener("click", () => {
-      // No defensive try/catch, per the approved Slice 5 decision,
-      // reaffirmed at Slice 7: getAvailability().canGoUp already
-      // determines whether this button is enabled, and a disabled
-      // native button does not fire click events. If goUp() throws
-      // here, onStateChange() is never reached — the exception
-      // propagates as a genuine, visible contract violation, not a
-      // silently swallowed one.
-      this.controller.goUp();
-      this.onStateChange();
-    });
-
     // Top is always enabled once the orientation element is present at
     // all, per Section C — never conditionally disabled.
     const topButton = this.container.createEl("button", {
       text: "Top",
       cls: "command-center-orientation-top",
     });
+    this.sizeButton(topButton);
     topButton.addEventListener("click", () => {
       this.controller.goTop();
       this.onStateChange();
     });
+
+    const nextButton = this.container.createEl("button", {
+      text: ">>",
+      cls: "command-center-orientation-next",
+    });
+    this.sizeButton(nextButton);
+    nextButton.disabled = !availability.canPageNext;
+    nextButton.addEventListener("click", () => {
+      this.controller.pageNext();
+      this.onStateChange();
+    });
+  }
+
+  /**
+   * Larger, easier-to-hit controls than Obsidian's default button size
+   * (UI pass 2). Size is a presentation choice, not a specified value;
+   * adjust here if it needs tuning.
+   */
+  private sizeButton(button: HTMLElement): void {
+    button.style.padding = "0.55rem 1.1rem";
+    button.style.fontSize = "1.05rem";
+    button.style.minWidth = "3.25rem";
   }
 
   /**
