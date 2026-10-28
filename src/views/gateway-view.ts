@@ -82,8 +82,8 @@ export class GatewayView {
     // of three (Current, Planning, Ideas / Ongoing, New Project, Archive). The
     // container itself is the grid, so each button stays a direct child.
     this.container.style.display = "grid";
-    this.container.style.gridTemplateColumns = "repeat(3, minmax(0, 11rem))";
-    this.container.style.gap = "1rem";
+    this.container.style.gridTemplateColumns = "repeat(3, minmax(0, 15rem))";
+    this.container.style.gap = "1.8rem";
     this.container.style.justifyContent = "center";
     this.container.style.alignContent = "center";
     this.container.style.minHeight = "60vh";
@@ -97,8 +97,11 @@ export class GatewayView {
       });
 
       button.type = "button";
-      button.style.padding = "1.25rem 0.75rem";
-      button.style.fontSize = "1.05rem";
+      // Larger destination buttons (UI pass 3), following the Studio mockup.
+      // All six share these exact values, so they stay equal in size.
+      button.style.padding = "2rem 1.25rem";
+      button.style.fontSize = "1.15rem";
+      button.style.minHeight = "110px";
       button.style.overflowWrap = "anywhere";
       button.style.cursor = "pointer";
 

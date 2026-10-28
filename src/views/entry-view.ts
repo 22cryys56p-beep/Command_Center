@@ -30,8 +30,12 @@ export class EntryView {
     });
 
     button.type = "button";
-    button.style.padding = "0.75rem 1.25rem";
-    button.style.fontSize = "1rem";
+    // Larger landing button (UI pass 3). Values follow the Studio mockup's
+    // Entry button. Size is a presentation choice; adjust here.
+    button.style.padding = "4.5rem 3.8rem";
+    button.style.fontSize = "clamp(1.8rem, 3.2vw, 2.4rem)";
+    button.style.minWidth = "340px";
+    button.style.maxWidth = "90%";
     button.style.cursor = "pointer";
 
     button.addEventListener("click", () => {

@@ -89,6 +89,16 @@ describe("GatewayView", () => {
     }
   });
 
+  it("renders all six destination buttons at one identical, larger size", () => {
+    const { container } = build();
+    expect(container.children).toHaveLength(6);
+    for (const button of container.children) {
+      expect(button.style.padding).toBe("2rem 1.25rem");
+      expect(button.style.fontSize).toBe("1.15rem");
+      expect(button.style.minHeight).toBe("110px");
+    }
+  });
+
   it("maps each status-backed destination to its required ProjectStatus", () => {
     const cases: Array<[string, string]> = [
       ["Current", "current"],
