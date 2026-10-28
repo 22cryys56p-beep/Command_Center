@@ -1,15 +1,23 @@
 {
 	"nodes":[
-		{"id":"center","type":"text","text":"# Command Center\n\nVisual operational headquarters\n\n[[Dashboard/Executive Dashboard|Open Executive Dashboard]]","x":0,"y":0,"width":360,"height":220,"color":"5"},
-		{"id":"future","type":"text","text":"# Future Projects\n\n[[Future Projects/README|View project pipeline]]","x":500,"y":280,"width":260,"height":155,"color":"4"},
-		{"id":"completed","type":"text","text":"# Completed Projects\n\n[[Completed Projects/README|View completed work]]","x":500,"y":500,"width":260,"height":130,"color":"1"},
-		{"id":"knowledge","type":"text","text":"# Knowledge Base\n\n[[Knowledge Base/README|Cross-project knowledge]]","x":-360,"y":300,"width":260,"height":135,"color":"6"},
-		{"id":"templates","type":"file","file":"Templates/README.md","x":-360,"y":500,"width":260,"height":560,"color":"3"}
+		{"id":"progress-wp12","type":"text","text":"# IN PROGRESS\n\n## WP12 — Formal Closure\n\nCode-complete through Slice 8B.\n\nStill outstanding:\n- Slice 9B framework verification\n- Disposition of the known `goUp()` verification gap\n- Baseline Freeze declaration\n\n[[docs/implementation/CC_Phase 4_WP12 Implementation Notes|WP12 implementation notes]]","x":0,"y":300,"width":340,"height":260,"color":"4"},
+		{"id":"done-foundation","type":"text","text":"# DONE\n\n## Foundation & Data\n\n**WP10** — Implementation foundation\n**WP11** — ProjectRecord data layer\n\nEnvironment, data model, and validation established.","x":-480,"y":140,"width":300,"height":180,"color":"6"},
+		{"id":"done-navigation","type":"text","text":"# DONE\n\n## Gateway & Provider\n\n**WP13** — Gateway and New Project entry point\n**WP14** — Live Obsidian-backed provider\n\n[[docs/specifications/CC_Phase 4_Gateway Implementation Specification|Gateway specification]]\n[[docs/specifications/CC_Phase 4_WP14 Obsidian ProjectRecordProvider Specification|Provider specification]]","x":-480,"y":390,"width":300,"height":220,"color":"6"},
+		{"id":"done-dashboard","type":"text","text":"# DONE\n\n## Dashboard Core\n\n**WP15** — Missing / Invalid / Duplicate resolution\n**WP16** — Resolved-state content and UI pass 1\n\nType-check, build, and tests passed on the documented implementation state.\n\n[[docs/specifications/CC_Phase 4_WP15 Dashboard Implementation Specification|WP15 specification]]\n[[docs/specifications/CC_Phase 4_WP16 Dashboard Core-Content Specification|WP16 specification]]","x":-480,"y":660,"width":300,"height":270,"color":"6"},
+		{"id":"cc-center","type":"text","text":"# COMMAND CENTER\n\n## Development Portfolio\n\n**What's done → What's next?**\n\n[[docs/indexes/CC_Phase 4_Master Implementation Index|Master Implementation Index]]\n[[CC_Working_Notes/CC — Near-Term Roadmap 2026-10-02|Near-Term Roadmap]]","x":-10,"y":0,"width":360,"height":190,"color":"2"},
+		{"id":"progress-wp16-close","type":"text","text":"# IN PROGRESS\n\n## WP16 — Closure Decisions\n\nTwo decisions remain for Kurt:\n- Blockers: explicit “No blockers” versus showing only when present\n- Dashboard staleness: distinguish stale from current; threshold remains undefined\n\nThese are closure questions, not a claim that the implemented core is unfinished.","x":0,"y":660,"width":340,"height":230,"color":"4"},
+		{"id":"next-workspace","type":"text","text":"# NEXT\n\n## Project Workspace\n\nDefine and implement the downstream Workspace surface.\n\nBefore its specification, reconcile the Dashboard / Workspace requirement boundary and navigation requirements.\n\n[[docs/indexes/CC_Phase 4_Master Implementation Index|See Outstanding Items and governing records]]","x":480,"y":140,"width":330,"height":230,"color":"5"},
+		{"id":"next-dashboard","type":"text","text":"# NEXT / DEFERRED\n\n## Remaining Dashboard Work\n\n- Attention and related signals\n- Dashboard-to-Workspace navigation\n- Staleness behavior and threshold\n- AI Progress Estimate derivation (ACP-015, Track B)\n\nItems are deferred or unresolved; they are not all prerequisites for Workspace.","x":480,"y":460,"width":330,"height":240,"color":"5"},
+		{"id":"next-new-project","type":"text","text":"# NEXT / FUTURE\n\n## New Project Workflow\n\nThe entry-point shell exists.\n\nCreation and persistence remain separate future work; the current provider must not be silently expanded to write records.","x":480,"y":775,"width":330,"height":190,"color":"5"}
 	],
 	"edges":[
-		{"id":"e2","fromNode":"center","fromSide":"right","toNode":"future","toSide":"left"},
-		{"id":"e3","fromNode":"center","fromSide":"right","toNode":"completed","toSide":"left"},
-		{"id":"e4","fromNode":"center","fromSide":"left","toNode":"knowledge","toSide":"right"},
-		{"id":"e5","fromNode":"center","fromSide":"left","toNode":"templates","toSide":"right"}
+		{"id":"e1","fromNode":"cc-center","fromSide":"left","toNode":"done-foundation","toSide":"right"},
+		{"id":"e2","fromNode":"cc-center","fromSide":"left","toNode":"done-navigation","toSide":"right"},
+		{"id":"e3","fromNode":"cc-center","fromSide":"left","toNode":"done-dashboard","toSide":"right"},
+		{"id":"e4","fromNode":"cc-center","fromSide":"bottom","toNode":"progress-wp12","toSide":"top"},
+		{"id":"e5","fromNode":"cc-center","fromSide":"bottom","toNode":"progress-wp16-close","toSide":"top"},
+		{"id":"e6","fromNode":"cc-center","fromSide":"right","toNode":"next-workspace","toSide":"left"},
+		{"id":"e7","fromNode":"cc-center","fromSide":"right","toNode":"next-dashboard","toSide":"left"},
+		{"id":"e8","fromNode":"cc-center","fromSide":"right","toNode":"next-new-project","toSide":"left"}
 	]
 }
