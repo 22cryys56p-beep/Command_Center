@@ -1,305 +1,41 @@
 {
-  "nodes": [
-    {
-      "id": "documentation",
-      "type": "text",
-      "text": "# DOCUMENTATION",
-      "x": 0,
-      "y": 210,
-      "width": 300,
-      "height": 100,
-      "color": "1"
-    },
-    {
-      "id": "finished",
-      "type": "text",
-      "text": "# FINISHED (DONE)",
-      "x": 360,
-      "y": 210,
-      "width": 300,
-      "height": 100,
-      "color": "2"
-    },
-    {
-      "id": "current",
-      "type": "text",
-      "text": "# CURRENT",
-      "x": 720,
-      "y": 210,
-      "width": 300,
-      "height": 100,
-      "color": "3"
-    },
-    {
-      "id": "todo",
-      "type": "text",
-      "text": "# TO-DO (NEXT)",
-      "x": 1080,
-      "y": 210,
-      "width": 300,
-      "height": 100,
-      "color": "4"
-    },
-    {
-      "id": "future-ideas",
-      "type": "text",
-      "text": "# FUTURE IDEAS",
-      "x": 1440,
-      "y": 210,
-      "width": 300,
-      "height": 100,
-      "color": "5"
-    },
-    {
-      "id": "acps",
-      "type": "text",
-      "text": "# Start Here — SESSION_START\n\n[Open SESSION_START.md](SESSION_START.md)\n\nRead this before any implementation, review, or modification session.",
-      "x": 0,
-      "y": 360,
-      "width": 300,
-      "height": 130,
-      "color": "1"
-    },
-    {
-      "id": "done-foundation",
-      "type": "text",
-      "text": "# Foundation & Data\n\n**WP10 · WP11**\n\nImplementation foundation and Project Record data layer.\n\n[Master Implementation Index](docs/indexes/CC_Phase%204_Master%20Implementation%20Index.md)",
-      "x": 360,
-      "y": 360,
-      "width": 300,
-      "height": 150,
-      "color": "2"
-    },
-    {
-      "id": "done-gateway",
-      "type": "text",
-      "text": "# Gateway & Provider\n\n**WP13 · WP14**\n\nGateway root navigation and the Obsidian ProjectRecord provider are implemented and verified.\n\n[Master Implementation Index](docs/indexes/CC_Phase%204_Master%20Implementation%20Index.md)",
-      "x": 360,
-      "y": 540,
-      "width": 300,
-      "height": 180,
-      "color": "2"
-    },
-    {
-      "id": "done-dashboard",
-      "type": "text",
-      "text": "# Dashboard Core\n\n**WP15 · WP16**\n\nResolution handling and Dashboard core content implemented. WP16 closure decisions remain open.\n\n[Master Implementation Index](docs/indexes/CC_Phase%204_Master%20Implementation%20Index.md)",
-      "x": 360,
-      "y": 740,
-      "width": 300,
-      "height": 170,
-      "color": "2"
-    },
-    {
-      "id": "workspace",
-      "type": "text",
-      "text": "# Project Workspace\n\nReconcile Dashboard/Workspace requirements before defining the Workspace specification.\n\n[Master Implementation Index](docs/indexes/CC_Phase%204_Master%20Implementation%20Index.md)\n\n[Near-Term Roadmap](CC_Working_Notes/CC%20%E2%80%94%20Near-Term%20Roadmap%202026-10-02.md)",
-      "x": 1080,
-      "y": 360,
-      "width": 300,
-      "height": 180,
-      "color": "4"
-    },
-    {
-      "id": "later",
-      "type": "text",
-      "text": "# Remaining Work\n\n- Dashboard Attention and Workspace navigation\n- Dashboard-to-Workspace action\n- Staleness and AI Progress Estimate derivation\n- New Project creation and persistence\n\n[Master Implementation Index](docs/indexes/CC_Phase%204_Master%20Implementation%20Index.md)",
-      "x": 1080,
-      "y": 570,
-      "width": 300,
-      "height": 200,
-      "color": "4"
-    },
-    {
-      "id": "future-architecture",
-      "type": "text",
-      "text": "# Tool Ecosystem & Host Independence\n\nEvolve CC toward an independent project operating environment with a configurable tool ecosystem. Reduce dependence on Obsidian as host while retaining its capabilities through supported integrations.\n\nUsers configure tools globally and per project, including third-party apps, AI providers, and native CC extensions.\n\n**Status:** Future consideration — not an approved specification or implementation commitment.",
-      "x": 1440,
-      "y": 360,
-      "width": 300,
-      "height": 240,
-      "color": "5"
-    },
-    {
-      "id": "title",
-      "type": "text",
-      "text": "# COMMAND CENTER\n\nPersonal development board. GitHub and the authoritative project documents remain the source of truth.",
-      "x": 660,
-      "y": -60,
-      "width": 420,
-      "height": 130,
-      "color": "1"
-    },
-    {
-      "id": "wp16",
-      "type": "text",
-      "text": "# WP16 — Dashboard Decisions\n\n**Status:** Pending architectural rulings\n\n- **Blockers display:** Reconcile WP16 D2 with UI Architecture Specification §6.\n- **Staleness:** Decide how stale Dashboard information is identified and presented.\n\n**Next action:** Resolve both rulings and update the authoritative documentation.\n\n[WP16 Specification](docs/specifications/CC_Phase%204_WP16%20Dashboard%20Core-Content%20Specification.md)\n\n[UI Architecture Specification](docs/architecture/CC_UI%20Architecture%20Specification%20v1.0.md)",
-      "x": 720,
-      "y": 770,
-      "width": 300,
-      "height": 240,
-      "color": "3"
-    },
-    {
-      "id": "wp12",
-      "type": "text",
-      "text": "# WP12 — Up Button Verification\n\n**Status:** Pending verification\n\nVerify the `goUp()` success path. Current framework verification cannot exercise it because no controller action sets `depth` to `workspace`.\n\n**Next action:** Resolve the verification gap and determine whether an implementation change is needed.\n\n[WP12 Implementation Notes](docs/implementation/CC_Phase%204_WP12%20Implementation%20Notes.md)\n\n[Slice 9B Verification Protocol](docs/verification/WP12%20Step%205%20-%20Slice%209B%20Framework%20Verification%20Protocol.md)",
-      "x": 720,
-      "y": 400,
-      "width": 300,
-      "height": 240,
-      "color": "3"
-    },
-    {
-      "id": "indexes",
-      "type": "text",
-      "text": "# Master Implementation Index\n\n[Open Master Implementation Index](docs/indexes/CC_Phase%204_Master%20Implementation%20Index.md)\n\nUse this index to navigate implementation work packages and their references.",
-      "x": 0,
-      "y": 540,
-      "width": 300,
-      "height": 150,
-      "color": "1"
-    },
-    {
-      "id": "wps",
-      "type": "text",
-      "text": "# Repository File Index\n\n[Open Repository File Index](docs/indexes/CC_Repository%20File%20Index.md)\n\nUse this index to locate repository files and documentation.",
-      "x": 0,
-      "y": 740,
-      "width": 300,
-      "height": 170,
-      "color": "1"
-    },
-    {
-      "id": "matrix",
-      "type": "text",
-      "text": "# Phase 4 Matrix\n\n[Open matrix folder](docs/architecture/phase-4-matrix/)",
-      "x": 0,
-      "y": 980,
-      "width": 300,
-      "height": 130,
-      "color": "1"
-    }
-  ],
-  "edges": [
-    {
-      "id": "e-main-documentation",
-      "fromNode": "title",
-      "fromSide": "bottom",
-      "toNode": "documentation",
-      "toSide": "top"
-    },
-    {
-      "id": "e-main-finished",
-      "fromNode": "title",
-      "fromSide": "bottom",
-      "toNode": "finished",
-      "toSide": "top"
-    },
-    {
-      "id": "e-main-current",
-      "fromNode": "title",
-      "fromSide": "bottom",
-      "toNode": "current",
-      "toSide": "top"
-    },
-    {
-      "id": "e-main-todo",
-      "fromNode": "title",
-      "fromSide": "bottom",
-      "toNode": "todo",
-      "toSide": "top"
-    },
-    {
-      "id": "e-main-future",
-      "fromNode": "title",
-      "fromSide": "bottom",
-      "toNode": "future-ideas",
-      "toSide": "top"
-    },
-    {
-      "id": "e-finished-foundation",
-      "fromNode": "finished",
-      "fromSide": "bottom",
-      "toNode": "done-foundation",
-      "toSide": "top"
-    },
-    {
-      "id": "e-finished-gateway",
-      "fromNode": "finished",
-      "fromSide": "bottom",
-      "toNode": "done-gateway",
-      "toSide": "top"
-    },
-    {
-      "id": "e-finished-dashboard",
-      "fromNode": "finished",
-      "fromSide": "bottom",
-      "toNode": "done-dashboard",
-      "toSide": "top"
-    },
-    {
-      "id": "e-current-wp12",
-      "fromNode": "current",
-      "fromSide": "bottom",
-      "toNode": "wp12",
-      "toSide": "top"
-    },
-    {
-      "id": "e-current-wp16",
-      "fromNode": "current",
-      "fromSide": "bottom",
-      "toNode": "wp16",
-      "toSide": "top"
-    },
-    {
-      "id": "e-todo-workspace",
-      "fromNode": "todo",
-      "fromSide": "bottom",
-      "toNode": "workspace",
-      "toSide": "top"
-    },
-    {
-      "id": "e-todo-later",
-      "fromNode": "todo",
-      "fromSide": "bottom",
-      "toNode": "later",
-      "toSide": "top"
-    },
-    {
-      "id": "e-future-architecture",
-      "fromNode": "future-ideas",
-      "fromSide": "bottom",
-      "toNode": "future-architecture",
-      "toSide": "top"
-    },
-    {
-      "id": "e-documentation-acps",
-      "fromNode": "documentation",
-      "fromSide": "bottom",
-      "toNode": "acps",
-      "toSide": "top"
-    },
-    {
-      "id": "e-acps-indexes",
-      "fromNode": "acps",
-      "fromSide": "bottom",
-      "toNode": "indexes",
-      "toSide": "top"
-    },
-    {
-      "id": "e-indexes-wps",
-      "fromNode": "indexes",
-      "fromSide": "bottom",
-      "toNode": "wps",
-      "toSide": "top"
-    },
-    {
-      "id": "e-documentation-matrix",
-      "fromNode": "documentation",
-      "fromSide": "bottom",
-      "toNode": "matrix",
-      "toSide": "top"
-    }
-  ]
+	"nodes":[
+		{"id":"documentation","type":"text","text":"# DOCUMENTATION","x":0,"y":210,"width":300,"height":100,"color":"1"},
+		{"id":"finished","type":"text","text":"# FINISHED (DONE)","x":360,"y":210,"width":300,"height":100,"color":"2"},
+		{"id":"current","type":"text","text":"# CURRENT","x":720,"y":210,"width":300,"height":100,"color":"3"},
+		{"id":"todo","type":"text","text":"# TO-DO (NEXT)","x":1080,"y":210,"width":300,"height":100,"color":"4"},
+		{"id":"future-ideas","type":"text","text":"# FUTURE IDEAS","x":1440,"y":210,"width":300,"height":100,"color":"5"},
+		{"id":"acps","type":"text","text":"# Start Here — SESSION_START\n\n[Open SESSION_START.md](SESSION_START.md)\n\nRead this before any implementation, review, or modification session.","x":0,"y":360,"width":300,"height":130,"color":"1"},
+		{"id":"done-foundation","type":"text","text":"# Foundation & Data\n\n**WP10 · WP11**\n\nImplementation foundation and Project Record data layer.\n\n[Master Implementation Index](docs/indexes/CC_Phase%204_Master%20Implementation%20Index.md)","x":360,"y":360,"width":300,"height":150,"color":"2"},
+		{"id":"done-gateway","type":"text","text":"# Gateway & Provider\n\n**WP13 · WP14**\n\nGateway root navigation and the Obsidian ProjectRecord provider are implemented and verified.\n\n[Master Implementation Index](docs/indexes/CC_Phase%204_Master%20Implementation%20Index.md)","x":360,"y":540,"width":300,"height":180,"color":"2"},
+		{"id":"done-dashboard","type":"text","text":"# Dashboard Core\n\n**WP15 · WP16**\n\nResolution handling and Dashboard core content implemented. WP16 closure decisions remain open.\n\n[Master Implementation Index](docs/indexes/CC_Phase%204_Master%20Implementation%20Index.md)","x":360,"y":740,"width":300,"height":170,"color":"2"},
+		{"id":"workspace","type":"text","text":"# Project Workspace\n\nReconcile Dashboard/Workspace requirements before defining the Workspace specification.\n\n[Master Implementation Index](docs/indexes/CC_Phase%204_Master%20Implementation%20Index.md)\n\n[Near-Term Roadmap](CC_Working_Notes/CC%20%E2%80%94%20Near-Term%20Roadmap%202026-10-02.md)","x":1080,"y":360,"width":300,"height":180,"color":"4"},
+		{"id":"later","type":"text","text":"# Remaining Work\n\n- Dashboard Attention and Workspace navigation\n- Dashboard-to-Workspace action\n- Staleness and AI Progress Estimate derivation\n- New Project creation and persistence\n\n[Master Implementation Index](docs/indexes/CC_Phase%204_Master%20Implementation%20Index.md)","x":1080,"y":570,"width":300,"height":200,"color":"4"},
+		{"id":"future-architecture","type":"text","text":"# Tool Ecosystem & Host Independence\n\nEvolve CC toward an independent project operating environment with a configurable tool ecosystem. Reduce dependence on Obsidian as host while retaining its capabilities through supported integrations.\n\nUsers configure tools globally and per project, including third-party apps, AI providers, and native CC extensions.\n\n**Status:** Future consideration — not an approved specification or implementation commitment.","x":1440,"y":360,"width":300,"height":240,"color":"5"},
+		{"id":"title","type":"text","text":"# COMMAND CENTER\n\nPersonal development board. GitHub and the authoritative project documents remain the source of truth.","x":660,"y":-60,"width":420,"height":130,"color":"1"},
+		{"id":"wp16","type":"text","text":"# WP16 — Dashboard Decisions\n\n**Status:** Pending architectural rulings\n\n- **Blockers display:** Reconcile WP16 D2 with UI Architecture Specification §6.\n- **Staleness:** Decide how stale Dashboard information is identified and presented.\n\n**Next action:** Resolve both rulings and update the authoritative documentation.\n\n[WP16 Specification](docs/specifications/CC_Phase%204_WP16%20Dashboard%20Core-Content%20Specification.md)\n\n[UI Architecture Specification](docs/architecture/CC_UI%20Architecture%20Specification%20v1.0.md)","x":720,"y":770,"width":300,"height":240,"color":"3"},
+		{"id":"wp12","type":"text","text":"# WP12 — Up Button Verification\n\n**Status:** Pending verification\n\nVerify the `goUp()` success path. Current framework verification cannot exercise it because no controller action sets `depth` to `workspace`.\n\n**Next action:** Resolve the verification gap and determine whether an implementation change is needed.\n\n[WP12 Implementation Notes](docs/implementation/CC_Phase%204_WP12%20Implementation%20Notes.md)\n\n[Slice 9B Verification Protocol](docs/verification/WP12%20Step%205%20-%20Slice%209B%20Framework%20Verification%20Protocol.md)","x":720,"y":400,"width":300,"height":240,"color":"3"},
+		{"id":"indexes","type":"text","text":"# Master Implementation Index\n\n[Open Master Implementation Index](docs/indexes/CC_Phase%204_Master%20Implementation%20Index.md)\n\nUse this index to navigate implementation work packages and their references.","x":0,"y":540,"width":300,"height":150,"color":"1"},
+		{"id":"wps","type":"text","text":"# Repository File Index\n\n[Open Repository File Index](docs/indexes/CC_Repository%20File%20Index.md)\n\nUse this index to locate repository files and documentation.","x":0,"y":740,"width":300,"height":170,"color":"1"},
+		{"id":"matrix","type":"text","text":"# Phase 4 Matrix\n\n[Open matrix folder](docs/architecture/phase-4-matrix/)","x":0,"y":980,"width":300,"height":130,"color":"1"}
+	],
+	"edges":[
+		{"id":"e-main-documentation","fromNode":"title","fromSide":"bottom","toNode":"documentation","toSide":"top"},
+		{"id":"e-main-finished","fromNode":"title","fromSide":"bottom","toNode":"finished","toSide":"top"},
+		{"id":"e-main-current","fromNode":"title","fromSide":"bottom","toNode":"current","toSide":"top"},
+		{"id":"e-main-todo","fromNode":"title","fromSide":"bottom","toNode":"todo","toSide":"top"},
+		{"id":"e-main-future","fromNode":"title","fromSide":"bottom","toNode":"future-ideas","toSide":"top"},
+		{"id":"e-finished-foundation","fromNode":"finished","fromSide":"bottom","toNode":"done-foundation","toSide":"top"},
+		{"id":"e-finished-gateway","fromNode":"finished","fromSide":"bottom","toNode":"done-gateway","toSide":"top"},
+		{"id":"e-finished-dashboard","fromNode":"finished","fromSide":"bottom","toNode":"done-dashboard","toSide":"top"},
+		{"id":"e-current-wp12","fromNode":"current","fromSide":"bottom","toNode":"wp12","toSide":"top"},
+		{"id":"e-current-wp16","fromNode":"current","fromSide":"bottom","toNode":"wp16","toSide":"top"},
+		{"id":"e-todo-workspace","fromNode":"todo","fromSide":"bottom","toNode":"workspace","toSide":"top"},
+		{"id":"e-todo-later","fromNode":"todo","fromSide":"bottom","toNode":"later","toSide":"top"},
+		{"id":"e-future-architecture","fromNode":"future-ideas","fromSide":"bottom","toNode":"future-architecture","toSide":"top"},
+		{"id":"e-documentation-acps","fromNode":"documentation","fromSide":"bottom","toNode":"acps","toSide":"top"},
+		{"id":"e-acps-indexes","fromNode":"acps","fromSide":"bottom","toNode":"indexes","toSide":"top"},
+		{"id":"e-indexes-wps","fromNode":"indexes","fromSide":"bottom","toNode":"wps","toSide":"top"},
+		{"id":"e-documentation-matrix","fromNode":"documentation","fromSide":"bottom","toNode":"matrix","toSide":"top"}
+	]
 }
