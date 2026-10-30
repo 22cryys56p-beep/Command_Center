@@ -5,9 +5,9 @@
 		{"id":"current","type":"text","text":"# CURRENT","x":720,"y":210,"width":300,"height":100,"color":"3"},
 		{"id":"todo","type":"text","text":"# TO-DO (NEXT)","x":1080,"y":210,"width":300,"height":100,"color":"4"},
 		{"id":"future-ideas","type":"text","text":"# FUTURE IDEAS","x":1440,"y":210,"width":300,"height":100,"color":"5"},
-		{"id":"acps","type":"text","text":"# ACPs\n\n[Browse architectural decision records](docs/)","x":0,"y":360,"width":300,"height":130,"color":"1"},
-		{"id":"wps","type":"text","text":"# Work Packages\n\n[Master Implementation Index](docs/indexes/CC_Phase%204_Master%20Implementation%20Index.md)","x":0,"y":520,"width":300,"height":130,"color":"1"},
-		{"id":"indexes","type":"text","text":"# Indexes\n\n[Master Implementation Index](docs/indexes/CC_Phase%204_Master%20Implementation%20Index.md)\n\n[Repository File Index](docs/indexes/CC_Repository%20File%20Index.md)","x":0,"y":680,"width":300,"height":150,"color":"1"},
+		{"id":"acps","type":"text","text":"# Start Here — SESSION_START\n\n[Open SESSION_START.md](SESSION_START.md)\n\nRead this before any implementation, review, or modification session.","x":0,"y":360,"width":300,"height":130,"color":"1"},
+		{"id":"wps","type":"text","text":"# Repository File Index\n\n[Open Repository File Index](docs/indexes/CC_Repository%20File%20Index.md)\n\nUse this index to locate repository files and documentation.","x":0,"y":520,"width":300,"height":130,"color":"1"},
+		{"id":"indexes","type":"text","text":"# Master Implementation Index\n\n[Open Master Implementation Index](docs/indexes/CC_Phase%204_Master%20Implementation%20Index.md)\n\nUse this index to navigate implementation work packages and their references.","x":0,"y":680,"width":300,"height":150,"color":"1"},
 		{"id":"matrix","type":"text","text":"# Phase 4 Matrix\n\n[Open matrix folder](docs/architecture/phase-4-matrix/)","x":0,"y":860,"width":300,"height":130,"color":"1"},
 		{"id":"done-foundation","type":"text","text":"# Foundation & Data\n\n**WP10 · WP11**\n\nImplementation foundation and Project Record data layer.\n\n[Master Implementation Index](docs/indexes/CC_Phase%204_Master%20Implementation%20Index.md)","x":360,"y":360,"width":300,"height":150,"color":"2"},
 		{"id":"done-gateway","type":"text","text":"# Gateway & Provider\n\n**WP13 · WP14**\n\nGateway root navigation and the Obsidian ProjectRecord provider are implemented and verified.\n\n[Master Implementation Index](docs/indexes/CC_Phase%204_Master%20Implementation%20Index.md)","x":360,"y":540,"width":300,"height":180,"color":"2"},
@@ -26,8 +26,6 @@
 		{"id":"e-main-todo","fromNode":"title","fromSide":"bottom","toNode":"todo","toSide":"top"},
 		{"id":"e-main-future","fromNode":"title","fromSide":"bottom","toNode":"future-ideas","toSide":"top"},
 		{"id":"e-documentation-acps","fromNode":"documentation","fromSide":"bottom","toNode":"acps","toSide":"top"},
-		{"id":"e-documentation-wps","fromNode":"documentation","fromSide":"bottom","toNode":"wps","toSide":"top"},
-		{"id":"e-documentation-indexes","fromNode":"documentation","fromSide":"bottom","toNode":"indexes","toSide":"top"},
 		{"id":"e-documentation-matrix","fromNode":"documentation","fromSide":"bottom","toNode":"matrix","toSide":"top"},
 		{"id":"e-finished-foundation","fromNode":"finished","fromSide":"bottom","toNode":"done-foundation","toSide":"top"},
 		{"id":"e-finished-gateway","fromNode":"finished","fromSide":"bottom","toNode":"done-gateway","toSide":"top"},
@@ -36,6 +34,8 @@
 		{"id":"e-current-wp16","fromNode":"current","fromSide":"bottom","toNode":"wp16","toSide":"top"},
 		{"id":"e-todo-workspace","fromNode":"todo","fromSide":"bottom","toNode":"workspace","toSide":"top"},
 		{"id":"e-todo-later","fromNode":"todo","fromSide":"bottom","toNode":"later","toSide":"top"},
-		{"id":"e-future-architecture","fromNode":"future-ideas","fromSide":"bottom","toNode":"future-architecture","toSide":"top"}
+		{"id":"e-future-architecture","fromNode":"future-ideas","fromSide":"bottom","toNode":"future-architecture","toSide":"top"},
+		{"id":"e-acps-wps","fromNode":"acps","fromSide":"bottom","toNode":"wps","toSide":"top"},
+		{"id":"e-wps-indexes","fromNode":"wps","fromSide":"bottom","toNode":"indexes","toSide":"top"}
 	]
 }
