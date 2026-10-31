@@ -285,6 +285,16 @@ The ProjectRecord/provider/WP14/ACP-014 implementation arc is therefore closed. 
 
 **WP15** — the Dashboard implementation specification for ACP-016's "Track A" (ProjectRecord resolution and presentation) — has been accepted (2026-10-02), after four drafting rounds each independently reviewed against the live repository and ACP-016's text. It proposes `resolveProjectRecord()`, a new method on the WP14 provider required to reuse the existing `discoverCandidates()`/`excludeDuplicateIds()` pipeline rather than re-implementing discovery or duplicate detection, and required to preserve the existing duplicate-before-validity ordering. `getProjectRecords()`'s contract is unaffected. WP15's specification is accepted and its implementation is complete (2026-10-07); normal resolved Dashboard content was specified separately by WP16 (accepted 2026-10-10) and is now implemented, and Track B remains separate. Visual layout, component structure, and navigation/interaction behavior remain deliberately unspecified, per ACP-016 itself. WP15 explicitly does not cover ACP-015's "Track B" (AI Progress Estimate) — that remains separately unresolved and does not block WP15's implementation.
 
+## Current UI and Repository Reference State
+
+**UI presentation passes (2026-10-20 through 2026-10-28):** Three visual passes have refined the Entry screen, Gateway, and Orientation Bar without changing navigation behavior or architecture. UI pass 1 is recorded in the Master Implementation Index. UI pass 2 refined Orientation Bar control spacing and order. UI pass 3 enlarged the Entry button and Gateway grid. The exact measurements, commits, and verification results are recorded in the Master Implementation Index. The earlier UI pass 1 Orientation Bar order is historical and was superseded by UI pass 2.
+
+**Theme exploration:** The Futuristic Computer theme remains an exploratory experiment in the separate `CC_AI_Studio_Futuristic_Mockup` repository and local AI Studio environment. It has not been adopted into the canonical Command Center repository. Adoption remains undecided.
+
+**Portfolio Map:** The root-level `Portfolio Map.canvas` is a visual navigation and reference aid. It is not an architectural authority, does not replace the required documentation reading sequence, and does not supersede the authoritative specifications, ACPs, indexes, or Matrix documents. Its 2026-10-31 update was implemented and verified locally: 19 cards, 18 connections, 28 links checked, all links resolving, no overlaps, and valid IDs/connections. Existing card colors, horizontal positions, and widths were preserved. Output SHA-256: `3d130379fdfc9acbbc126dd0706cad2145dc0b170c1c13fbf2af4ab6871e00b5`. The updated Canvas is local and has not yet been committed or pushed.
+
+
+
 Frozen architectural decisions are not changed during implementation.
 
 If implementation reveals a conflict with a frozen decision:

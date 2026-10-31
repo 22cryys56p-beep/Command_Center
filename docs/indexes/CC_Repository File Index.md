@@ -139,6 +139,14 @@ The actual implementation everything above governs. Always check the live file, 
 - `src/views/new-project-view.ts`
 - Corresponding files under `tests/`, mirroring the same structure.
 
+
+### Repository-root reference aid
+
+- `Portfolio Map.canvas` — visual navigation and reference aid for the repository. It is not an architectural authority and does not replace this index, the Master Implementation Index, the required reading sequence, specifications, ACPs, or Matrix documents. Its links should resolve to the current repository files. The Canvas may be updated as navigation changes, while its existing card customizations should be preserved unless a specific approved change requires otherwise.
+
+
+
+
 ---
 
 ## How to maintain this index

@@ -125,11 +125,39 @@ These are maintained consistently with `SESSION_START.md` Section 7.
 
 ### UI pass 1 — Layout and readability (not a work package; recorded 2026-10-20)
 
+> **Historical state:** the Orientation Bar order recorded in this pass was superseded by UI pass 2 below. The original record is retained unchanged.
+
+
 - **Purpose:** correct the layout and readability of the screens after Kurt's review in Obsidian found the persistent pieces laid out side by side, unstyled orientation controls, a diagnostic box on every screen, and unreadable project-list rows. Layout and readability only; no behavior, navigation, or architecture change.
 - **Governing sources:** UI Architecture Specification v1.0 (the orientation element is "a header positioned at the top of the screen," and nothing else is persistent); the Gateway Implementation Specification (the six destinations and their order, and the layout recorded in its Section 3.1).
 - **Delivered (commit `d287dec`, with WP16 Step 2):** `CommandCenterView`'s root is one vertical column; `OrientationBarComponent` is a compact header strip in the specified order (`<<`, label, `>>`, `Up`, `Top`) whose label truncates instead of overflowing; the Gateway is a centered three-by-two grid; `ProjectListView` rows use Obsidian theme variables, show a readable name over a muted focus line, and never shrink below their text; the Navigation Inspector is hidden by default through `SHOW_DIAGNOSTIC_INSPECTOR = false` in `command-center-view.ts` (the component and its tests are unchanged).
 - **Verification:** `tsc --noEmit` clean, build succeeds, 183/183 tests on `main`. The root layout and the hidden inspector live in `CommandCenterView`, which has no unit test; they were verified by Kurt's review in Obsidian.
 - **Not covered:** the New Project screen, which is a separate flow and was not changed.
+
+
+### UI pass 2 — Orientation Bar refinement (recorded 2026-10-27)
+
+- **Purpose:** refine the Orientation Bar's control order and spacing after review. This was a visual-only adjustment; the button set, disabled states, and click behavior were unchanged.
+- **Delivered (commit `46257cff2080deac1924f2ae5cb0815af5fb9aa0`):** control order is `[<<] [Up] label [Top] [>>]`, superseding UI pass 1's earlier header-strip order. All four buttons use padding `0.55rem 1.1rem`, font size `1.05rem`, and minimum width `3.25rem`.
+- **Verification:** TypeScript clean; 184/184 tests passing.
+- **Historical note:** UI pass 1's original order remains recorded above as the state delivered at that time. This entry records the later replacement; the earlier record is not rewritten.
+
+### UI pass 3 — Entry and Gateway sizing (recorded 2026-10-28)
+
+- **Purpose:** improve the visual scale and usability of the Entry button and Gateway destinations. No navigation or architectural behavior changed.
+- **Delivered (commit `b48c22d5016c9694d4c0a12ce7d9390eabfe8aa9`):**
+  - Entry button: padding `4.5rem 3.8rem`, font size `clamp(1.8rem, 3.2vw, 2.4rem)`, minimum width `340px`, maximum width `90%`.
+  - Gateway: six equal buttons in a three-by-two grid; columns `15rem` (previously `11rem`), gap `1.8rem`, button padding `2rem 1.25rem`, font size `1.15rem`, minimum height `110px`.
+- **Verification:** TypeScript clean; build succeeds; 185/185 tests passing. Kurt reviewed both screens in Obsidian. The Entry button has no automated test.
+
+### Portfolio Map — Repository-root reference aid (verified locally, 2026-10-31)
+
+- **Role:** visual navigation and reference aid only. The Canvas does not establish architecture, replace authoritative documentation, or alter the required reading sequence.
+- **Update:** the existing Canvas was updated locally. Existing card colors, horizontal positions, and widths were preserved; the update added/adjusted the planned navigation references and connections.
+- **Verification:** 19 cards; 18 connections; 28 links checked; all links resolve; no card overlaps; IDs and connections are valid.
+- **Output SHA-256:** `3d130379fdfc9acbbc126dd0706cad2145dc0b170c1c13fbf2af4ab6871e00b5`.
+- **Repository status:** verified in the local vault/repository, but not yet committed or pushed to `main`. This is an integration step, not an outstanding implementation or verification defect.
+
 
 ---
 
@@ -188,6 +216,9 @@ WP13 establishes the Gateway/root-navigation layer and New Project entry point. 
 ---
 
 ## Outstanding Items (not ACPs — pending actions)
+
+> The Portfolio Map update is implemented and locally verified (2026-10-31). Its remaining local Git integration is recorded in the Portfolio Map entry above; it is not an open implementation item.
+
 
 - **WP12 historical closure:** execute/dispose of Slice 9B and the Baseline Freeze declaration, including disposition of the known `goUp()` enabled-success-path verification gap. This is a historical WP12 closure item and does not block the implemented Gateway/New Project work.
 - **New Project:** implement the complete workflow/content beyond the current ACP-013 entry-point shell.

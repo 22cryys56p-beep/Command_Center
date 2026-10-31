@@ -29,9 +29,13 @@ Execute in order. Each step has a pass/fail condition.
 
 ## 2. Opening Command Center
 
+> **Historical UI note (2026-10-27):** the Orientation Bar order recorded in this original verification protocol describes the UI state at the time this protocol was written. UI pass 2 subsequently changed the visual order to `[<<] [Up] label [Top] [>>]`. The original protocol wording is retained as a historical record; the later UI state is documented in the Master Implementation Index. This annotation does not change the scope or pass/fail criteria of the original Slice 9A execution.
+
 | # | Action | Pass condition | Fail condition |
 |---|---|---|---|
 | 2.1 | Invoke `Open Command Center`. | A new tab opens in the Main Area (not sidebar, not modal). | Opens elsewhere, or fails silently. |
+
+
 | 2.2 | Inspect the opened tab. | Orientation Bar visible at the top: `<<`, a label, `>>`, `Up`, `Top`, in that left-to-right order. | Any control missing, duplicated, or reordered. |
 | 2.3 | Inspect below the Orientation Bar. | `NavigationInspector` visible, showing a heading and a text block. | Inspector absent. |
 | 2.4 | Read the Orientation Bar's label. | Reads exactly `Command Center: Projects`. | Any other text. |
