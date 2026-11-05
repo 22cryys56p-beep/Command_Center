@@ -52,7 +52,8 @@
  *   null — this is an expected, reachable state during normal use
  *   (initial state, or immediately after goTop), not a caller error.
  * - goUp throws when state.object is null — Up is only ever
- *   legitimately enabled with a project object at workspace depth;
+ *   legitimately enabled with a project object at dashboard or
+ *   workspace depth;
  *   a null object at that depth would indicate an inconsistent state,
  *   not a normal disabled case, so it is NOT treated the same as the
  *   pageNext/pagePrevious no-op case.
@@ -212,20 +213,21 @@ export class NavigationController {
   /**
    * Moves to the parent depth within the current object, per resolveUp
    * (Step 3). Throws when state.object is null — Up is only ever
-   * legitimately enabled with a project object at workspace depth; a
+   * legitimately enabled with a project object at dashboard or
+   * workspace depth; a
    * null object at that point would indicate an inconsistent state,
    * not a normal disabled case, so this is NOT treated as a no-op the
    * way pageNext/pagePrevious are.
    *
-   * When enabled (project object at workspace depth), resolveUp's
-   * NavigationDestination result is applied directly. When disabled
+   * When enabled (project object at dashboard or workspace depth),
+   * resolveUp's NavigationDestination result is applied directly. When disabled
    * (resolveUp returns null — every other object/depth combination),
    * this is a normal, expected no-op, not an error.
    */
   goUp(): void {
     if (this.state.object === null) {
       throw new Error(
-        "NavigationController.goUp: called with no current object. This indicates an inconsistent state — Up is only ever legitimately enabled with a project object at workspace depth."
+        "NavigationController.goUp: called with no current object. This indicates an inconsistent state — Up is only ever legitimately enabled with a project object at dashboard or workspace depth."
       );
     }
 
@@ -235,8 +237,8 @@ export class NavigationController {
       return;
     }
 
-    // resolveUp only ever produces a "dashboard" destination when
-    // enabled (per Step 3's own implementation), but the return type
+    // resolveUp only ever produces a "list" or "dashboard" destination
+    // when enabled (per its own implementation), but the return type
     // is the full NavigationDestination union, which includes the
     // object-less "gateway" variant. Narrow explicitly rather than
     // asserting, consistent with this module's "no silent coercion"

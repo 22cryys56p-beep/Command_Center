@@ -174,28 +174,74 @@ describe("NavigationController — goUp", () => {
     expect(controller.getState()).toEqual(before);
   });
 
-  it("no-ops when disabled (project object at dashboard depth)", () => {
+  it("moves from a project's dashboard to the Project List of its category (ACP-017)", () => {
     const controller = makeController();
     controller.selectCategory("current");
     controller.selectProject("proj-a");
-    const before = controller.getState();
     controller.goUp();
-    expect(controller.getState()).toEqual(before);
+    expect(controller.getState()).toEqual({
+      object: { kind: "category", category: "current" },
+      depth: "list",
+    });
   });
 
-  it("moves from workspace to dashboard depth, preserving the same project object", () => {
+  it("returns to the list of whichever category the project was opened from", () => {
+    const controller = makeController();
+    controller.selectCategory("planned");
+    controller.selectProject("proj-c");
+    controller.goUp();
+    expect(controller.getState()).toEqual({
+      object: { kind: "category", category: "planned" },
+      depth: "list",
+    });
+  });
+
+  it("is disabled again at the Project List; Top is the way back to the Gateway", () => {
     const controller = makeController();
     controller.selectCategory("current");
     controller.selectProject("proj-a");
-    // Manually reaching workspace depth isn't exposed by any action
-    // method yet (no "enterWorkspace" action exists in this slice) —
-    // simulate it by directly constructing the expected pre-state via
-    // repeated selectProject is not possible; instead confirm goUp's
-    // guard logic using the state accessor after a manual depth check.
-    // Since no action produces "workspace" depth yet in this slice,
-    // this test documents goUp's behavior at the one depth reachable
-    // today (dashboard, where it correctly no-ops) and is revisited
-    // once Slice 4+ introduces a workspace-entry action.
+    controller.goUp();
+    const atList = controller.getState();
+    controller.goUp();
+    expect(controller.getState()).toEqual(atList);
+    controller.goTop();
+    expect(controller.getState()).toEqual({ object: null, depth: "gateway" });
+  });
+
+  it("allows opening a project again from the list after going up", () => {
+    const controller = makeController();
+    controller.selectCategory("current");
+    controller.selectProject("proj-a");
+    controller.goUp();
+    controller.selectProject("proj-b");
+    expect(controller.getState()).toEqual({
+      object: { kind: "project", project_id: "proj-b", category: "current" },
+      depth: "dashboard",
+    });
+  });
+
+  it("leaves sibling paging unchanged: after paging, Up still returns to the same list", () => {
+    const controller = makeController();
+    controller.selectCategory("current");
+    controller.selectProject("proj-a");
+    controller.pageNext();
+    expect(controller.getState().object?.kind).toBe("project");
+    expect(controller.getState().depth).toBe("dashboard");
+    controller.goUp();
+    expect(controller.getState()).toEqual({
+      object: { kind: "category", category: "current" },
+      depth: "list",
+    });
+  });
+
+  it("selectProject reaches dashboard depth (workspace depth is not reachable through any controller action yet)", () => {
+    const controller = makeController();
+    controller.selectCategory("current");
+    controller.selectProject("proj-a");
+    // No action produces "workspace" depth yet, so goUp's Workspace to
+    // Dashboard step is not exercised through the controller; that rule
+    // is covered by the resolveUp unit tests. This test only confirms
+    // the depth reachable today.
     expect(controller.getState().depth).toBe("dashboard");
   });
 });
@@ -276,10 +322,18 @@ describe("NavigationController — getAvailability", () => {
     expect(controller.getAvailability().canGoUp).toBe(false);
   });
 
-  it("reports canGoUp false for a project object at dashboard depth", () => {
+  it("reports canGoUp true for a project object at dashboard depth (Up returns to the Project List)", () => {
     const controller = makeController();
     controller.selectCategory("current");
     controller.selectProject("proj-a");
+    expect(controller.getAvailability().canGoUp).toBe(true);
+  });
+
+  it("reports canGoUp false at the Project List after going up", () => {
+    const controller = makeController();
+    controller.selectCategory("current");
+    controller.selectProject("proj-a");
+    controller.goUp();
     expect(controller.getAvailability().canGoUp).toBe(false);
   });
 

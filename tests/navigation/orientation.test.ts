@@ -267,13 +267,14 @@ describe("resolveUp — disabled cases", () => {
     expect(resolveUp(current, "list")).toBeNull();
   });
 
-  it("is disabled at Dashboard depth (project current object)", () => {
+  it("is disabled for a project current object at gateway or list depth (fail closed)", () => {
     const current: CurrentObject = {
       kind: "project",
       project_id: "proj-a",
       category: "current",
     };
-    expect(resolveUp(current, "dashboard")).toBeNull();
+    expect(resolveUp(current, "gateway")).toBeNull();
+    expect(resolveUp(current, "list")).toBeNull();
   });
 
   it("is disabled for a category current object even at workspace depth (Up is project-only)", () => {
@@ -286,7 +287,7 @@ describe("resolveUp — disabled cases", () => {
 });
 
 describe("resolveUp — enabled case", () => {
-  it("is enabled only at Workspace depth for a project current object", () => {
+  it("is enabled at Workspace depth for a project current object", () => {
     const current: CurrentObject = {
       kind: "project",
       project_id: "proj-a",
@@ -313,6 +314,28 @@ describe("resolveUp — enabled case", () => {
     });
   });
 
+  it("is enabled at Dashboard depth and returns to the Project List of the project's category (ACP-017)", () => {
+    const current: CurrentObject = {
+      kind: "project",
+      project_id: "proj-a",
+      category: "current",
+    };
+    expect(resolveUp(current, "dashboard")).toEqual({
+      depth: "list",
+      object: { kind: "category", category: "current" },
+    });
+  });
+
+  it("returns to the list of whichever category the project belongs to, for every category", () => {
+    for (const category of ["current", "planned", "possible", "ongoing", "archived"] as const) {
+      const current: CurrentObject = { kind: "project", project_id: "proj-x", category };
+      expect(resolveUp(current, "dashboard")).toEqual({
+        depth: "list",
+        object: { kind: "category", category },
+      });
+    }
+  });
+
   it("preserves the project's category unchanged in the Up destination", () => {
     const current: CurrentObject = {
       kind: "project",
@@ -337,6 +360,17 @@ describe("resolveUp — purity and non-mutation", () => {
     };
     const before = JSON.parse(JSON.stringify(current));
     resolveUp(current, "workspace");
+    expect(current).toEqual(before);
+  });
+
+  it("does not mutate the currentObject passed in at Dashboard depth", () => {
+    const current: CurrentObject = {
+      kind: "project",
+      project_id: "proj-a",
+      category: "current",
+    };
+    const before = JSON.parse(JSON.stringify(current));
+    resolveUp(current, "dashboard");
     expect(current).toEqual(before);
   });
 

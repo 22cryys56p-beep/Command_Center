@@ -222,11 +222,15 @@ export type NavigationDestination =
  * Resolves the `Up` destination for the current object at the given
  * depth, per Phase 3 Section C: "Parent depth within the current object."
  *
- * Per Section C's disabled-state table, `Up` is enabled only when the
- * current object is a project at Workspace depth, in which case the
- * destination is that same project's Dashboard — preserving object
- * identity, per ACP-007. At every other depth/object combination, `Up`
- * is disabled and this function returns `null`.
+ * Per Section C as amended by ACP-017, `Up` is a one-level step up the
+ * hierarchy. For a project at Workspace depth, the destination is that
+ * same project's Dashboard (preserving object identity, per ACP-007).
+ * For a project at Dashboard depth, the destination is the Project List
+ * of the category the project was opened from, read from the project
+ * object's own `category` (no navigation history is needed). At every
+ * other depth/object combination, including the Project List itself,
+ * `Up` is disabled and this function returns `null`; `Top` remains the
+ * way back to the Gateway.
  *
  * This function does NOT perform a navigation transition, does NOT
  * mutate `currentObject`, and does NOT touch rendering or disabled-state
@@ -244,12 +248,20 @@ export function resolveUp(
     };
   }
 
-  // Every other case is disabled per Section C's table:
-  // - currentObject.kind === "category" at any depth (categories have no
-  //   parent depth defined anywhere in Section C)
-  // - currentObject.kind === "project" at "category", "list", or
-  //   "dashboard" depth (Dashboard is not treated as having a shallower
-  //   depth within the same object)
+  // ACP-017: a project's Dashboard steps up to the Project List of the
+  // category it was opened from.
+  if (currentObject.kind === "project" && depth === "dashboard") {
+    return {
+      depth: "list",
+      object: { kind: "category", category: currentObject.category },
+    };
+  }
+
+  // Every other case is disabled:
+  // - currentObject.kind === "category" at any depth, including the
+  //   Project List (the Gateway is reached with `Top`, not `Up`)
+  // - currentObject.kind === "project" at "gateway" or "list" depth
+  //   (not reachable states for a project object)
   return null;
 }
 

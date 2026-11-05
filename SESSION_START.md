@@ -751,3 +751,28 @@ Verify the files.
 Verify the governing documents.
 Verify the authoritative architecture, the current matrix boundary, and the ACP registry.
 Then implement.**
+
+
+## Mandatory Development Runtime
+
+When working on either Command Center or CC AI Studio and testing changes in
+Obsidian, the required development workflow is `npm run dev`, not
+`npm run build`.
+
+- Start `npm run dev` from the repository being worked on before beginning
+  development or runtime testing.
+- Leave the process running throughout the work. It performs the initial build,
+  synchronizes the generated root `main.js` into
+  `.obsidian/plugins/command-center/main.js`, and watches for subsequent
+  successful builds and synchronizes them automatically.
+- After a successful build and sync, reload the Command Center plugin in
+  Obsidian. `npm run dev` synchronizes the plugin file; it does not itself
+  reload the running Obsidian plugin.
+- Before diagnosing behavior observed in Obsidian, verify that the live plugin
+  `main.js` has been synchronized with the latest successful build.
+- Do not substitute `npm run build` for this workflow when preparing or testing
+  changes in the Obsidian runtime. `npm run build` builds the root bundle but
+  does not perform the plugin-folder synchronization.
+
+This is an established project workflow, introduced by commit `c2d2d13`.
+It is mandatory operating procedure, not an optional development preference.
