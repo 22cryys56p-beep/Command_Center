@@ -2,7 +2,7 @@
 type: file-index
 status: living document — update immediately, in the same pass, whenever an authoritative file is added, renamed, removed, or whenever CC_Working_Notes/ changes materially
 date: 2026-10-06
-last_updated: 2026-10-13
+last_updated: 2026-11-11
 ---
 
 # Command Center — Repository File Index
@@ -40,6 +40,7 @@ Reading is not the same as applying. Before introducing a new concept, status, f
 - `ACP-014 — Purpose and Description Metadata Representation.md`
 - `ACP-015 — AI Progress Estimate - Architectural Reconciliation.md`
 - `ACP-016 — Dashboard ProjectRecord Resolution (Missing, Invalid, Duplicate).md`
+- `ACP-017 — Up Returns from a Project Dashboard to Its Project List.md`
 - `WP13_Phase_4_Architectural_Decision_Record.md`
 
 *(Phase 3's own ACP-001–007 live inside the Phase 3 Architecture Record's own registry, not as standalone files — see that document's Section G.)*

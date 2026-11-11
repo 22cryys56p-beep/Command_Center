@@ -103,6 +103,8 @@ Every step down is optional except reaching the Dashboard — the architecture m
 
 **`Up` behavior (final, per ACP-007):** returns to the parent depth within the current object. Currently meaningful only at Workspace, where it returns to that same project's Dashboard — preserving object identity, no return to Project List or Category, no dependence on navigation history, no write to any Project Record field.
 
+*(Annotation per ACP-017, accepted 2026-11-11: `Up` is extended. For a project at Dashboard depth, `Up` returns to the Project List of the category the project was opened from, and the Project Dashboard row of the disabled-state table below is superseded accordingly. The Workspace behavior described here is unchanged; the original wording above is preserved as the historical record.)*
+
 | Location | `Up` |
 |---|---|
 | Category Screen | Disabled |

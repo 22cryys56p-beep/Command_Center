@@ -47,6 +47,8 @@ Verifies `NavigationController`'s transition logic directly, bypassing the UI's 
 
 ## 3. Project-Object Transitions
 
+*(Annotation per ACP-017, accepted 2026-11-11: rows in this section that record `canGoUp: false`, or `goUp()` as a no-op, for a project at `dashboard` depth reflect the rule before ACP-017. Under ACP-017, `canGoUp` is true at `dashboard` depth and `goUp()` moves to the Project List of the category the project was opened from. The original rows are preserved as the historical record; expect the ACP-017 behavior if this protocol is executed today.)*
+
 Continuing from 2.7's state (`object: {category:"possible"}, depth:"list"`) — first switch to a category with a stable ordering assumption for this test:
 
 | # | Action | Expected Navigation State | Expected Availability | Expected Bar Label | Pass/Fail |
@@ -88,6 +90,8 @@ These steps deliberately trigger documented failure/no-op contracts. **A thrown 
 ---
 
 ## 6. Known Unresolved Verification Gap
+
+*(Annotation per ACP-017, accepted 2026-11-11: the Dashboard → Project List path of `Up` is now reachable through the controller and is covered by automated controller tests. The gap described below applies to the Workspace → Dashboard step only, which remains unreachable until a Workspace-entry action exists.)*
 
 **`goUp()`'s *enabled* success path — a project object at `depth: "workspace"`, transitioning to `depth: "dashboard"` — cannot be verified by this protocol, even with full harness/console access.**
 

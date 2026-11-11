@@ -22,6 +22,8 @@ Implement `Up` and `Top` — the two remaining components of the persistent orie
 
 ## What `Up` Means
 
+*(Annotation per ACP-017, accepted 2026-11-11: this section describes `Up` as accepted under ACP-007, enabled only at Workspace depth. ACP-017 extends it: for a project at Dashboard depth, `Up` returns to the Project List of the category the project was opened from. The original text below is preserved as the historical record.)*
+
 `Up` moves to the parent depth **within the current object** (Section C: *"`Up` — Parent depth within the current object"*). Per Section C's `Up` behavior note: *"Currently meaningful only at Workspace, where it returns to that same project's Dashboard — preserving object identity, no return to Project List or Category, no dependence on navigation history, no write to any Project Record field."*
 
 ## What `Top` Means

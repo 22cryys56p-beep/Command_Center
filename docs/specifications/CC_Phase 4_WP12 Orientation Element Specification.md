@@ -25,6 +25,7 @@ Implement the single persistent UI element defined in Phase 3 Section C — pres
 - **Section A (Final Architecture Overview)** — screen hierarchy and the Entry/Top lifecycle distinction (Entry is a once-per-session event; `Top` never returns to Entry, only to Category).
 - **Section D** — referenced only for how each screen is expected to consume the orientation element (center label content, which object is "current" at each depth); WP12 does not implement Section D's screens themselves.
 - **ACP-004** (paging scope — object-based, not screen-based) and **ACP-007** (the `Up` component and its Workspace→Dashboard behavior) — both fully incorporated into Section C already; WP12 implements what those ACPs resolved, it does not reopen them.
+- **ACP-017** — extends `Up`: for a project at Dashboard depth it returns to the Project List of the category the project was opened from. The statements in this specification that `Up` is enabled only at Workspace depth describe WP12 as implemented under ACP-007 and are preserved as the historical record; ACP-017 supersedes them for the Project Dashboard.
 
 ---
 
