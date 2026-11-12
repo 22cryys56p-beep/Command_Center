@@ -88,15 +88,18 @@ export class OrientationBarComponent {
   private readonly container: HTMLElement;
   private readonly controller: NavigationController;
   private readonly onStateChange: () => void;
+  private readonly resolveProjectName: (projectId: string) => string | null;
 
   constructor(
     container: HTMLElement,
     controller: NavigationController,
-    onStateChange: () => void
+    onStateChange: () => void,
+    resolveProjectName: (projectId: string) => string | null
   ) {
     this.container = container;
     this.controller = controller;
     this.onStateChange = onStateChange;
+    this.resolveProjectName = resolveProjectName;
   }
 
   /**
@@ -206,14 +209,15 @@ export class OrientationBarComponent {
   /**
    * Resolves the current label string via resolveLabel, supplying the
    * project name only when the current object is a project. This
-   * component holds no ProjectRecord lookup logic of its own — per the
-   * approved Step 4 contract, resolveLabel performs no lookups, and the
-   * caller (here) is responsible for supplying a name only from data it
-   * already has via the current object itself. In this slice, no
-   * external project-name source is wired yet beyond the object's own
-   * project_id — a placeholder derivation is used here and is expected
-   * to be revisited once a real name source is available (e.g., Slice
-   * 7/8's ProjectRecord provider wiring).
+   * component holds no ProjectRecord lookup logic of its own. Its
+   * composition root supplies a narrow, read-only name resolver, which
+   * keeps resolveLabel a pure formatter (approved Step 4 contract) and
+   * keeps Obsidian/provider concerns outside this component.
+   *
+   * A resolved project uses its stored name. A missing, invalid, or
+   * duplicate project record has no authoritative name; its stable
+   * project_id is then used as the label's final segment rather than
+   * inventing or silently selecting a name.
    */
   private resolveCurrentLabel(): string {
     const state = this.controller.getState();
@@ -227,13 +231,12 @@ export class OrientationBarComponent {
     }
 
     // state.object.kind === "project" — dashboard or workspace depth.
-    // No ProjectRecord name source is wired in this slice; using
-    // project_id as a placeholder projectName rather than leaving this
-    // unresolved. This is flagged, not silently treated as final.
     const destinationDepth = state.depth === "workspace" ? "workspace" : "dashboard";
+    const projectName =
+      this.resolveProjectName(state.object.project_id) ?? state.object.project_id;
     return resolveLabel(
       { depth: destinationDepth, object: state.object },
-      state.object.project_id
+      projectName
     );
   }
 }

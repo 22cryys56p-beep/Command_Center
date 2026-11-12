@@ -6,11 +6,13 @@ import {
   resolveUp,
   resolveTop,
   resolveLabel,
+  GATE_NAME,
   type CurrentObject,
   type Depth,
   type NavigationDestination,
 } from "../../src/navigation/orientation";
 import type { ProjectRecord } from "../../src/data/project-record";
+import { GATEWAY_DESTINATIONS } from "../../src/views/gateway-view";
 
 // --- Fixtures ---------------------------------------------------------------
 
@@ -458,7 +460,7 @@ describe("resolveLabel — category and list destinations", () => {
       depth: "list",
       object: { kind: "category", category: "current" },
     };
-    expect(resolveLabel(destination)).toBe("Command Center: current");
+    expect(resolveLabel(destination)).toBe("Command Center: Current");
   });
 
   it("ignores projectName if supplied for a category destination", () => {
@@ -474,7 +476,7 @@ describe("resolveLabel — category and list destinations", () => {
       object: { kind: "category", category: "planned" },
     };
     expect(resolveLabel(destination, "Should Be Ignored")).toBe(
-      "Command Center: planned"
+      "Command Center: Planning"
     );
   });
 
@@ -496,7 +498,7 @@ describe("resolveLabel — dashboard and workspace destinations", () => {
       object: { kind: "project", project_id: "proj-a", category: "current" },
     };
     expect(resolveLabel(destination, "Teacher Toolbox")).toBe(
-      "Command Center: current: Teacher Toolbox"
+      "Command Center: Current: Teacher Toolbox"
     );
   });
 
@@ -506,7 +508,7 @@ describe("resolveLabel — dashboard and workspace destinations", () => {
       object: { kind: "project", project_id: "proj-a", category: "current" },
     };
     expect(resolveLabel(destination, "Teacher Toolbox")).toBe(
-      "Command Center: current: Teacher Toolbox"
+      "Command Center: Current: Teacher Toolbox"
     );
   });
 
@@ -562,5 +564,42 @@ describe("resolveLabel — purity and stability", () => {
     const before = JSON.parse(JSON.stringify(destination));
     resolveLabel(destination, "Teacher Toolbox");
     expect(destination).toEqual(before);
+  });
+});
+
+// --- Gate display names (WP12 label wording) ---------------------------------
+
+describe("GATE_NAME — gate display names", () => {
+  it("names every ProjectStatus after the Gateway destination that opens it", () => {
+    expect(GATE_NAME).toEqual({
+      current: "Current",
+      planned: "Planning",
+      possible: "Ideas",
+      ongoing: "Ongoing",
+      archived: "Archive",
+    });
+  });
+
+  it("matches the label of every status-backed Gateway destination", () => {
+    for (const destination of GATEWAY_DESTINATIONS) {
+      if (destination.kind === "status") {
+        expect(GATE_NAME[destination.status]).toBe(destination.label);
+      }
+    }
+  });
+
+  it("uses the gate name in list and dashboard labels for every status", () => {
+    for (const [status, gate] of Object.entries(GATE_NAME)) {
+      const category = status as ProjectRecord["status"];
+      expect(
+        resolveLabel({ depth: "list", object: { kind: "category", category } })
+      ).toBe(`Command Center: ${gate}`);
+      expect(
+        resolveLabel(
+          { depth: "dashboard", object: { kind: "project", project_id: "p", category } },
+          "Name"
+        )
+      ).toBe(`Command Center: ${gate}: Name`);
+    }
   });
 });

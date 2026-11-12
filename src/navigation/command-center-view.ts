@@ -201,10 +201,19 @@ export class CommandCenterView extends ItemView {
       this.dashboardView?.render();
     };
 
+    // WP12 label source: only a resolved ProjectRecord supplies a project
+    // name. The orientation bar receives this narrow read-only function,
+    // not the provider itself.
+    const resolveProjectName = (projectId: string): string | null => {
+      const result = provider.resolveProjectRecord(projectId);
+      return result.condition === "resolved" ? result.record.name : null;
+    };
+
     this.orientationBar = new OrientationBarComponent(
       orientationBarContainer,
       this.controller,
-      onStateChange
+      onStateChange,
+      resolveProjectName
     );
     this.navigationInspector = new NavigationInspector(
       inspectorContainer,

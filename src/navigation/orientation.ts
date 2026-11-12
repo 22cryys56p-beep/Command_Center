@@ -288,6 +288,25 @@ export function resolveTop(): NavigationDestination {
 // ---------------------------------------------------------------------------
 
 /**
+ * Display names for the orientation label, keyed by ProjectStatus.
+ *
+ * Each name is the Gateway destination that opens that status's Project
+ * List (ACP-011): Current, Planning, Ideas, Ongoing, Archive. These are
+ * presentation names only. Navigation state still carries the
+ * ProjectStatus value (CurrentObject.kind "category"); no destination is
+ * stored in it, and Ideas remains broader than the possible status
+ * (ACP-011). Typed as a complete Record so a future ProjectStatus value
+ * cannot be added without naming its gate here.
+ */
+export const GATE_NAME: Readonly<Record<ProjectStatus, string>> = {
+  current: "Current",
+  planned: "Planning",
+  possible: "Ideas",
+  ongoing: "Ongoing",
+  archived: "Archive",
+};
+
+/**
  * Resolves the persistent orientation element's center label string for
  * a given navigation destination, per Phase 3 Section C: the label
  * "updates on every depth change" and is display-only.
@@ -322,7 +341,7 @@ export function resolveLabel(
       return "Command Center: Projects";
 
     case "list":
-      return `Command Center: ${destination.object.category}`;
+      return `Command Center: ${GATE_NAME[destination.object.category]}`;
 
     case "dashboard":
     case "workspace":
@@ -331,6 +350,6 @@ export function resolveLabel(
           `resolveLabel: projectName is required for "${destination.depth}" destinations but was omitted.`
         );
       }
-      return `Command Center: ${destination.object.category}: ${projectName}`;
+      return `Command Center: ${GATE_NAME[destination.object.category]}: ${projectName}`;
   }
 }
