@@ -295,6 +295,8 @@ The ProjectRecord/provider/WP14/ACP-014 implementation arc is therefore closed. 
 
 
 
+**WP12 closed (2026-11-13):** WP12 — the persistent orientation element — is closed by Kurt. The orientation and navigation foundation is implemented and verified on `main` at commit `018a8ac`: `tsc --noEmit` clean and 199/199 tests passing (the 147/147 recorded above was the count at the time of ACP-014). The orientation label resolves the project name through the ProjectRecord provider (the project ID is used when no name can be resolved) and shows the Gateway gate names Current, Planning, Ideas, Ongoing and Archive; navigation state is unchanged. Slice 9B was retired without execution, and Kurt waived the original Baseline Freeze requirement that both Slice 9A and Slice 9B pass; no separate Baseline Freeze event was declared. The Workspace → Dashboard step of `Up` is not a WP12 task; it is a Workspace acceptance condition recorded in the Master Implementation Index.
+
 Frozen architectural decisions are not changed during implementation.
 
 If implementation reveals a conflict with a frozen decision:

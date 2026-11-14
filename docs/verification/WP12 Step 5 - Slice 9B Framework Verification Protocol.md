@@ -5,8 +5,97 @@ work_package: WP12
 step: 5
 slice: 9B
 title: Framework Verification Protocol
-status: ready for execution — one known unresolved gap, see Section 6
+status: retired — superseded by accepted navigation changes; not executed
+previous_status: ready for execution — one known unresolved gap, see Section 6
 date: 2026-07-27
+---
+
+## Retirement and Formal Disposition — 2026-11-13
+
+**Disposition by Kurt, 2026-11-13.**
+
+**This protocol is retired. Do not execute it as written.**
+
+The original procedure is preserved below as a historical record. Its
+assumptions and closure purpose have been superseded by accepted architectural
+decisions and subsequent implementation.
+
+### Formal disposition
+
+The original Baseline Freeze criterion required both Slice 9A and Slice 9B to
+pass before the WP12 baseline could be frozen. Kurt explicitly waives that
+original requirement.
+
+Slice 9B was not executed. This waiver is not a Slice 9B pass, does not claim
+that every historical check passed, and does not alter the separately recorded
+result of Slice 9A.
+
+WP12 is formally closed by this recorded disposition. This closure does not
+declare that a separate Baseline Freeze event has occurred.
+
+The conditions that originally caused WP12 verification to pause have been
+resolved or superseded by subsequent accepted architectural decisions and
+implementation. The remaining Workspace-related verification is classified
+as future Workspace acceptance work, not as a WP12 closure blocker.
+
+### Why the original procedure is obsolete
+
+- **Navigation depth — ACP-012:** the root navigation depth formerly named
+  `category` was renamed `gateway`. This concerns the navigation-depth value;
+  `CurrentObject.kind: "category"` remains an unchanged domain-object kind.
+- **Project statuses — ACP-009:** `completed` was retired. The accepted
+  statuses are `possible`, `planned`, `current`, `ongoing`, and `archived`.
+- **Category paging — ACP-010:** category-level sibling paging after the
+  Gateway was retired.
+- **Dashboard Up — ACP-017:** Up from a Project Dashboard returns to the
+  Project List for the category from which the project was opened. This is
+  its originating navigation context, not the project's current status.
+- **Gateway labels:** the Gateway gate names reflect Kurt's decision of
+  2026-11-12; they are not an ACP. Project names are resolved through the
+  ProjectRecord provider, with the project ID used as fallback when a name
+  cannot be resolved. This implementation is included in commit `018a8ac`.
+
+### Current automated-test coverage
+
+The following mapping reflects the canonical implementation and tests at
+commit `018a8ac`. These are current coverage references, not a claim that
+Slice 9B itself was executed.
+
+| Original protocol case | Current disposition |
+|---|---|
+| Initial navigation state | Covered by current test for Gateway depth and no selected object: `navigation-controller.test.ts:36` |
+| Category selection, cases 2.1–2.2 | Covered: `navigation-controller.test.ts:45, 54` |
+| Category sibling paging and retired `completed` status, cases 2.3–2.8 | Superseded by ACP-009 and ACP-010; current no-category-sibling-paging behavior is covered at `navigation-controller.test.ts:131` |
+| Project selection, case 3.2 | Covered: `navigation-controller.test.ts:68` |
+| Paging when no sibling exists, cases 3.3–3.4 | Covered: `navigation-controller.test.ts:139, 152` |
+| Dashboard Up, cases 3.5 and related ACP-017 behavior | Superseded by ACP-017; current behavior is covered at `navigation-controller.test.ts:177–237, 325–332` |
+| Invalid project selection, cases 4.1 and 4.3 | Covered: `navigation-controller.test.ts:78, 83` |
+| Top navigation reset, case 4.2 | Covered: `navigation-controller.test.ts:252, 260` |
+| Up with no selected object, case 4.4 | Covered: `navigation-controller.test.ts:164` |
+| Paging no-ops with no selected object, cases 4.5–4.6 | Covered: `navigation-controller.test.ts:108, 115, 122` |
+| Orientation labels and resolved project names | Covered by current orientation-bar tests in `orientation-bar.test.ts` |
+| Section 5.1 — no hidden automatic rendering | No automated test equivalent identified; structural inspection only |
+| Section 5.2 — orientation bar renders before inspector | No automated test equivalent identified; source order is visible in `command-center-view.ts:196–201`. The inspector is hidden by default. |
+
+The two Section 5 rendering checks above remain explicitly uncovered by
+automated tests. Their omission is not represented as a pass.
+
+### Future Workspace acceptance obligation
+
+The original Section 6 Workspace-to-Dashboard Up scenario remains a future
+acceptance obligation:
+
+**Project List → Dashboard → Workspace → Up → same Dashboard**
+
+This behavior is not verified by application execution. Only the
+`resolveUp` unit-level behavior is currently covered. The end-to-end scenario
+becomes executable when the Workspace-entry action is implemented.
+
+Kurt accepts this as a known future Workspace acceptance obligation under the
+original protocol's known-gap disposition. It is to be recorded in the Master
+Implementation Index under Project Workspace. It is not an outstanding WP12
+implementation task or a reason to keep WP12 open.
+
 ---
 
 # WP12 Step 5 — Slice 9B: Framework Verification Protocol
