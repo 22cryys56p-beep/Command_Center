@@ -7,20 +7,20 @@
 
 ### Category 8 — Project Workspace
 
-- A selected project opens as a dedicated Project Workspace — KEEP-Foundation
+- A selected project opens as a dedicated Project Workspace — KEEP-Foundation *Clarified (annotation, 2026-11-15): Kurt's ruling of 2026-11-15 on the Dashboard/Workspace boundary reconciliation (Conflict 1, Option 1A, Interpret). Under the accepted Dashboard-first architecture (Phase 3 §A and §D; UI Architecture Specification §1; P4-R655; P4-R589), selecting a project opens its primary view, the Project Dashboard, from which the Project Workspace is reached. The original wording above is unchanged. Evidence: CC_Working_Notes/CC — Dashboard-Workspace Boundary Reconciliation — Evidence and Decision Scope 2026-11-14.md.*
 - The workspace uses the same core Project Model for all project domains — KEEP-Foundation
 - Domain-specific sections are optional rather than mandatory — KEEP-Foundation
 - Project information, ecosystem information, and source/document references belong within the workspace — KEEP-Foundation
 - Authoritative source/location references are broader than merely "Repository" — Remote Repository, Local Workspace, External Source, Folder Map — KEEP-Foundation
 - These references identify where authoritative/project resources live; CC does not own them — KEEP-Foundation
-- P4-R149 — Selecting a project from a status/category view opens a dedicated Project Workspace — KEEP-Phase4
+- P4-R149 — Selecting a project from a status/category view opens a dedicated Project Workspace — KEEP-Phase4 *Clarified (annotation, 2026-11-15): Kurt's ruling of 2026-11-15 on the Dashboard/Workspace boundary reconciliation (Conflict 1, Option 1A, Interpret). Under the accepted Dashboard-first architecture (Phase 3 §A and §D; UI Architecture Specification §1; P4-R655; P4-R589), selecting a project opens its primary view, the Project Dashboard, from which the Project Workspace is reached. The original wording above is unchanged. Evidence: CC_Working_Notes/CC — Dashboard-Workspace Boundary Reconciliation — Evidence and Decision Scope 2026-11-14.md.*
 - P4-R150 — The Project Workspace presents the project's identity and operational state in one primary view — KEEP-Phase4
 - P4-R151 — Purpose, Description, Focus, Status, Milestone, Progress, Next Action, Flags, and Blockers should be accessible from the primary workspace — KEEP-Phase4
 - P4-R152 — Technical/project-environment information should be available where relevant — KEEP-Phase4
 - P4-R153 — Project ecosystem/related work should be accessible from the workspace — KEEP-Phase4
 - P4-R154 — Project documents/files should be accessible from the workspace for read-only inspection — KEEP-Phase4
 - P4-R155 — The workspace should adapt to domain-specific project information without changing the core Project Model — KEEP-Foundation
-- P4-R156 — Closing a Project Workspace returns the user to the previous project-selection context — KEEP-Phase4
+- P4-R156 — Closing a Project Workspace returns the user to the previous project-selection context — KEEP-Phase4 *Clarified (annotation, 2026-11-15): Kurt's ruling of 2026-11-15 on the Dashboard/Workspace boundary reconciliation (Conflict 1, Option 1A, Interpret), extended to the exit statements. Under the accepted navigation model the Project Workspace is reached from the Project Dashboard, so leaving the Workspace returns to that project's Dashboard (`Up`, ACP-007), and the project-selection context is reached from the Dashboard (`Up`, ACP-017). The original wording above is unchanged. Evidence: CC_Working_Notes/CC — Dashboard-Workspace Boundary Reconciliation — Evidence and Decision Scope 2026-11-14.md.*
 
 ### Category 9 — Project Selection & Navigation
 
@@ -28,8 +28,8 @@
 - P4-R158 — Multiple projects may simultaneously have the same status — KEEP-Foundation
 - P4-R159 — Project selection should present projects as compact visual choices — KEEP-Phase4
 - P4-R160 — Project choices should be arranged horizontally where practical — KEEP-Phase4
-- P4-R161 — Selecting a project opens its Project Workspace — KEEP-Phase4
-- P4-R162 — Leaving a Project Workspace returns the user to the relevant project-selection context — KEEP-Phase4
+- P4-R161 — Selecting a project opens its Project Workspace — KEEP-Phase4 *Clarified (annotation, 2026-11-15): Kurt's ruling of 2026-11-15 on the Dashboard/Workspace boundary reconciliation (Conflict 1, Option 1A, Interpret). Under the accepted Dashboard-first architecture (Phase 3 §A and §D; UI Architecture Specification §1; P4-R655; P4-R589), selecting a project opens its primary view, the Project Dashboard, from which the Project Workspace is reached. The original wording above is unchanged. Evidence: CC_Working_Notes/CC — Dashboard-Workspace Boundary Reconciliation — Evidence and Decision Scope 2026-11-14.md.*
+- P4-R162 — Leaving a Project Workspace returns the user to the relevant project-selection context — KEEP-Phase4 *Clarified (annotation, 2026-11-15): Kurt's ruling of 2026-11-15 on the Dashboard/Workspace boundary reconciliation (Conflict 1, Option 1A, Interpret), extended to the exit statements. Under the accepted navigation model the Project Workspace is reached from the Project Dashboard, so leaving the Workspace returns to that project's Dashboard (`Up`, ACP-007), and the project-selection context is reached from the Dashboard (`Up`, ACP-017). The original wording above is unchanged. Evidence: CC_Working_Notes/CC — Dashboard-Workspace Boundary Reconciliation — Evidence and Decision Scope 2026-11-14.md.*
 - P4-R163 — Status and category must remain independent navigation/filtering dimensions — KEEP-Foundation
 - P4-R164 — Navigation must support the Project Re-entry Requirement — KEEP-Foundation
 

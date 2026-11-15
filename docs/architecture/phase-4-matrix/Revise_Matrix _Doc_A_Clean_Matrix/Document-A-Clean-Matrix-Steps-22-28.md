@@ -34,7 +34,7 @@
 
 - P4-R320 — Project Context fields must remain domain-agnostic and optional — KEEP-Foundation
 - P4-R327 — Project Workspace should prioritize visual hierarchy and "See first. Read second." — KEEP-Foundation
-- P4-R316 — Selecting a project must open a dedicated Project Workspace for that project — KEEP-Phase4
+- P4-R316 — Selecting a project must open a dedicated Project Workspace for that project — KEEP-Phase4 *Clarified (annotation, 2026-11-15): Kurt's ruling of 2026-11-15 on the Dashboard/Workspace boundary reconciliation (Conflict 1, Option 1A, Interpret). Under the accepted Dashboard-first architecture (Phase 3 §A and §D; UI Architecture Specification §1; P4-R655; P4-R589), selecting a project opens its primary view, the Project Dashboard, from which the Project Workspace is reached. The original wording above is unchanged. Evidence: CC_Working_Notes/CC — Dashboard-Workspace Boundary Reconciliation — Evidence and Decision Scope 2026-11-14.md.*
 - P4-R317 — Project Workspace must clearly identify the selected project — KEEP-Phase4
 - P4-R318 — Purpose, Description, and Focus should be directly accessible from the primary workspace — KEEP-Phase4
 - P4-R319 — Project Context should expose applicable tools, technology/coding, target platform, and related environment information — KEEP-Phase4
@@ -43,7 +43,7 @@
 - P4-R323 — Where Things Stand should support Where Left Off, Next Action, and AI Progress Estimate — KEEP-Phase4
 - P4-R324 — Project Workspace must provide access to deeper project knowledge without displaying everything simultaneously — KEEP-Phase4
 - P4-R325 — Project Workspace should provide access to Files, Search, Decisions, Notes, History, Relationships, and Seeds where applicable — KEEP-Phase4
-- P4-R326 — Closing a Project Workspace should return the user to the view from which the project was opened — KEEP-Phase4
+- P4-R326 — Closing a Project Workspace should return the user to the view from which the project was opened — KEEP-Phase4 *Clarified (annotation, 2026-11-15): Kurt's ruling of 2026-11-15 on the Dashboard/Workspace boundary reconciliation (Conflict 1, Option 1A, Interpret), extended to the exit statements. Under the accepted navigation model the Project Workspace is reached from the Project Dashboard, so leaving the Workspace returns to that project's Dashboard (`Up`, ACP-007), and the project-selection context is reached from the Dashboard (`Up`, ACP-017). The original wording above is unchanged. Evidence: CC_Working_Notes/CC — Dashboard-Workspace Boundary Reconciliation — Evidence and Decision Scope 2026-11-14.md.*
 
 ### Category 25 — Project Files & Read-Only Access
 
