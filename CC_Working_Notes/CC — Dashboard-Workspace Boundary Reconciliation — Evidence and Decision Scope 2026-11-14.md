@@ -1,6 +1,6 @@
 ---
 type: working-note
-status: Conflict 1 ruled by Kurt 2026-11-15 (Option 1A, Interpret), extended to the exit statements R156, R162, R326; Conflicts 2–4 still await rulings; nothing annotated yet, no ACP drafted; evidence corrected 2026-11-14 after GPT's review
+status: Conflict 1 ruled by Kurt 2026-11-15 (Option 1A, Interpret), extended to the exit statements R156, R162, R326; Conflict 3 ruled by Kurt 2026-11-16 (Option 3A with 3C); Conflicts 2 and 4 still await rulings; nothing annotated yet, no ACP drafted; evidence corrected 2026-11-14 after GPT's review
 date: 2026-11-14
 authority: Kurt (decisions); this note is not authoritative
 baseline: Command_Center main at 281052c
@@ -256,9 +256,22 @@ These are mechanics, not recommendations.
 
 | Conflict | Ruling | By | Date | Status |
 |---|---|---|---|---|
-| 1 — Does selecting a project open the Workspace or the Dashboard? | **Option 1A (Interpret).** P4-R149, P4-R161, P4-R316 and the unnumbered Category 8 KEEP-Foundation bullet stay unchanged. A formal annotation states that, under the accepted Dashboard-first architecture, selecting a project opens its Dashboard as the primary project view, with the Workspace reached from the Dashboard. No ACP. | Kurt | 2026-11-15 | Ruled; annotation not yet applied |
+| 1 — Does selecting a project open the Workspace or the Dashboard? | **Option 1A (Interpret).** P4-R149, P4-R161, P4-R316 and the unnumbered Category 8 KEEP-Foundation bullet stay unchanged. A formal annotation states that, under the accepted Dashboard-first architecture, selecting a project opens its Dashboard as the primary project view, with the Workspace reached from the Dashboard. No ACP. | Kurt | 2026-11-15 | Ruled; annotated 2026-11-15 (commit 0cc610b) |
 | 2 — Identity and operational information | — | — | — | Open |
-| 3 — R587 against the no-navigation-hub rule | — | — | — | Open |
+| 3 — R587 against the no-navigation-hub rule | **Option 3A with 3C.** Full text below. | Kurt | 2026-11-16 | Ruled; annotation on P4-R587 applied in the same commit as this revision |
 | 4 — R783 against R802 and R323 | — | — | — | Open |
 
+**Conflict 3 ruling text (Kurt, 2026-11-16).** Option 3A with 3C. Phase 3's single, uniform Dashboard-to-Workspace transition remains in force and carries the active project's identity without a section-specific destination. Its wording does not limit the action to one control, so a later specification may let more than one Dashboard element invoke it, provided none carries a section-specific destination and no section menu or navigation hub is introduced. Navigation among Workspace sections is handled within the Workspace. R587's literal wording of direct navigation from the Dashboard to individual resources is not met, and section-specific links would need a separate ACP. WP16 §2.7 stays in force until the Dashboard-to-Workspace action (R589) is specified, and that specification will amend §2.7 explicitly. No Dashboard content becomes interactive by this ruling. Under 3C: Blockers are already presented on the Dashboard (WP16); Flags are not established there; the placement of the remaining resources, including Handovers, is left to the Workspace specification. Reviewed independently by GPT (approved with the wording refinements incorporated).
+
 **Extension to the exit statements (Kurt, 2026-11-15).** The Conflict 1 ruling also covers P4-R156, P4-R162 and P4-R326 (§4.3, §9 item 2), read under the accepted navigation model: the Project Workspace is reached from the Project Dashboard, so leaving the Workspace returns to that project's Dashboard (`Up`, ACP-007), and the project-selection context is reached from the Dashboard (`Up`, ACP-017). The original wording is unchanged. This follows the `Up` decisions already accepted and is not an open question.
+
+## 13. Evidence addendum (2026-11-16)
+
+Evidence found while examining Conflict 3. It does not change §3–§11, which are left as they stood when the rulings were requested.
+
+1. **Two WP numbering series.** WP1–WP9 are Phase 3 (frozen architecture; WP5 Dashboard and WP6 Workspace Entry Point are in Phase 3 §D). WP10–WP16 are Phase 4 (implementation). "WP6" and "WP16" are different packages.
+2. **UI Architecture Specification §3** lists "workspace navigation (Workspace only, scoped to the currently open project)" among the elements that appear only where relevant. This is a second governing source, beside Phase 3 WP6, for keeping Workspace navigation inside the Workspace (Conflict 3).
+3. **WP16 §2.7** says resolved content is non-interactive, with R587 and R589 deferred. D1 rejected a clickable `repo_reference` as needing "an explicit exception to §2.7." The non-interactivity is tied to those deferrals, so it describes WP16's implemented scope.
+4. **"Content-driven navigation"** is defined narrowly in WP15 §3.6 (item 4) and `SESSION_START.md` §15: a render or resolution outcome must never itself cause a navigation-state transition; navigation changes come only from explicit user-initiated actions. A user's click is not content-driven navigation in that sense.
+5. **Phase 3 §A, data ownership:** "Every screen that displays project information reads from this record; no screen owns or independently stores a competing copy of that data," and document-body content is "owned by the Workspace layer." This bears on the WP6 read statement (note on G4, §3, and Conflict 2): it favors readings 2 and 3 over the strict field reading.
+6. **Corrections to earlier readings.** R587–R591 are Matrix requirements (Categories 43 and 44), not introduced by WP16; WP16 deferred only R587 and R589 and never mentions R590 or R591. ACP-014 cites R151 and R318 but allocates neither and decides no Dashboard presentation or Workspace detail.
