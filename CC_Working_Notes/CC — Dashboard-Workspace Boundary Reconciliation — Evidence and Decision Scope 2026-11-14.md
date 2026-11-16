@@ -1,6 +1,6 @@
 ---
 type: working-note
-status: Conflict 1 ruled by Kurt 2026-11-15 (Option 1A, Interpret), extended to the exit statements R156, R162, R326; Conflict 3 ruled by Kurt 2026-11-16 (Option 3A with 3C); Conflicts 2 and 4 still await rulings; nothing annotated yet, no ACP drafted; evidence corrected 2026-11-14 after GPT's review
+status: Conflict 1 ruled by Kurt 2026-11-15 (Option 1A, Interpret), extended to the exit statements R156, R162, R326; Conflict 3 ruled by Kurt 2026-11-16 (Option 3A with 3C); Conflicts 2 and 4 still await rulings; Conflicts 1 and 3 have been annotated; no ACP drafted; evidence corrected 2026-11-14 after GPT's review
 date: 2026-11-14
 authority: Kurt (decisions); this note is not authoritative
 baseline: Command_Center main at 281052c
