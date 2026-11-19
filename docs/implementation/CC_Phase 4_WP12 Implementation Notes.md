@@ -6,6 +6,8 @@ status: Steps 1–4 and Slices 1–8B recorded and committed — WP12 Step 5 cod
 date: 2026-07-23
 ---
 
+> **Annotation (2026-11-19):** WP12 was closed on 2026-11-13 (Kurt). Slice 9A passed; Slice 9B was retired without being executed, and the original Baseline Freeze requirement that both slices pass was waived; no separate Baseline Freeze event was declared. The status line above and the "not yet performed" statements below are this log's historical record. The current status is in the Phase 4 Master Implementation Index (WP12 entry).
+
 # WP12 Implementation Notes
 
 This document records what was actually built, as distinct from `Phase 4 - WP12 Orientation Element Specification.md`, which records what was approved to be built. The specification is the contract; this document is the log of what happened against it.

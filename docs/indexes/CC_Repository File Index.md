@@ -2,7 +2,7 @@
 type: file-index
 status: living document — update immediately, in the same pass, whenever an authoritative file is added, renamed, removed, or whenever CC_Working_Notes/ changes materially
 date: 2026-10-06
-last_updated: 2026-11-15
+last_updated: 2026-11-19
 ---
 
 # Command Center — Repository File Index
@@ -111,15 +111,21 @@ Context and evidence trail — **not automatically authoritative**. Check before
 - `CC — Dashboard Core-Content Specification Scope 2026-10-09.md`
 - `CC — Dashboard-Workspace Boundary Reconciliation — Evidence and Decision Scope 2026-11-14.md`
 - `CC — Near-Term Roadmap 2026-10-02.md`
+- `CC — Near-Term Roadmap 2026-11-12.md`
 - `CC_Phase 4_New Project Intake and Data Model — Candidate Design Notes.md`
 - `CC_Phase_4_Gateway_Screen_and_Ongoing_Archived_Distinction.md`
 - `CC_State_of_Repo_for_Codex_2026-09-25.md`
 - `Codex Audit - Current repository state 2026-09-29.md`
+- `Codex Audit - Current repository state 2026-11-11.md`
 - `Codex CC Roadmap 2026.09.13.txt`
 - `Dashboard ProjectRecord Resolution Gap — Evidence and Decision Scope.md`
 - `Document-E-Uncharted-Territory.md`
 - `Purpose_Description_Ownership_Open_Question.md`
 - `Visual_Portfolio_Representation_Candidate.md`
+- `CC — Handover Claude to Claude(2026-10-06).md`
+- `CC — Handover Claude to GPT (2026-10-06).md`
+- `CC — Handover GPT to GPT (2026-10-06).md`
+- `Working_Notes name change.md`
 - `Downloaded Docs/` — older draft material (pre-dates several accepted ACPs/specs); historical only, never authoritative, never a substitute for the current accepted version of anything it overlaps with.
 
 ## 8. Live source (`src/`) and tests (`tests/`)
