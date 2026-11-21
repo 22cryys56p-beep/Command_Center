@@ -156,6 +156,8 @@ For every meaningful Command Center update:
 
 If the answer is no, the work is not complete.
 
+The same applies to the Portfolio Map's cards and links (see "Portfolio Map maintenance" below).
+
 ### ACP-specific minimum
 
 When an ACP is accepted, the following must be updated together in the same pass:
@@ -169,6 +171,20 @@ If other authoritative artifacts are affected by the ACP, those artifacts must b
 ### Repository File Index maintenance
 
 Adding, renaming, or removing any authoritative file (an ACP, a WP specification, an implementation note, a Matrix document, or a source file) requires updating `docs/indexes/CC_Repository File Index.md` in the same synchronization pass as the file's own change — not as a deferred follow-up. This index exists specifically so a fresh collaborator never has to rediscover the repository's structure from scratch; letting it drift out of date defeats its purpose.
+
+### Portfolio Map maintenance
+
+The root-level `Portfolio Map.canvas` is maintained in the same synchronization pass as `SESSION_START.md` and the indexes (Project Owner instruction, 2026-11-21). AI collaborators use it as a quick reference to find documents and see where work stands.
+
+**The Main repository is the sole source of truth.** The Map is a navigation and reference aid only. If the Map and the repository ever disagree, the repository is correct and the Map is corrected. The Map does not replace the reading sequence in Section 3.
+
+Update the Map in the same pass when a change:
+
+* adds, renames, or removes an authoritative or load-bearing document (add, repoint, or remove its link; every Markdown document under `docs/` and `CC_Working_Notes/` should be reachable from the Map, and no link may point to a missing or empty file);
+* changes the status of a work package, a ruling, or an open decision shown on a card;
+* changes which roadmap is being worked from (the Map points to that roadmap).
+
+Cards may be added, removed, or moved whenever needed to keep the Map accurate; otherwise the existing layout and colors are preserved. Empty files found during the work are deleted. Map updates follow the same working rules as other documentation changes: a verified, reversible change that the Project Owner commits.
 
 ### Approval state
 
@@ -291,7 +307,7 @@ The ProjectRecord/provider/WP14/ACP-014 implementation arc is therefore closed. 
 
 **Theme exploration:** The Futuristic Computer theme remains an exploratory experiment in the separate `CC_AI_Studio_Futuristic_Mockup` repository and local AI Studio environment. It has not been adopted into the canonical Command Center repository. Adoption remains undecided.
 
-**Portfolio Map:** The root-level `Portfolio Map.canvas` is a visual navigation and reference aid. It is not an architectural authority, does not replace the required documentation reading sequence, and does not supersede the authoritative specifications, ACPs, indexes, or Matrix documents. Its 2026-10-31 update was implemented and verified locally: 19 cards, 18 connections, 28 links checked, all links resolving, no overlaps, and valid IDs/connections. Existing card colors, horizontal positions, and widths were preserved. Output SHA-256: `3d130379fdfc9acbbc126dd0706cad2145dc0b170c1c13fbf2af4ab6871e00b5`. The updated Canvas is local and has not yet been committed or pushed. *Update (2026-11-19): the Map has since been committed and expanded (29 cards and 28 connections at this date) and is kept current at Kurt's standing instruction; the figures and the "not yet committed" statement above are historical.*
+**Portfolio Map:** The root-level `Portfolio Map.canvas` is a visual navigation and reference aid. It is not an architectural authority, does not replace the required documentation reading sequence, and does not supersede the authoritative specifications, ACPs, indexes, or Matrix documents. Its 2026-10-31 update was implemented and verified locally: 19 cards, 18 connections, 28 links checked, all links resolving, no overlaps, and valid IDs/connections. Existing card colors, horizontal positions, and widths were preserved. Output SHA-256: `3d130379fdfc9acbbc126dd0706cad2145dc0b170c1c13fbf2af4ab6871e00b5`. The updated Canvas is local and has not yet been committed or pushed. *Update (2026-11-19): the Map has since been committed and expanded (29 cards and 28 connections at this date) and is kept current at Kurt's standing instruction; the figures and the "not yet committed" statement above are historical.* *Maintenance (Kurt's instruction, 2026-11-21): the Map is now maintained in the same synchronization pass as this document and the indexes, and AI collaborators use it as a quick reference; the Main repository remains the sole source of truth. See "Portfolio Map maintenance" in Section 5.*
 
 
 

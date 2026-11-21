@@ -3,7 +3,7 @@ type: master-index
 phase: 4
 status: living document — updated as each new WP closes
 date: 2026-09-16
-last_updated: 2026-11-19
+last_updated: 2026-11-22
 ---
 
 # Phase 4 — Master Implementation Index
@@ -175,6 +175,7 @@ These are maintained consistently with `SESSION_START.md` Section 7.
 - **Output SHA-256:** `3d130379fdfc9acbbc126dd0706cad2145dc0b170c1c13fbf2af4ab6871e00b5`.
 - **Repository status:** verified in the local vault/repository, but not yet committed or pushed to `main`. This is an integration step, not an outstanding implementation or verification defect.
 - **Later state (2026-11-19):** the Map has since been committed, expanded and kept current at Kurt's standing instruction (2026-11-18). As of this date it has 29 cards and 28 connections, links every Markdown document under `docs/` and `CC_Working_Notes/`, shows WP12 as closed and the Dashboard–Workspace reconciliation as current work, and points to the roadmap currently being worked from. Empty files are deleted when found. The 2026-10-31 figures and the "not yet committed" statement above are historical.
+- **Maintenance (2026-11-21):** per Kurt's instruction, the Map is maintained in the same synchronization pass as `SESSION_START.md` and the indexes (`SESSION_START.md` Section 5, "Portfolio Map maintenance"). AI collaborators use it as a quick reference; the Main repository remains the sole source of truth. The Role statement above (a reference aid, not an architectural authority) is unchanged.
 
 
 ---
@@ -258,7 +259,7 @@ WP13 establishes the Gateway/root-navigation layer and New Project entry point. 
 
 Before starting any new work package: read this index top to bottom, confirm the dependency graph shows your target WP's prerequisites as Closed or otherwise explicitly available for the intended work, then read the specific Phase 3 section(s), Phase 4 specification(s), and accepted ACP record(s) your WP governs before writing anything.
 
-After implementing a work package: update this index to reflect what actually exists, what the work package itself built, what it depends on, what now depends on it, and what remains open. Add any new ACPs to the registry above.
+After implementing a work package: update this index to reflect what actually exists, what the work package itself built, what it depends on, what now depends on it, and what remains open. Add any new ACPs to the registry above. Update the corresponding Portfolio Map card in the same pass (`SESSION_START.md` Section 5, "Portfolio Map maintenance").
 
 **Standing rule:** whenever a new ACP is accepted, update this index and `SESSION_START.md`'s ACP registry (Section 16) together, in the same pass as the ACP document itself — not as separate, later follow-ups. This index has twice fallen out of sync with an already-accepted, already-implemented decision (WP14/ACP-014, then again briefly with ACP-015) because the index update was treated as a deferred step rather than part of accepting the ACP.
 

@@ -2,7 +2,7 @@
 type: file-index
 status: living document — update immediately, in the same pass, whenever an authoritative file is added, renamed, removed, or whenever CC_Working_Notes/ changes materially
 date: 2026-10-06
-last_updated: 2026-11-19
+last_updated: 2026-11-22
 ---
 
 # Command Center — Repository File Index
@@ -150,7 +150,7 @@ The actual implementation everything above governs. Always check the live file, 
 
 ### Repository-root reference aid
 
-- `Portfolio Map.canvas` — visual navigation and reference aid for the repository. It is not an architectural authority and does not replace this index, the Master Implementation Index, the required reading sequence, specifications, ACPs, or Matrix documents. Its links should resolve to the current repository files. The Canvas may be updated as navigation changes, while its existing card customizations should be preserved unless a specific approved change requires otherwise.
+- `Portfolio Map.canvas` — visual navigation and reference aid for the repository. It is not an architectural authority and does not replace this index, the Master Implementation Index, the required reading sequence, specifications, ACPs, or Matrix documents. Its links should resolve to the current repository files. The Canvas may be updated as navigation changes, while its existing card customizations should be preserved unless a specific approved change requires otherwise. It is maintained in the same synchronization pass as this index (`SESSION_START.md` Section 5, "Portfolio Map maintenance"). It is a quick reference only; the Main repository is the sole source of truth.
 
 
 
@@ -163,6 +163,7 @@ This index is part of the Documentation Synchronization Protocol (`SESSION_START
 
 - **Adding a new authoritative file** (a new ACP, WP specification, implementation note, Matrix document, or source file) requires adding it to this index in the same synchronization pass as the file's own creation — not as a deferred follow-up.
 - **Renaming or removing a file** requires updating or removing its entry here in the same pass.
+- **The Portfolio Map** is updated in the same pass: when a file is added, renamed, or removed, update its link on `Portfolio Map.canvas` (`SESSION_START.md` Section 5, "Portfolio Map maintenance").
 - **A new `CC_Working_Notes/` file** that becomes genuinely load-bearing (cited by an accepted ACP or specification, the way the Purpose/Description and Dashboard Resolution evidence briefs were) should be added here; routine working notes don't require an update on their own, but check at the point they get cited by something authoritative.
 - Update `last_updated` in the frontmatter whenever this file changes, the same convention as the Master Implementation Index.
 - Do not trust this index over the actual repository. If you find a discrepancy, fix the index — don't assume the index is right and the repository is wrong.
