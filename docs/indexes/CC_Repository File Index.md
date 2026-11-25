@@ -2,7 +2,7 @@
 type: file-index
 status: living document — update immediately, in the same pass, whenever an authoritative file is added, renamed, removed, or whenever CC_Working_Notes/ changes materially
 date: 2026-10-06
-last_updated: 2026-11-22
+last_updated: 2026-11-25
 ---
 
 # Command Center — Repository File Index
@@ -126,7 +126,6 @@ Context and evidence trail — **not automatically authoritative**. Check before
 - `CC — Handover Claude to GPT (2026-10-06).md`
 - `CC — Handover GPT to GPT (2026-10-06).md`
 - `Working_Notes name change.md`
-- `Downloaded Docs/` — older draft material (pre-dates several accepted ACPs/specs); historical only, never authoritative, never a substitute for the current accepted version of anything it overlaps with.
 
 ## 8. Live source (`src/`) and tests (`tests/`)
 
@@ -154,6 +153,13 @@ The actual implementation everything above governs. Always check the live file, 
 
 
 
+
+## 9. Removed files
+
+Removed from the working tree on 2026-11-23 by Kurt's decision. All of them remain in git history.
+
+- `Downloaded Docs/` (under `CC_Working_Notes/`): older draft specifications and raw Matrix draft transcripts, superseded by the accepted Matrix (Documents A to D) and the final specifications.
+- The pre-plugin vault skeleton: `Dashboard/` (four hand-maintained dashboard notes) and the placeholder `README.md` files in `Active Projects/`, `Completed Projects/`, `Future Projects/`, `Shared Resources/` and `Knowledge Base/` (seven files). `Decisions/Decision Log.md` was kept because it holds the project's first recorded decision (2026-07-20). Historical records such as the Phase 1 Architectural Assessment still describe this structure; that description is history and is not rewritten.
 
 ---
 
